@@ -9,7 +9,7 @@
 
 -- 🇧🇷
 -- Máximo divisor comum - extendido
--- Dados dois números inteiros, a e b, a<b, retorna d=mdc(a,b) e um par (s,t) tal que such that d = s*a + t*b
+-- Dados dois números inteiros, a e b, a<b, retorna d=mdc(a,b) e um par (s,t) tal que d = s*a + t*b
 -- Se a < b, retornará (d,s,t) tal que d = s*b + t*a
 
 -- @param a (integer)
