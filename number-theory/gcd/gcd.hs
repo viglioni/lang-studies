@@ -1,6 +1,6 @@
 -- @author Laura Viglioni
 -- 2019
--- 
+-- GNU General Public License v3.0 
 
 -- 🇬🇧
 -- Greatest common divisor algorithm
