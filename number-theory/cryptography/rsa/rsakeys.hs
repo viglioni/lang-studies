@@ -3,7 +3,7 @@
 -- GNU General Public License v3.0 
 
 -- 🇬🇧
--- Get public key (n,e) and a corresponding private key (d) using two primes p and q
+-- Get public key (e,n) and a corresponding private key (d) using two primes p and q
 -- One must install System.Random
 -- $ cabal install random
 -- Extendend GCD and GCD algorithm is also needed
