@@ -25,31 +25,31 @@ import System.Random
 import EGCD
 
 
-generate_keys :: (Integral t) => t -> t -> IO ((t,t),t) 
+generate_keys :: (Integral t, Random t) => t -> t -> IO ((t,t),t) 
 generate_keys p q =
   do
     seed <- getStdGen
     return $ gen_keys p q seed
 
 
-gen_keys :: (Integral t, RandomGen a) => t -> t -> a -> ((t,t),t)
+gen_keys :: (Integral t, Random t, RandomGen a) => t -> t -> a -> ((t,t),t)
 gen_keys p q seed = (public, private)
   where
     n = p*q
     phi = (p-1)*(q-1)
-    e = get_public phi seed
+    e = get_public phi seed 0
     public = (e,n)
     private = get_private phi e
 
 
-get_public :: (Integral t1, RandomGen t) => t1 -> t -> t1
-get_public phi seed = e
+get_public :: (Integral n, Random n, RandomGen g) => n -> g -> n -> n
+get_public phi seed counter
+  | gcd e phi == 1 = e
+  | otherwise = get_public phi seed new_counter
   where
-    elegible_public = filter (\x -> gcd x phi == 1) [1..(phi-1)]
-    index = fst $ randomR (1, ((length elegible_public)-1) ) seed
-    e = elegible_public !! index
-
-
+    e = (fst $ randomR (1, ((phi)-1) ) seed) + counter
+    new_counter = mod (counter+1) phi
+           
 get_private :: (Integral a) => a -> a -> a
 get_private phi e = mod coef_from_egcd phi
   where coef_from_egcd = trd $ eGCD phi e
