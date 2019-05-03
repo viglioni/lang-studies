@@ -10,6 +10,7 @@ Todos os códigos estarão comentados em inglês e em português.
 | :gb: Subject  | Path - Caminho | :brazil: Assunto  |
 |-|-| -|
 | Cryptography | ./number-theory/cryptography | Criptografia |
+| Fermat primality test | ./number-theory/prime-numbers | Teste de primalidade de Fermat |
 | Fibonacci | ./number-theory/fibonacci | Fibonacci |
 | GCD and eGCD | ./number-theory/gcd | MDC e MDC extendido |
 | Modular exponentiation | ./number-theory/modular-operations | Exponenciação modular |
