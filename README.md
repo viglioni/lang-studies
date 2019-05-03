@@ -2,11 +2,16 @@
 
 🇬🇧
 The purpose of this repo is to show small algorithms implemented in haskell to help people who are begining their studies.
+> In linux systems you might need change the name from file.hs to FILE.hs to run with dependencies
+
 
 🇧🇷
 O propósito desse repositório é mostrar pequenos algoritmos implementados em haskell para ajudar pessoas que estão começando seus estudos.
 Todos os códigos estarão comentados em inglês e em português.
+> Em sistemas linux talvez você precise mudar o nome do arquivo de file.hs para FILE.hs, em caso de dependências
 
+
+## :gb: Table of contents - Tabela de conteúdos :brazil:
 | :gb: Subject  | Path - Caminho | :brazil: Assunto  |
 |-|-| -|
 | Cryptography | ./number-theory/cryptography | Criptografia |
