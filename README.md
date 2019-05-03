@@ -12,6 +12,7 @@ Todos os códigos estarão comentados em inglês e em português.
 | Cryptography | ./number-theory/cryptography | Criptografia |
 | Fibonacci | ./number-theory/fibonacci | Fibonacci |
 | GCD and eGCD | ./number-theory/gcd | MDC e MDC extendido |
+| Modular exponentiation | ./number-theory/modular-operations | Exponenciação modular |
 | Ordering | ./list/ordering | Ordenações |
 | RSA | ./number-theory/cryptography/rsa | RSA |
 
