@@ -25,24 +25,25 @@
 -- @param a (integer)
 -- @return p (integer)
 
-module PRIMEGENERATOR where
+module PrimeGenerator where
 
 import System.Random
-import FERMAT
+import Fermat
+import MillerRabin
 
-prime_gen_by_bits :: (Integral t, Random t) => t -> IO t
-prime_gen_by_bits bits = prime_generator (2^bits) (2^(bits+1))
+-- prime_gen_by_bits :: (Integral t, Random t) => t -> IO t
+-- prime_gen_by_bits bits = prime_generator (2^bits) (2^(bits+1))
 
-prime_generator :: (Integral t, Random t) => t -> t -> IO t
-prime_generator min max =
+-- prime_generator :: (Integral t, Random t) => t -> t -> IO t
+-- prime_generator min max =
+--   do
+--     seed <- newStdGen
+--     return $ pr_gen min max seed
+
+pr_gen :: (Integral t, Random t, RandomGen g) => t -> t -> g ->  IO t
+pr_gen min max seed =
   do
-    seed <- newStdGen
-    return $ pr_gen min max seed
-
-pr_gen :: (Integral t, Random t, RandomGen g) => t -> t -> g -> t
-pr_gen min max seed 
-  | test_prime generated 100 = generated
-  | otherwise = pr_gen min max new_seed
-  where
-    (generated, new_seed) = randomR (min,max) seed
-  
+    is_prime <- fermat_test generated 50
+    if is_prime then return generated else return $ pr_gen min max new_seed
+      where
+        (generated, new_seed) = randomR (min,max) seed

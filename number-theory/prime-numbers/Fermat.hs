@@ -22,29 +22,29 @@
 -- @param repeat (integer)
 -- @return d,s,t (integer, integer, integer)
 
-module FERMAT where
+module Fermat where
 
 import System.Random
-import MODULAREXP
+import ModularExp
 
 fermat_test :: (Integral t, Random t) => t -> t -> IO Bool
 fermat_test prime repeat =
   do
-    seed <- getStdGen
+    seed <- newStdGen
     return $ fermat_aux prime repeat seed 1 True
 
 
 fermat_aux :: (Integral t, RandomGen g, Random t) => t -> t -> g -> t -> Bool -> Bool
 fermat_aux 2 _ _ _ _ = True
-fermat_aux prime repeat seed counter previous =
+fermat_aux prime repeat seed counter acc =
   if prime < 2 then False
   else
-    if counter <= repeat && previous 
+    if counter <= repeat && acc 
     then fermat_aux prime repeat new_seed (counter+1) test
-    else previous
+    else acc
   where
     (a,new_seed) = randomR (2, (prime-1)) seed
-    test = test_prime prime a
+    test = acc && test_prime prime a
 
 test_prime :: (Integral a, Random a) => a -> a -> Bool
 test_prime prime a
