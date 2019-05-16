@@ -18,14 +18,21 @@
 -- O primeiro parâmetro é um inteiro a ser testado
 -- O segundo é quantas vezes ele deve ser testado
 
+-- fermat_test
 -- @param prime (integer)
 -- @param repeat (integer)
--- @return d,s,t (integer, integer, integer)
+-- @return is_prime (Bool)
 
 module Fermat where
 
 import System.Random
 import ModularExp
+
+test_pure :: (Integral t, Random t) => t -> [t] -> Bool
+test_pure prime arr = is_prime
+  where
+    booleans = map (\a -> unitary_test prime a) arr
+    is_prime = foldl (&&) True booleans
 
 fermat_test :: (Integral t, Random t) => t -> t -> IO Bool
 fermat_test prime repeat =
@@ -44,9 +51,10 @@ fermat_aux prime repeat seed counter acc =
     else acc
   where
     (a,new_seed) = randomR (2, (prime-1)) seed
-    test = acc && test_prime prime a
+    test = acc && unitary_test prime a
 
-test_prime :: (Integral a, Random a) => a -> a -> Bool
-test_prime prime a
+unitary_test :: (Integral a, Random a) => a -> a -> Bool
+unitary_test prime a
   | mod_exp a (prime-1) prime == 1 = True
   | otherwise = False
+
