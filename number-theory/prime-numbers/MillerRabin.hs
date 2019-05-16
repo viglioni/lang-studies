@@ -41,9 +41,9 @@ unitary_test prime base = if (mod prime 2) == 0 then False else result
   where
     (a,r) = decompose prime
     first_exp = mod_exp base a prime
-    exps = map (\r -> mod_exp first_exp r prime) [1..r]
+    exps = foldl (\acc r -> (mod_exp (head acc) 2 prime):acc ) [first_exp] [1..(r-1)]
     minus_one = mod (-1) prime
-    congruent_to_one = (mod first_exp prime == 1)
+    congruent_to_one = first_exp == 1 || first_exp == -1
     any_congruent_to_minus_one = foldl (\acc x -> acc || (mod x prime)==minus_one) False exps
     result = congruent_to_one || any_congruent_to_minus_one
 
