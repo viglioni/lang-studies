@@ -26,6 +26,15 @@
 module MillerRabin where
 import System.Random
 import ModularExp
+import GenerateRandom
+
+miller_rabin_test :: (Integral t, Random t) => t -> t -> IO Bool
+miller_rabin_test prime repeat =
+  do
+    seed <- newStdGen
+    let arr = gen_random_arr 2 (prime-1) (snd $ next seed) repeat
+    return $ test_pure prime arr
+
 
 test_pure :: (Integral t, Random t) => t -> [t] -> Bool
 test_pure prime arr = is_prime
@@ -33,23 +42,6 @@ test_pure prime arr = is_prime
     booleans = map (\a -> unitary_test prime a) arr
     is_prime = foldl (&&) True booleans
 
-miller_rabin_test :: (Integral t, Random t) => t -> t -> IO Bool
-miller_rabin_test prime repeat =
-  do
-    seed <- newStdGen
-    return $ mr_test prime repeat seed 1 True
-
-mr_test :: (Integral t, RandomGen g, Random t) => t -> t -> g -> t -> Bool -> Bool
-mr_test 2 _ _ _ _ = True
-mr_test prime repeat seed counter acc =
-  if prime < 2 then False
-  else
-    if counter <= repeat && acc
-    then mr_test prime repeat new_seed (counter+1) test
-    else acc
-  where
-    (base, new_seed) = randomR (2, (prime-1)) seed
-    test = acc && unitary_test prime base
 
 unitary_test prime base = if (mod prime 2) == 0 then False else result
   where

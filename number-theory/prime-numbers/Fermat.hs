@@ -27,6 +27,15 @@ module Fermat where
 
 import System.Random
 import ModularExp
+import GenerateRandom
+
+fermat_test :: (Integral t, Random t) => t -> t -> IO Bool
+fermat_test prime repeat =
+  do
+    seed <- newStdGen
+    let arr = gen_random_arr 2 (prime-1) (snd $ next seed) repeat
+    return $ test_pure prime arr
+
 
 test_pure :: (Integral t, Random t) => t -> [t] -> Bool
 test_pure prime arr = is_prime
@@ -34,24 +43,6 @@ test_pure prime arr = is_prime
     booleans = map (\a -> unitary_test prime a) arr
     is_prime = foldl (&&) True booleans
 
-fermat_test :: (Integral t, Random t) => t -> t -> IO Bool
-fermat_test prime repeat =
-  do
-    seed <- newStdGen
-    return $ fermat_aux prime repeat seed 1 True
-
-
-fermat_aux :: (Integral t, RandomGen g, Random t) => t -> t -> g -> t -> Bool -> Bool
-fermat_aux 2 _ _ _ _ = True
-fermat_aux prime repeat seed counter acc =
-  if prime < 2 then False
-  else
-    if counter <= repeat && acc 
-    then fermat_aux prime repeat new_seed (counter+1) test
-    else acc
-  where
-    (a,new_seed) = randomR (2, (prime-1)) seed
-    test = acc && unitary_test prime a
 
 unitary_test :: (Integral a, Random a) => a -> a -> Bool
 unitary_test prime a
