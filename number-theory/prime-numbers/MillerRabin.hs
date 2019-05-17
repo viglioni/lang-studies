@@ -3,8 +3,6 @@
 -- GNU General Public License v3.0 
 
 -- :gb:
-<<<<<<< HEAD
-=======
 -- Miller-Rabin's algorithm to test primality
 -- This is a probabilistic algorithm
 -- False means it is NOT a prime
@@ -24,22 +22,16 @@
 -- @param prime (integer)
 -- @param repeat (integer)
 -- @return is_prime (Bool)
->>>>>>> bugs
 
 module MillerRabin where
 import System.Random
 import ModularExp
-<<<<<<< HEAD
-=======
 import GenerateRandom
->>>>>>> bugs
 
 miller_rabin_test :: (Integral t, Random t) => t -> t -> IO Bool
 miller_rabin_test prime repeat =
   do
     seed <- newStdGen
-<<<<<<< HEAD
-=======
     let arr = gen_random_arr 2 (prime-1) (snd $ next seed) repeat
     return $ test_pure prime arr
 
@@ -49,8 +41,6 @@ test_pure prime arr = is_prime
   where
     booleans = map (\a -> unitary_test prime a) arr
     is_prime = foldl (&&) True booleans
-
->>>>>>> bugs
 
 unitary_test prime base = if (mod prime 2) == 0 then False else result
   where
