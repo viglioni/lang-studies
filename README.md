@@ -18,6 +18,7 @@ Todos os códigos estarão comentados em inglês e em português.
 | Fermat primality test | ./number-theory/prime-numbers | Teste de primalidade de Fermat |
 | Fibonacci | ./number-theory/fibonacci | Fibonacci |
 | GCD and eGCD | ./number-theory/gcd | MDC e MDC extendido |
+| Miller-Rabin primality test | ./number-theory/prime-numbers | Teste de primalidade de Miller-Rabin |
 | Modular exponentiation | ./number-theory/modular-operations | Exponenciação modular |
 | Prime generator | ./number-theory/prime-numbers | Gerador de números primos |
 | Ordering | ./list/ordering | Ordenações |
