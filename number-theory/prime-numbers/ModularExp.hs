@@ -14,7 +14,7 @@
 -- @param modulus (integer)
 -- @return result (integer)
 
-module MODULAREXP (mod_exp) where
+module ModularExp (mod_exp) where
 
 
 mod_exp :: (Integral t) => t -> t-> t -> t
