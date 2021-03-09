@@ -1,10 +1,11 @@
 #+Title: Exercises LYAH
 #+Subtitle: https://github.com/noelmarkham/learn-you-a-haskell-exercises
+#+PROPERTY: exports "both"
 
-
-* Chapter 2: starting out 
+* Chapter 2: starting out
 ** Find the penultimate element in list l
-   #+begin_src haskell :exports both
+
+   #+begin_src haskell :exports both 
      penultimate :: [a] -> a
      penultimate = last . init
 
@@ -15,7 +16,7 @@
    : *Main> *Main> 4
 
 ** Find the element at index k in list l
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      findEl :: Int -> [b] -> b
      findEl idx list = list !! idx
 
@@ -26,7 +27,7 @@
    : *Main> *Main> "three"
 
 ** Determine if list l is a palindrome
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      isPalindrome :: (Eq l) =>  [l] -> Bool
      isPalindrome list = list == (reverse list)
 
@@ -38,7 +39,7 @@
 
 ** Duplicate the elements in list xs
    for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      :set +m
      -- since the execution ins ghci based, this multiline input is needed
      {
@@ -53,7 +54,7 @@
    : *Main| *Main| *Main| *Main| *Main> [1,1,2,2,3,3]
 
 ** Implement zip
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      :set +m
      {
        ;zip' :: [a] -> [b] -> [(a,b)]
