@@ -1,8 +1,10 @@
 #+Title: Exercises LYAH
 #+Subtitle: https://github.com/noelmarkham/learn-you-a-haskell-exercises
+
+
 * Chapter 2: starting out 
 ** Find the penultimate element in list l
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      penultimate :: [a] -> a
      penultimate = last . init
 
