@@ -1,0 +1,77 @@
+#+Title: Exercises LYAH
+#+Subtitle: https://github.com/noelmarkham/learn-you-a-haskell-exercises
+* Chapter 2: starting out 
+** Find the penultimate element in list l
+   #+begin_src haskell
+     penultimate :: [a] -> a
+     penultimate = last . init
+
+     penultimate [1,2,3,4,5]
+   #+end_src
+
+   #+RESULTS:
+   : *Main> *Main> 4
+
+** Find the element at index k in list l
+   #+begin_src haskell
+     findEl :: Int -> [b] -> b
+     findEl idx list = list !! idx
+
+     findEl 3 ["zero", "one", "two", "three"]
+   #+end_src
+
+   #+RESULTS:
+   : *Main> *Main> "three"
+
+** Determine if list l is a palindrome
+   #+begin_src haskell
+     isPalindrome :: (Eq l) =>  [l] -> Bool
+     isPalindrome list = list == (reverse list)
+
+     map isPalindrome [[1,2,1], [1,2,3,2,1], [1,1,1], [1,2,3]]
+   #+end_src 
+
+   #+RESULTS:
+   : *Main> *Main> [True,True,True,False]
+
+** Duplicate the elements in list xs
+   for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
+   #+begin_src haskell
+     :set +m
+     -- since the execution ins ghci based, this multiline input is needed
+     {
+       ;duplicateList :: [l] -> [l]
+       ;duplicateList [] = []
+       ;duplicateList (x:xs) = x:x:(duplicateList xs)
+      }
+     duplicateList [1,2,3]
+   #+end_src
+
+   #+RESULTS:
+   : *Main| *Main| *Main| *Main| *Main> [1,1,2,2,3,3]
+
+** Implement zip
+   #+begin_src haskell
+     :set +m
+     {
+       ;zip' :: [a] -> [b] -> [(a,b)]
+       ;zip' [] _ = []
+       ;zip' _ [] = []
+       ;zip' (x:xs) (y:ys) = (x,y):(zip xs ys)
+       }
+
+     zip' [1,2,3,4] ['a' , 'b' , 'c']
+     #+end_src
+
+   #+RESULTS:
+   : *Main| *Main| *Main| *Main| *Main| *Main> *Main> [(1,'a'),(2,'b'),(3,'c')]
+
+** Split a list l at element k into a tuple
+   The first part up to and including k, the second part after k
+   For example "splitAtIndex 3 [1,1,1,2,2,2]" returns ([1,1,1],[2,2,2])
+** Drop the element at index k in list l
+** Get sublist given two indexes
+   Extract elements between ith and kth element in list l. Including i, but not k
+   For example, "slice 3 6 [0,0,0,1,2,3,0,0,0]" returns [1,2,3]
+** Insert element in list at given index
+** Rotate list n times
