@@ -1,22 +1,24 @@
 #+Title: Exercises LYAH
-#+Subtitle: https://github.com/noelmarkham/learn-you-a-haskell-exercises
-#+PROPERTY: exports "both"
+#+property: header-args :exports both :eval no-export
+
+My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-haskell-exercises][noelmarkham]] based on the book [[http://learnyouahaskell.com/][Learn You a Haskell for a Greater Good]].
+
 
 * Chapter 2: starting out
 ** Find the penultimate element in list l
 
-   #+begin_src haskell :exports both 
+   #+begin_src haskell  
      penultimate :: [a] -> a
      penultimate = last . init
 
-     penultimate [1,2,3,4,5]
+     penultimate [1,2,3,4,5,6]
    #+end_src
 
    #+RESULTS:
-   : *Main> *Main> 4
+   : *Main> *Main> 5
 
 ** Find the element at index k in list l
-   #+begin_src haskell :exports both
+   #+begin_src haskell 
      findEl :: Int -> [b] -> b
      findEl idx list = list !! idx
 
@@ -27,7 +29,7 @@
    : *Main> *Main> "three"
 
 ** Determine if list l is a palindrome
-   #+begin_src haskell :exports both
+   #+begin_src haskell 
      isPalindrome :: (Eq l) =>  [l] -> Bool
      isPalindrome list = list == (reverse list)
 
@@ -39,7 +41,7 @@
 
 ** Duplicate the elements in list xs
    for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
-   #+begin_src haskell :exports both
+   #+begin_src haskell 
      :set +m
      -- since the execution ins ghci based, this multiline input is needed
      {
@@ -54,7 +56,7 @@
    : *Main| *Main| *Main| *Main| *Main> [1,1,2,2,3,3]
 
 ** Implement zip
-   #+begin_src haskell :exports both
+   #+begin_src haskell 
      :set +m
      {
        ;zip' :: [a] -> [b] -> [(a,b)]
@@ -64,7 +66,7 @@
        }
 
      zip' [1,2,3,4] ['a' , 'b' , 'c']
-     #+end_src
+   #+end_src
 
    #+RESULTS:
    : *Main| *Main| *Main| *Main| *Main| *Main> *Main> [(1,'a'),(2,'b'),(3,'c')]
@@ -72,9 +74,70 @@
 ** Split a list l at element k into a tuple
    The first part up to and including k, the second part after k
    For example "splitAtIndex 3 [1,1,1,2,2,2]" returns ([1,1,1],[2,2,2])
+   
+   #+begin_src haskell
+     splitAtIndex :: Int -> [a] -> ([a], [a])
+     splitAtIndex idx list = ((take idx list), (drop idx list))
+
+     splitAtIndex 3 [1,1,1,2,2,2]
+   #+end_src
+
+#+RESULTS:
+: *Main> *Main> ([1,1,1],[2,2,2])
+
 ** Drop the element at index k in list l
+   #+begin_src haskell
+     dropEl :: Int -> [a] -> [a]
+     dropEl idx list = let firstPart = take idx list
+                           secondPart = drop (idx + 1) list
+                       in firstPart ++ secondPart
+
+     dropEl 3 [0,1,2,3,4,5]
+#+end_src
+
+#+RESULTS:
+: *Main| *Main| *Main> *Main> [0,1,2,4,5]
+
 ** Get sublist given two indexes
    Extract elements between ith and kth element in list l. Including i, but not k
    For example, "slice 3 6 [0,0,0,1,2,3,0,0,0]" returns [1,2,3]
+
+   #+begin_src haskell
+     sublist :: Int -> Int -> [a] -> [a]
+     sublist init final list = (take ((length list) - final)) . (drop init) $ list
+
+     sublist 3 6 [0,0,0,1,2,3,0,0,0]
+#+end_src
+
+#+RESULTS:
+: *Main> *Main> [1,2,3]
+
 ** Insert element in list at given index
+   #+begin_src haskell
+     insertAtPoint :: Int -> a -> [a] -> [a]
+     insertAtPoint idx el list = let init = take idx list
+                                     end = drop idx list
+                                 in init ++ el:end
+
+     insertAtPoint 3 "3" ["0", "1", "2", "4", "5"]
+#+end_src
+
+#+RESULTS:
+: *Main| *Main| *Main> *Main> ["0","1","2","3","4","5"]
+
 ** Rotate list n times
+*** Rotate left   
+    #+begin_src haskell
+      rotateListLeft :: Int -> [a] -> [a]
+      rotateListLeft n list = let realRotationNumber = mod n (length list)
+                              newInit = drop realRotationNumber list
+                              newEnd = take realRotationNumber list
+                          in newInit ++ newEnd
+
+      map (\n -> rotateListLeft n [1,2,3,4,5]) [1,2,3,4,5]
+    #+end_src
+
+    #+RESULTS:
+    : *Main| *Main| *Main| *Main> *Main> [[2,3,4,5,1],[3,4,5,1,2],[4,5,1,2,3],[5,1,2,3,4],[1,2,3,4,5]]
+
+
