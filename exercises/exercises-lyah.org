@@ -7,7 +7,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 * Chapter 2: starting out
 ** Find the penultimate element in list l
 
-   #+begin_src haskell  
+   #+begin_src haskell :exports both  
      penultimate :: [a] -> a
      penultimate = last . init
 
@@ -18,7 +18,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    : *Main> *Main> 5
 
 ** Find the element at index k in list l
-   #+begin_src haskell 
+   #+begin_src haskell :exports both 
      findEl :: Int -> [b] -> b
      findEl idx list = list !! idx
 
@@ -29,7 +29,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    : *Main> *Main> "three"
 
 ** Determine if list l is a palindrome
-   #+begin_src haskell 
+   #+begin_src haskell :exports both 
      isPalindrome :: (Eq l) =>  [l] -> Bool
      isPalindrome list = list == (reverse list)
 
@@ -41,7 +41,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 
 ** Duplicate the elements in list xs
    for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
-   #+begin_src haskell 
+   #+begin_src haskell :exports both 
      :set +m
      -- since the execution ins ghci based, this multiline input is needed
      {
@@ -56,7 +56,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    : *Main| *Main| *Main| *Main| *Main> [1,1,2,2,3,3]
 
 ** Implement zip
-   #+begin_src haskell 
+   #+begin_src haskell :exports both 
      :set +m
      {
        ;zip' :: [a] -> [b] -> [(a,b)]
@@ -75,7 +75,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    The first part up to and including k, the second part after k
    For example "splitAtIndex 3 [1,1,1,2,2,2]" returns ([1,1,1],[2,2,2])
    
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      splitAtIndex :: Int -> [a] -> ([a], [a])
      splitAtIndex idx list = ((take idx list), (drop idx list))
 
@@ -86,7 +86,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 : *Main> *Main> ([1,1,1],[2,2,2])
 
 ** Drop the element at index k in list l
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      dropEl :: Int -> [a] -> [a]
      dropEl idx list = let firstPart = take idx list
                            secondPart = drop (idx + 1) list
@@ -102,7 +102,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    Extract elements between ith and kth element in list l. Including i, but not k
    For example, "slice 3 6 [0,0,0,1,2,3,0,0,0]" returns [1,2,3]
 
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      sublist :: Int -> Int -> [a] -> [a]
      sublist init final list = (take ((length list) - final)) . (drop init) $ list
 
@@ -113,7 +113,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 : *Main> *Main> [1,2,3]
 
 ** Insert element in list at given index
-   #+begin_src haskell
+   #+begin_src haskell :exports both
      insertAtPoint :: Int -> a -> [a] -> [a]
      insertAtPoint idx el list = let init = take idx list
                                      end = drop idx list
@@ -127,7 +127,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 
 ** Rotate list n times
 *** Rotate left   
-    #+begin_src haskell
+    #+begin_src haskell :exports both
       rotateListLeft :: Int -> [a] -> [a]
       rotateListLeft n list = let realRotationNumber = mod n (length list)
                               newInit = drop realRotationNumber list
