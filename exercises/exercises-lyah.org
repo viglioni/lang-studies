@@ -1,5 +1,5 @@
 #+Title: Exercises LYAH
-#+property: header-args :exports both :eval no-export
+#+property: header-args :exports both 
 
 My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-haskell-exercises][noelmarkham]] based on the book [[http://learnyouahaskell.com/][Learn You a Haskell for a Greater Good]].
 
