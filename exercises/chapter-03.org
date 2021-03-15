@@ -10,7 +10,7 @@ Given the following type, create the functions
 #+end_src
 ** get first (or last) colour
 *** get first
-    #+begin_src haskell :export both
+    #+begin_src haskell :exports both
       :set +m
 
       {
@@ -28,15 +28,15 @@ Given the following type, create the functions
     : Red
 
 *** get last
-    #+begin_src haskell :export both
+    #+begin_src haskell :exports both
       :set +m
 
       {
         data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
           deriving (Eq, Ord, Show, Bounded, Enum)
 
-      getLastColour :: Colour
-      getLastColour = maxBound :: Colour  
+        getLastColour :: Colour
+        getLastColour = maxBound :: Colour  
       }
 
       getLastColour 
@@ -44,9 +44,9 @@ Given the following type, create the functions
 
     #+RESULTS:
     : Violet
-        
+    
 ** reverse colour's order
-       #+begin_src haskell :export both
+       #+begin_src haskell :exports both
          :set +m
 
          {
@@ -64,7 +64,7 @@ Given the following type, create the functions
     | Violet | Indigo | Blue | Green | Yellow | Orange | Red |
 
 ** mix two colours
-        #+begin_src haskell :export both
+        #+begin_src haskell :exports both
           :set +m
 
           {
