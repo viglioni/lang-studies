@@ -3,3 +3,4 @@
 
 My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-haskell-exercises][noelmarkham]] based on the book [[http://learnyouahaskell.com/][Learn You a Haskell for a Greater Good]].
 
+[[./chapter-02.org][Chapter 2]]
