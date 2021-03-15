@@ -8,6 +8,6 @@ Given the following type, create the functions
   data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
       deriving (Eq, Ord, Show, Bounded, Enum)   
 #+end_src
-* get first (or last) colour
-* reverse colour's order
-* mix two colours
+** get first (or last) colour
+** reverse colour's order
+** mix two colours
