@@ -4,7 +4,7 @@
 My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-haskell-exercises][noelmarkham]] based on the book [[http://learnyouahaskell.com/][Learn You a Haskell for a Greater Good]].
 
 *** solutions
-    [[./chapter-02.org][Chapter 2]]
-    [[./chapter-03.org][Chapter 3]]
+    - [[./chapter-02.org][Chapter 2]] 
+    - [[./chapter-03.org][Chapter 3]]
 
 
