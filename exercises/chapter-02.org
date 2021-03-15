@@ -1,11 +1,9 @@
-#+Title: Exercises LYAH
+#+Title: Chapter 02: starting out
 #+property: header-args :exports both 
 
-My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-haskell-exercises][noelmarkham]] based on the book [[http://learnyouahaskell.com/][Learn You a Haskell for a Greater Good]].
 
 
-* Chapter 2: starting out
-** Find the penultimate element in list l
+* Find the penultimate element in list l
 
    #+begin_src haskell :exports both  
      penultimate :: [a] -> a
@@ -17,7 +15,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    #+RESULTS:
    : *Main> *Main> 5
 
-** Find the element at index k in list l
+* Find the element at index k in list l
    #+begin_src haskell :exports both 
      findEl :: Int -> [b] -> b
      findEl idx list = list !! idx
@@ -28,7 +26,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    #+RESULTS:
    : *Main> *Main> "three"
 
-** Determine if list l is a palindrome
+* Determine if list l is a palindrome
    #+begin_src haskell :exports both 
      isPalindrome :: (Eq l) =>  [l] -> Bool
      isPalindrome list = list == (reverse list)
@@ -39,7 +37,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    #+RESULTS:
    : *Main> *Main> [True,True,True,False]
 
-** Duplicate the elements in list xs
+* Duplicate the elements in list xs
    for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
    #+begin_src haskell :exports both 
      :set +m
@@ -55,7 +53,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    #+RESULTS:
    : *Main| *Main| *Main| *Main| *Main> [1,1,2,2,3,3]
 
-** Implement zip
+* Implement zip
    #+begin_src haskell :exports both 
      :set +m
      {
@@ -71,7 +69,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
    #+RESULTS:
    : *Main| *Main| *Main| *Main| *Main| *Main> *Main> [(1,'a'),(2,'b'),(3,'c')]
 
-** Split a list l at element k into a tuple
+* Split a list l at element k into a tuple
    The first part up to and including k, the second part after k
    For example "splitAtIndex 3 [1,1,1,2,2,2]" returns ([1,1,1],[2,2,2])
    
@@ -85,7 +83,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 #+RESULTS:
 : *Main> *Main> ([1,1,1],[2,2,2])
 
-** Drop the element at index k in list l
+* Drop the element at index k in list l
    #+begin_src haskell :exports both
      dropEl :: Int -> [a] -> [a]
      dropEl idx list = let firstPart = take idx list
@@ -98,7 +96,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 #+RESULTS:
 : *Main| *Main| *Main> *Main> [0,1,2,4,5]
 
-** Get sublist given two indexes
+* Get sublist given two indexes
    Extract elements between ith and kth element in list l. Including i, but not k
    For example, "slice 3 6 [0,0,0,1,2,3,0,0,0]" returns [1,2,3]
 
@@ -112,7 +110,7 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 #+RESULTS:
 : *Main> *Main> [1,2,3]
 
-** Insert element in list at given index
+* Insert element in list at given index
    #+begin_src haskell :exports both
      insertAtPoint :: Int -> a -> [a] -> [a]
      insertAtPoint idx el list = let init = take idx list
@@ -125,8 +123,8 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 #+RESULTS:
 : *Main| *Main| *Main> *Main> ["0","1","2","3","4","5"]
 
-** Rotate list n times
-*** Rotate left   
+* Rotate list n times
+** Rotate left   
     #+begin_src haskell :exports both
       rotateListLeft :: Int -> [a] -> [a]
       rotateListLeft n list = let realRotationNumber = mod n (length list)

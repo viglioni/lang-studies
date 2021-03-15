@@ -1,0 +1,13 @@
+#+Title: Chapter 03: types amd typeclasses
+#+property: header-args :exports both
+
+
+Given the following type, create the functions
+
+#+begin_src haskell
+  data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
+      deriving (Eq, Ord, Show, Bounded, Enum)   
+#+end_src
+* get first (or last) colour
+* reverse colour's order
+* mix two colours
