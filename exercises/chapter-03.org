@@ -9,5 +9,77 @@ Given the following type, create the functions
       deriving (Eq, Ord, Show, Bounded, Enum)   
 #+end_src
 ** get first (or last) colour
+*** get first
+    #+begin_src haskell :export both
+      :set +m
+
+      {
+        data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
+          deriving (Eq, Ord, Show, Bounded, Enum)
+
+        getFirstColour :: Colour
+        getFirstColour = minBound :: Colour
+      }
+
+      getFirstColour 
+    #+end_src
+
+    #+RESULTS:
+    : Red
+
+*** get last
+    #+begin_src haskell :export both
+      :set +m
+
+      {
+        data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
+          deriving (Eq, Ord, Show, Bounded, Enum)
+
+      getLastColour :: Colour
+      getLastColour = maxBound :: Colour  
+      }
+
+      getLastColour 
+    #+end_src
+
+    #+RESULTS:
+    : Violet
+        
 ** reverse colour's order
+       #+begin_src haskell :export both
+         :set +m
+
+         {
+           data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
+             deriving (Eq, Ord, Show, Bounded, Enum)
+
+           reverseColourOrder :: [Colour]
+           reverseColourOrder = reverse $ [minBound .. maxBound] :: [Colour]
+         }
+
+         reverseColourOrder
+    #+end_src
+
+    #+RESULTS:
+    | Violet | Indigo | Blue | Green | Yellow | Orange | Red |
+
 ** mix two colours
+        #+begin_src haskell :export both
+          :set +m
+
+          {
+            data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
+              deriving (Eq, Ord, Show, Bounded, Enum)
+
+            mixColours :: [Colour] -> Colour
+            mixColours colours =
+             toEnum . (flip div) (length colours) . sum . map fromEnum $ colours :: Colour
+            }
+
+          mixColours [Red, Red, Green, Blue]
+          #+end_src
+
+        #+RESULTS:
+        : Orange
+
+
