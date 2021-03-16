@@ -3,7 +3,7 @@
 #+startup: fold
 ** english digit
    This function should print a single digit number as English text, or "unknown" if it's out of the range 0-9
-   #+begin_src haskell exports: both
+   #+begin_src haskell :exports both
      :set +m
      :{
      data EnglishDigit
@@ -34,7 +34,7 @@
 ** divide tuple
    given a tuple, divide fst by snd, using pattern matching. 
    it should return undefined for division by zero
-   #+begin_src haskell exports: both
+   #+begin_src haskell :exports both
      divideTuple :: (Int, Int) -> Maybe Int
      divideTuple (a,b) = if b == 0 then Nothing else Just (div a b)
 
@@ -46,7 +46,7 @@
 
 ** three zero list
    if the first three numbers in a list are all zero, return True
-   #+begin_src haskell exports: both
+   #+begin_src haskell :exports both
      isThreeZeroList :: [Int] -> Bool
      isThreeZeroList xs =
        if (take 3 xs) == [0, 0, 0]

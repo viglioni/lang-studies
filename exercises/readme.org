@@ -6,5 +6,6 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
 *** solutions
     - [[./chapter-02.org][Chapter 2]] 
     - [[./chapter-03.org][Chapter 3]]
+    - [[./chapter-04.org][Chapter 4]]
 
 
