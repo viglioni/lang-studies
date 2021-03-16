@@ -1,0 +1,61 @@
+#+Title: Chapter 04: syntax in functions
+#+property: header-args :exports both 
+#+startup: fold
+** english digit
+   This function should print a single digit number as English text, or "unknown" if it's out of the range 0-9
+   #+begin_src haskell exports: both
+     :set +m
+     :{
+     data EnglishDigit
+       = Zero
+       | One
+       | Two
+       | Three
+       | Four
+       | Five
+       | Six
+       | Seven
+       | Eight
+       | Nine
+       deriving (Enum, Show)
+
+     englishDigit :: Int -> Maybe EnglishDigit
+     englishDigit digit =
+       if elem digit [0 .. 9]
+         then Just (toEnum digit :: EnglishDigit)
+         else Nothing
+     :}
+     map englishDigit [0 .. 10]
+     #+end_src
+
+     #+RESULTS:
+     : *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> [Just Zero,Just One,Just Two,Just Three,Just Four,Just Five,Just Six,Just Seven,Just Eight,Just Nine,Nothing]
+
+** divide tuple
+   given a tuple, divide fst by snd, using pattern matching. 
+   it should return undefined for division by zero
+   #+begin_src haskell exports: both
+     divideTuple :: (Int, Int) -> Maybe Int
+     divideTuple (a,b) = if b == 0 then Nothing else Just (div a b)
+
+     map divideTuple [(2,1), (2,0)]
+#+end_src
+
+#+RESULTS:
+: *Main> *Main> [Just 2,Nothing]
+
+** three zero list
+   if the first three numbers in a list are all zero, return True
+   #+begin_src haskell exports: both
+     isThreeZeroList :: [Int] -> Bool
+     isThreeZeroList xs =
+       if (take 3 xs) == [0, 0, 0]
+         then True
+         else False
+
+     map isThreeZeroList [[], [0], [1], [0, 0], [0, 1], [0, 0, 1], [0, 0, 0], [0, 0, 0, 1]]
+     #+end_src
+
+     #+RESULTS:
+     : *Main> *Main> [False,False,False,False,False,False,True,True]
+
