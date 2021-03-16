@@ -1,85 +1,119 @@
 #+Title: Chapter 03: types amd typeclasses
 #+property: header-args :exports both
-
+#+startup: fold
 
 Given the following type, create the functions
 
 #+begin_src haskell
-  data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
-      deriving (Eq, Ord, Show, Bounded, Enum)   
+  data Colour
+    = Red
+    | Orange
+    | Yellow
+    | Green
+    | Blue
+    | Indigo
+    | Violet
+  deriving (Eq, Ord, Show, Bounded, Enum)   
+
 #+end_src
 ** get first (or last) colour
 *** get first
     #+begin_src haskell :exports both
       :set +m
+      :{
+      data Colour
+        = Red
+        | Orange
+        | Yellow
+        | Green
+        | Blue
+        | Indigo
+        | Violet
+        deriving (Eq, Ord, Show, Bounded, Enum)
 
-      {
-        data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
-          deriving (Eq, Ord, Show, Bounded, Enum)
-
-        getFirstColour :: Colour
-        getFirstColour = minBound :: Colour
-      }
-
-      getFirstColour 
+      getFirstColour :: Colour
+      getFirstColour = minBound :: Colour
+      :}
+      getFirstColour
     #+end_src
 
     #+RESULTS:
-    : Red
+    : *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> Red
 
 *** get last
     #+begin_src haskell :exports both
       :set +m
 
-      {
-        data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
-          deriving (Eq, Ord, Show, Bounded, Enum)
+      :{
+      data Colour
+        = Red
+        | Orange
+        | Yellow
+        | Green
+        | Blue
+        | Indigo
+        | Violet
+        deriving (Eq, Ord, Show, Bounded, Enum)
 
-        getLastColour :: Colour
-        getLastColour = maxBound :: Colour  
-      }
+      getLastColour :: Colour
+      getLastColour = maxBound :: Colour
 
+      :}
       getLastColour 
     #+end_src
 
     #+RESULTS:
-    : Violet
+    : *Main> *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> Violet
     
 ** reverse colour's order
-       #+begin_src haskell :exports both
+       #+begin_src haskell :exports both 
          :set +m
 
-         {
-           data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
-             deriving (Eq, Ord, Show, Bounded, Enum)
+         :{
+         data Colour
+           = Red
+           | Orange
+           | Yellow
+           | Green
+           | Blue
+           | Indigo
+           | Violet
+           deriving (Eq, Ord, Show, Bounded, Enum)
 
-           reverseColourOrder :: [Colour]
-           reverseColourOrder = reverse $ [minBound .. maxBound] :: [Colour]
-         }
+         reverseColourOrder :: [Colour]
+         reverseColourOrder = reverse $ [minBound .. maxBound] :: [Colour]
 
+         :}
          reverseColourOrder
     #+end_src
 
     #+RESULTS:
-    | Violet | Indigo | Blue | Green | Yellow | Orange | Red |
+    : *Main> *Main> *Main> *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> [Violet,Indigo,Blue,Green,Yellow,Orange,Red]
 
 ** mix two colours
         #+begin_src haskell :exports both
           :set +m
 
-          {
-            data Colour = Red | Orange | Yellow | Green | Blue | Indigo | Violet
-              deriving (Eq, Ord, Show, Bounded, Enum)
+          :{
+          data Colour
+            = Red
+            | Orange
+            | Yellow
+            | Green
+            | Blue
+            | Indigo
+            | Violet
+            deriving (Eq, Ord, Show, Bounded, Enum)
 
-            mixColours :: [Colour] -> Colour
-            mixColours colours =
-             toEnum . (flip div) (length colours) . sum . map fromEnum $ colours :: Colour
-            }
+          mixColours :: [Colour] -> Colour
+          mixColours colours =
+            toEnum . (flip div) (length colours) . sum . map fromEnum $ colours :: Colour
 
+          :}
           mixColours [Red, Red, Green, Blue]
           #+end_src
 
         #+RESULTS:
-        : Orange
+        : *Main> *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> Orange
 
 

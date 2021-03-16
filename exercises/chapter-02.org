@@ -1,78 +1,78 @@
 #+Title: Chapter 02: starting out
 #+property: header-args :exports both 
+#+startup: fold
 
 
 ** Find the penultimate element in list l
-
     #+begin_src haskell :exports both  
       :set +m
-      {
+      :{
         penultimate :: [a] -> a
         penultimate = last . init
-      }
+      :}
       penultimate [1,2,3,4,5,6]
     #+end_src
 
     #+RESULTS:
-    : 5
+    : *Main| *Main| *Main| *Main> 5
 
 ** Find the element at index k in list l
     #+begin_src haskell :exports both 
       :set +m
-      {
+      :{
         findEl :: Int -> [b] -> b
         findEl idx list = list !! idx
-      }
+      :}
       findEl 3 ["zero", "one", "two", "three"]
     #+end_src
 
     #+RESULTS:
-    : three
+    : *Main| *Main| *Main| *Main> "three"
 
 ** Determine if list l is a palindrome
     #+begin_src haskell :exports both 
       :set +m
-      {
+      :{
         isPalindrome :: (Eq l) =>  [l] -> Bool
         isPalindrome list = list == (reverse list)
-        }
+        :}
 
       map isPalindrome [[1,2,1], [1,2,3,2,1], [1,1,1], [1,2,3]]
         #+end_src 
 
     #+RESULTS:
-    : *Main> [True,True,True,False]
+    : *Main| *Main| *Main| *Main> *Main> [True,True,True,False]
     
 ** Duplicate the elements in list xs
    for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
    #+begin_src haskell :exports both 
       :set +m
-      {
+      :{
         duplicateList :: [l] -> [l]
         duplicateList [] = []
         duplicateList (x:xs) = x:x:(duplicateList xs)
-       }
+       :}
       duplicateList [1,2,3]
     #+end_src
 
     #+RESULTS:
-    | 1 | 1 | 2 | 2 | 3 | 3 |
+    : *Main| *Main| *Main| *Main| *Main> [1,1,2,2,3,3]
 
 ** Implement zip
     #+begin_src haskell :exports both 
       :set +m
-      {
+      :{
         zip' :: [a] -> [b] -> [(a,b)]
         zip' [] _ = []
         zip' _ [] = []
         zip' (x:xs) (y:ys) = (x,y):(zip xs ys)
-        }
+        :}
 
       zip' [1,2,3,4] ['a' , 'b' , 'c']
     #+end_src
 
     #+RESULTS:
-    : *Main> [(1,'a'),(2,'b'),(3,'c')]
+    : *Main| *Main| *Main| *Main| *Main| *Main> *Main> [(1,'a'),(2,'b'),(3,'c')]
 
 ** Split a list l at element k into a tuple
     The first part up to and including k, the second part after k
@@ -132,21 +132,17 @@
 *** Rotate left   
      #+begin_src haskell :exports both
        :set +m
-       {
+       :{
        rotateListLeft :: Int -> [a] -> [a]
        rotateListLeft n list = let realRotationNumber = mod n (length list)
                                    newInit = drop realRotationNumber list
                                    newEnd = take realRotationNumber list
                                in newInit ++ newEnd
-       }
+       :}
        map (\n -> rotateListLeft n [1,2,3,4,5]) [1,2,3,4,5]
      #+end_src
 
      #+RESULTS:
-     | 2 | 3 | 4 | 5 | 1 |
-     | 3 | 4 | 5 | 1 | 2 |
-     | 4 | 5 | 1 | 2 | 3 |
-     | 5 | 1 | 2 | 3 | 4 |
-     | 1 | 2 | 3 | 4 | 5 |
+     : *Main| *Main| *Main| *Main| *Main| *Main| *Main> [[2,3,4,5,1],[3,4,5,1,2],[4,5,1,2,3],[5,1,2,3,4],[1,2,3,4,5]]
 
 
