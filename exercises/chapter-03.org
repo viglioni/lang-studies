@@ -1,6 +1,9 @@
 #+Title: Chapter 03: types amd typeclasses
-#+property: header-args :exports both
 #+startup: fold
+#+name: org-clear-haskell-output
+#+begin_src emacs-lisp :var strr=""
+(format "%s" (replace-regexp-in-string "\*Main|? ?>? ?" ""  (format "%s" strr)))
+#+end_src
 
 Given the following type, create the functions
 
@@ -18,7 +21,7 @@ Given the following type, create the functions
 #+end_src
 ** get first (or last) colour
 *** get first
-    #+begin_src haskell :exports both
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :set +m
       :{
       data Colour
@@ -38,10 +41,10 @@ Given the following type, create the functions
     #+end_src
 
     #+RESULTS:
-    : *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> Red
+    : Red
 
 *** get last
-    #+begin_src haskell :exports both
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :set +m
 
       :{
@@ -63,10 +66,10 @@ Given the following type, create the functions
     #+end_src
 
     #+RESULTS:
-    : *Main> *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> Violet
+    : Violet
     
 ** reverse colour's order
-       #+begin_src haskell :exports both 
+       #+begin_src haskell :exports both :post org-clear-haskell-output(*this*) 
          :set +m
 
          :{
@@ -88,10 +91,10 @@ Given the following type, create the functions
     #+end_src
 
     #+RESULTS:
-    : *Main> *Main> *Main> *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> [Violet,Indigo,Blue,Green,Yellow,Orange,Red]
+    : [Violet,Indigo,Blue,Green,Yellow,Orange,Red]
 
 ** mix two colours
-        #+begin_src haskell :exports both
+        #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
           :set +m
 
           :{
@@ -114,6 +117,6 @@ Given the following type, create the functions
           #+end_src
 
         #+RESULTS:
-        : *Main> *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main| *Main> Orange
+        : Orange
 
 
