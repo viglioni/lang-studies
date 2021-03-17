@@ -22,7 +22,6 @@ Given the following type, create the functions
 ** get first (or last) colour
 *** get first
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      :set +m
       :{
       data Colour
         = Red
@@ -45,7 +44,6 @@ Given the following type, create the functions
 
 *** get last
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      :set +m
 
       :{
       data Colour
@@ -70,7 +68,6 @@ Given the following type, create the functions
     
 ** reverse colour's order
        #+begin_src haskell :exports both :post org-clear-haskell-output(*this*) 
-         :set +m
 
          :{
          data Colour
@@ -95,7 +92,6 @@ Given the following type, create the functions
 
 ** mix two colours
         #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-          :set +m
 
           :{
           data Colour

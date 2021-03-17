@@ -8,7 +8,6 @@
 
 ** Find the penultimate element in list l
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)  
-      :set +m
       :{
         penultimate :: [a] -> a
         penultimate = last . init
@@ -21,7 +20,6 @@
 
 ** Find the element at index k in list l
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*) 
-      :set +m
       :{
         findEl :: Int -> [b] -> b
         findEl idx list = list !! idx
@@ -34,7 +32,6 @@
 
 ** Determine if list l is a palindrome
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*) 
-      :set +m
       :{
         isPalindrome :: (Eq l) =>  [l] -> Bool
         isPalindrome list = list == (reverse list)
@@ -49,7 +46,6 @@
 ** Duplicate the elements in list xs
    for example "duplicate [1,2,3]" would give the list [1,1,2,2,3,3]
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*) 
-      :set +m
       :{
         duplicateList :: [l] -> [l]
         duplicateList [] = []
@@ -63,7 +59,6 @@
 
 ** Implement zip
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*) 
-      :set +m
       :{
         zip' :: [a] -> [b] -> [(a,b)]
         zip' [] _ = []
@@ -134,7 +129,6 @@
 ** Rotate list n times
 *** Rotate left   
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       :set +m
        :{
        rotateListLeft :: Int -> [a] -> [a]
        rotateListLeft n list = let realRotationNumber = mod n (length list)
