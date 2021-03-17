@@ -1,7 +1,7 @@
 #+Title: Chapter 04: syntax in functions
 #+startup: fold
 #+name: org-clear-haskell-output
-#+begin_src emacs-lisp :var strr="" 
+#+begin_src emacs-lisp :var strr="" :exports none
   (format "%s" (replace-regexp-in-string "\*Main|? ?>? ?" ""  (format "%s" strr)))
 #+end_src
 
@@ -35,6 +35,7 @@
 
    #+RESULTS:
    : [Just Zero,Just One,Just Two,Just Three,Just Four,Just Five,Just Six,Just Seven,Just Eight,Just Nine,Nothing]
+
 
 ** divide tuple
    given a tuple, divide fst by snd, using pattern matching. 
