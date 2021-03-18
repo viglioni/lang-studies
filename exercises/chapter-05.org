@@ -1,0 +1,102 @@
+#+Title: Chapter 05 - recursion
+#+startup: fold
+#+name: org-clear-haskell-output
+#+begin_src emacs-lisp :var strr="" :exports none
+  (format "%s" (replace-regexp-in-string "\*Main|? ?>? ?" ""  (format "%s" strr)))
+#+end_src
+
+Using recursion, solve these:
+** raise x to the power y
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     power :: Int -> Int -> Int
+     power x 0 = 1
+     power x y = x * (power x (y - 1))
+     :}
+
+     map (power 2) [0..10]
+   #+end_src
+
+   #+RESULTS:
+   : [1,2,4,8,16,32,64,128,256,512,1024]
+
+** list of the n firsts fibonacci numbers
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     fibRec :: Int -> [Int] -> [Int]
+     fibRec n acc = 
+       if (length acc) == n
+         then acc
+         else let [a, b] = take 2 acc
+                  c = a + b
+               in fibRec n (c:acc)
+
+     fibonacci :: Int -> [Int]
+     fibonacci 0 = []
+     fibonacci 1 = [1]
+     fibonacci 2 = [1, 1]
+     fibonacci n = reverse $ fibRec n [1, 1]
+     :}
+
+     map fibonacci [0..10]
+   #+end_src
+
+   #+RESULTS:
+   : [[],[1],[1,1],[1,1,2],[1,1,2,3],[1,1,2,3,5],[1,1,2,3,5,8],[1,1,2,3,5,8,13],[1,1,2,3,5,8,13,21],[1,1,2,3,5,8,13,21,34],[1,1,2,3,5,8,13,21,34,55]]
+
+** step reverse sign
+   - This is not recursive, but have a go anyway.
+   - Create a function which takes two parameters, a number and a step
+   - The result is the sign of the original number reversed, and the step added to the absolute value
+   - Confused? Some examples:
+     - `stepReverseSign 6 2 = -8`
+     - `stepReverseSign -3 1 = 4`
+     - `stepReverseSign 1 2 = -3`
+       
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     stepReverseSign :: Int -> Int -> Int
+     stepReverseSign x y = let sign = (* (-1)) $ div x $ abs x
+                               total = sum $ map abs [ x,y]
+                           in sign * total
+     :}
+
+     map (\[x,y] -> stepReverseSign x y) [[6,2],[-3,1],[1,2]]
+   #+end_src
+
+   #+RESULTS:
+   : [-8,4,-3]
+
+** Calculate pi using leibnits formula
+   - pi/4 = 1 - 1/3 + 1/5 - 1/7 + ...
+   - calculate pi given a precision factor and return how many steps were needed to achieve that
+     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+       :{
+       isAccurate :: (Ord p, Fractional p, Floating p) => p -> p -> Bool
+       isAccurate precision n = abs (pi - n) < precision
+
+       defineOp :: (Num a) => Int -> a -> a -> a
+       defineOp n =
+         if odd n
+           then (-)
+           else (+)
+
+       piRec :: (Fractional p, Ord p, Floating p) => p -> Int -> Int -> p -> (p, Int)
+       piRec acc oddNumber numberOfCalls precision =
+         if isAccurate precision acc
+           then (acc, numberOfCalls)
+           else let op = defineOp numberOfCalls
+                    newAcc = op acc (4 / (fromIntegral oddNumber))
+                 in piRec newAcc (oddNumber + 2) (numberOfCalls + 1) precision  
+       :}
+
+       piCalc :: (Fractional p) => p -> (p, Int)
+       piCalc precision = piRec 0 1 0 precision
+
+       piCalc 0.001
+     #+end_src
+
+     #+RESULTS:
+     : (3.140592653839794,1000)
+
+
