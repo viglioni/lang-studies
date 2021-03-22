@@ -8,7 +8,8 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
     - [[./chapter-03.org][Chapter 3]]
     - [[./chapter-04.org][Chapter 4]]
     - [[./chapter-05.org][Chapter 5]]
-
+    - [[./chapter-06.org][Chapter 6]]
+            
 *** Obs.:
     In order to run these haskell snippets you should add `set +m` to your `~/.ghc/ghci.conf`
 
