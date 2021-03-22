@@ -9,21 +9,23 @@
    - Example:
      - sumInts 0 1 = 1
      - sumInts 1 3 = 6
-       #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-         :{
-         sumInts :: Int -> Int -> Int
-         sumInts a b =
-           if a == b
-             then b
-             else (+ a) $ (sumInts (a + 1) b)
-         :}
 
-         map (\[a,b] -> sumInts a b) [[0, 1] , [1, 3], [1,5], [2,10]]         
-       #+end_src
+             
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     sumInts :: Int -> Int -> Int
+     sumInts a b =
+       if a == b
+         then b
+         else (+ a) $ (sumInts (a + 1) b)
+     :}
 
-       #+RESULTS:
-       : [1,6,15,54]
+     map (\[a,b] -> sumInts a b) [[0, 1] , [1, 3], [1,5], [2,10]]         
+   #+end_src
 
+   #+RESULTS:
+   : [1,6,15,54]
+       
 ** define a square function
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      square :: Int -> Int
@@ -57,73 +59,82 @@
    - higherOrderSum :: (Int -> Int) -> Int -> Int -> Int
    - higherOrderSum intApplication a b = undefined
 
-     Applies a function to each element and sum them:
-     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       :{
-       higherOrderSum :: (Int -> Int) -> Int -> Int -> Int
-       higherOrderSum func a b =
-         if a == b
-           then b
-           else (func a +) $ (higherOrderSum func (a + 1) b)
-       :}
+     
+   Applies a function to each element and sum them:
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     higherOrderSum :: (Int -> Int) -> Int -> Int -> Int
+     higherOrderSum func a b =
+       if a == b
+         then b
+         else (func a +) $ (higherOrderSum func (a + 1) b)
+     :}
 
-       map (\fn -> higherOrderSum fn 1 10) [(+ 1), (* 2), square]
-     #+end_src
+     map (\fn -> higherOrderSum fn 1 10) [(+ 1), (* 2), square]
+   #+end_src
 
-     #+RESULTS:
-     : [64,100,295]
+   #+RESULTS:
+   : [64,100,295]
      
 ** Define the square sum in terms of higherOrderSum
    - hoSumSquares :: Int -> Int -> Int
-     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       hoSumSquares :: Int -> Int -> Int
-       hoSumSquares = higherOrderSum square
 
-       map (hoSumSquares 0) [1..10]
-#+end_src
+     
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     hoSumSquares :: Int -> Int -> Int
+     hoSumSquares = higherOrderSum square
 
-#+RESULTS:
-: [1,3,8,18,35,61,98,148,213,295]
+     map (hoSumSquares 0) [1..10]
+   #+end_src
+
+   #+RESULTS:
+   : [1,3,8,18,35,61,98,148,213,295]
 
 ** Define the sum between two values in terms of higherOrderSum
    - Note there is no parameter on the function definition
    - Try to use a lambda if possible
    - hoSumInts :: Int -> Int -> Int
-          #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-            hoSumInts :: Int -> Int -> Int
-            hoSumInts = higherOrderSum (+ 0)
 
-            map (hoSumInts 0) [1..10]
-#+end_src
+     
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     hoSumInts :: Int -> Int -> Int
+     hoSumInts = higherOrderSum (+ 0)
 
-#+RESULTS:
-: [0,1,3,6,10,15,21,28,36,45]
+     map (hoSumInts 0) [1..10]
+   #+end_src
+
+   #+RESULTS:
+   : [0,1,3,6,10,15,21,28,36,45]
 
 ** Generalise over the function provided by sumInts
    - That is, parameterize (+) :: Int -> Int -> Int) between a and b
-     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       :{
-       applyToRange :: (Int -> Int -> Int) -> Int -> Int -> Int
-       applyToRange func a b =
-         if a == b 
-           then b
-           else (func a) $ (applyToRange func (a + 1) b)
-       :}
 
-       map (\fn -> applyToRange fn 2 10) [(+) , (*)]
-#+end_src
+     
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     applyToRange :: (Int -> Int -> Int) -> Int -> Int -> Int
+     applyToRange func a b =
+       if a == b 
+         then b
+         else (func a) $ (applyToRange func (a + 1) b)
+     :}
 
-#+RESULTS:
-: [54,3628800]
+     map (\fn -> applyToRange fn 2 10) [(+) , (*)]
+   #+end_src
+
+   #+RESULTS:
+   : [54,3628800]
 
 ** Define a factorial method using the generalized func
    - hoFactorial :: Int -> Integral
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  hoFactorial :: Int -> Integral
-  hoFactorial = applyToRange (*) 1
 
-  map hoFactorial [1..15]
-#+end_src
+     
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     hoFactorial :: Int -> Integral
+     hoFactorial = applyToRange (*) 1
 
-#+RESULTS:
-: [1,2,6,24,120,720,5040,40320,362880,3628800,39916800,479001600,6227020800,87178291200,1307674368000]
+     map hoFactorial [1..15]
+   #+end_src
+
+   #+RESULTS:
+   : [1,2,6,24,120,720,5040,40320,362880,3628800,39916800,479001600,6227020800,87178291200,1307674368000]
