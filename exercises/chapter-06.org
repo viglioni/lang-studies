@@ -56,7 +56,7 @@
 ** higher order sum
    - Define a higher order sum function which accepts an (Int -> Int) function to apply to all integers between two values.
    - Again this should look similar to the sumInts and sumSquares functions
-   - ~higherOrderSum \:: (Int -> Int) -> Int -> Int -> Int~
+   - higherOrderSum :: (Int -> Int) -> Int -> Int -> Int
      
    Applies a function to each element and sum them:
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -73,9 +73,9 @@
 
    #+RESULTS:
    : [64,100,295]
-     
+   
 ** Define the square sum in terms of higherOrderSum
-   - ~hoSumSquares :: Int -> Int -> Int~
+   - hoSumSquares :: Int -> Int -> Int
 
      
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -91,7 +91,7 @@
 ** Define the sum between two values in terms of higherOrderSum
    - Note there is no parameter on the function definition
    - Try to use a lambda if possible
-   - ~hoSumInts :: Int -> Int -> Int~
+   - hoSumInts :: Int -> Int -> Int
 
      
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -105,7 +105,7 @@
    : [0,1,3,6,10,15,21,28,36,45]
 
 ** Generalise over the function provided by sumInts
-   - That is, apply ~fn :: Int -> Int -> Int~ between a and b
+   - That is, apply fn :: Int -> Int -> Int between a and b
 
      
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -124,7 +124,7 @@
    : [54,3628800]
 
 ** Define a factorial method using the generalized func
-   - ~hoFactorial :: Int -> Integral~
+   - hoFactorial :: Int -> Integral
 
      
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
