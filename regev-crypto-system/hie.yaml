@@ -1,0 +1,13 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:regev-crypto-system"
+
+    - path: "app/Main.hs"
+      component: "regev-crypto-system:exe:regev-crypto-system-exe"
+
+    - path: "app/Paths_regev_crypto_system.hs"
+      component: "regev-crypto-system:exe:regev-crypto-system-exe"
+
+    - path: "test"
+      component: "regev-crypto-system:test:regev-crypto-system-test"
