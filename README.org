@@ -1,0 +1,5 @@
+* About
+  Project containing some studies in some languages.
+* Haskell
+  | haskell-exercises           | exercises inspired on the book Learn You A Haskell      |
+  | haskell-regev-crypto-system | a cryptosystem proposed by Regev implemented in Haskell |
