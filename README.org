@@ -1,7 +1,11 @@
 * About
   Project containing some studies in some languages.
-* Haskell
-  | Dirname                     | about                                                   |
-  |-----------------------------+---------------------------------------------------------|
-  | haskell-exercises           | exercises inspired on the book Learn You A Haskell      |
-  | haskell-regev-crypto-system | a cryptosystem proposed by Regev implemented in Haskell |
+* Projects
+  |---------------------+---------------------------------------------------------+-------------------|
+  | Dirname             | about                                                   | languages         |
+  |---------------------+---------------------------------------------------------+-------------------|
+  | learn-you-a-haskell | exercises inspired on the book Learn You A Haskell      | Haskell           |
+  | regev-crypto-system | a cryptosystem proposed by Regev implemented in Haskell | Haskell           |
+  | Project Euler       | my resolutions of Project Euler exercises               | Clojure / Haskell |
+  |---------------------+---------------------------------------------------------+-------------------|
+

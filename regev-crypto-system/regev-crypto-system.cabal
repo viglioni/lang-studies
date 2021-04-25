@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: beb83e82c06735a384dc2107654ce9890b05ff33d33c094d033d65a3dea3de8b
+-- hash: aa356a95b9cb76aa537222dcd122159ba06196439f319106b8f523d3ed44975f
 
 name:           regev-crypto-system
 version:        0.1.0.0
@@ -37,7 +37,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      MonadRandom
+    , base >=4.7 && <5
     , normaldistribution
     , random
     , split
@@ -51,7 +52,8 @@ executable regev-crypto-system-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      MonadRandom
+    , base >=4.7 && <5
     , normaldistribution
     , random
     , regev-crypto-system
