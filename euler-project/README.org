@@ -1,0 +1,2 @@
+* Euler Project
+  My resolutions of the [[https://projecteuler.net/archives][Euler Project]] 
