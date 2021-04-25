@@ -3,3 +3,95 @@
    An implementation of the cryptosystem proposed by Oded Regev
 
    [[https://people.csail.mit.edu/vinodv/6892-Fall2013/regev.pdf][On Lattices, Learning with Errors, Random Linear Codes, and Cryptography]]
+
+** Build and exec
+   You need [[https://docs.haskellstack.org/en/stable/GUIDE/][stack]] to do it:
+
+   #+begin_src shell :exports both 
+     # build
+     rm -rf .stack-work && stack build
+     # exec
+     stack exec regev-crypto-system-exe
+   #+end_src
+** Analysis
+*** Input   
+   The ~app/Main.hs~ file contains the call of encryption and decryption of a byte ~[0, 0, 1, 0, 1, 0, 0, 1]~ with the following parameters:
+   - Security parameter ~n = 80~
+   - Prime number ~p=1973~ between ~n^2~ and ~2n^2~
+*** Output
+    Since the algorithm is probabilistc, the encr will be probably different on each call:
+    #+begin_src shell :exports both 
+      the encrypted msg is
+      [EncryptedBit {sumA = [1054,1124,897,1961,1531,1867,1524,814,1449,471,1538,585,523,989,1219,1333,571,1290,1874,617,1898,1967,816,1023,1516,1970,252,434,1603,110,652,1305,1780,21,126,860,466,93,1760,1609,470,221,1314,780,274,1108,829,540,1539,604,617,1837,504,604,1488,1095,121,480,1628,714,1416,1017,254,1832,290,130,1197,1343,1855,196,1495,1612,579,798,14,1936,1246,1700,443,1768], sumB = 1187},EncryptedBit {sumA = [1565,1919,1845,18,1837,798,1876,333,1853,968,572,652,582,838,1725,1792,1316,1633,221,1653,1345,216,141,428,1721,392,457,998,660,1512,504,1572,949,358,666,65,1281,1006,7,291,1737,922,1828,336,942,217,1461,1154,1591,716,1712,1103,1215,1668,1829,1605,1208,1250,315,575,1592,1318,1081,580,229,1331,720,1705,745,303,1864,1355,145,1157,582,1007,1586,163,1364,1541], sumB = 319},EncryptedBit {sumA = [1220,473,31,1806,152,1732,1889,1825,1264,1101,933,1484,396,1570,268,1309,1181,1773,1031,1876,1484,1687,1715,155,828,910,1828,848,1722,1062,52,484,1950,996,876,1522,934,1004,454,1960,326,1220,674,996,1073,561,1358,1855,137,648,1181,548,569,1885,1199,123,1718,1291,1056,1362,1003,292,911,471,1886,284,1180,208,1339,1916,594,1655,1694,1637,1578,1483,355,1506,386,587], sumB = 1887},EncryptedBit {sumA = [528,1553,1674,782,1293,1201,951,1827,634,36,1921,747,1344,730,1709,537,236,1320,1481,1289,1780,1759,1506,1348,827,844,833,1542,1298,513,1404,1427,1804,164,413,346,175,449,404,251,1689,810,851,1054,1779,369,975,1286,225,1825,1184,496,1262,1718,1386,421,114,1463,585,610,432,1579,365,697,70,261,1948,563,1640,1292,983,1758,1678,770,1002,1847,345,1885,1437,818], sumB = 718},EncryptedBit {sumA = [376,306,1904,519,1353,1142,541,1019,1209,862,1803,561,983,869,1780,1563,1835,1427,280,205,1808,10,1904,43,168,1836,126,1013,538,1248,1531,1617,1144,673,147,971,1775,1032,1378,1685,175,1749,760,884,567,1083,1199,1170,1564,145,161,1867,1040,225,948,184,1957,13,1096,1728,1179,1337,1527,1589,1740,1735,1793,912,695,325,1400,818,419,806,439,1679,1853,1827,1960,505], sumB = 357},EncryptedBit {sumA = [1260,1786,78,180,1875,1928,1390,1467,1636,1640,1325,1309,904,1278,1416,1153,425,1424,1239,1698,121,1734,546,1926,1194,1948,1475,594,291,1789,1827,1004,923,199,1097,1957,908,1755,1347,14,99,1787,1577,1122,911,68,31,104,718,1767,288,1790,1795,494,1590,142,1387,523,740,1884,69,671,145,265,94,1149,1714,152,101,972,839,1201,1529,377,1342,1734,219,978,331,1519], sumB = 664},EncryptedBit {sumA = [
+      1653,1252,247,330,1545,890,764,567,1363,1852,1606,912,444,163,111,1502,881,45,639,964,83,1365,1603,333,28,526,308,2
+      320,232,1892,1637,1121,1617,1892,1772,1685,1315,1083,1834,196,1555,1536,104,1843,488,1880,1318,323,1123,1074,1418,2
+      cryptedBit {sumA = [819,20,1715,589,373,1916,672,1019,513,145,760,880,471,1323,1605,1576,1828,624,532,1488,382,952,
+      0,994,1933,1920,1576,1582,679,1572,1792,549,773,132,1368,1368,139,192,1697,1006,1249,1788,1039,947,1683,1451,627,47
+      ,360,597,539,1778,1301,1524,1055,659,476,1915,361,1333], sumB = 1044}]
+
+
+      For a encryption schema with security of 80 bits and p = 1973, we have:
+
+      the privateKey size is 80 * (Int size)
+
+      the publicKey size is 759512 * (Int size)
+
+      the encrypted bit size is 81 * (Int size)
+
+      the message size is 6561 * (Int size)
+
+      the decrypted msg is
+      [0,0,1,0,1,0,0,1]
+#+end_src
+*** With more security parameters
+    Using ~n=128~ and ~p=1717~
+    #+begin_src shell :exports both 
+      For a encryption schema with security of 128 bits and p = 17167, we have:
+
+      the privateKey size is 128 * (Int size)
+
+      the publicKey size is 5965806 * (Int size)
+
+      the encrypted bit size is 129 * (Int size)
+
+      the message size is 16641 * (Int size)
+
+      the decrypted msg is
+      [0,0,1,0,1,0,0,1]
+#+end_src
+** How the algorithm works
+*** Phi beta PDF
+   First we need to define the probability density function (PDF) ~phi_β~:
+   - ~phi_β~ is normal distribution with ~mean = 0~ and ~standard deviation = β/√(2*π)~
+   - The discretization of a sample is done by multiplying it by ~p~, rounding and applying ~mod p~
+   - We will define ~χ~ using ~β = 1/((√n) log^2 n)~
+*** Ecryption schema
+    ~m~ is defined by ~p~ and ~n~: ~m = (1+ε)(n+1)*log(p)
+    - *Private key*: choose uniformly ~s~ from (~Zp)^n~
+    - *Public key*:
+      - Choose uniformly ~m~ vectors ~a_1, ..., a_m~ from (~Zp)^n~
+      - Choose ~m~ errors ~e_i~ from ~Zp~ according to ~χ~
+      - Define ~b_i = <a_i , s> + e_i~, where ~s~ is the private key
+      - The public key is ~(a_i, b_i)_m~
+    - *Encrypt a bit*:
+      - Choose randomly a subset ~S~ of ~{1,...,m}~
+      - The encryption is the pair ~(sum(a_i), sum(b_i))~ if the *bit is 0*, *else* the result is ~(sum(a_i), floor(p/2) +  sum(b_i))~, where ~i~ is an element of ~S~ in both cases
+    - *Decrypt a bit*:
+      - Calculate ~r = b - <a,s>~ where ~(a,b)~ is the encrypted bit
+      - if ~r~ is closer to 0 than to ~floor(p/2) mod p~, then the *bit is 0*, else the *bit is 1*
+*** Correctness proof
+    Since the errors sampled from ~χ~ are from a normal PDF with mean 0 and very small standard deviation, with ~m~ big enough, ~sum e_i~ is close to 0.
+    The *0 encrypted bit* is:
+    #+begin_src text :exports both 
+      (a,b) = (sum(a_i), sum(b_i)) then
+      r = b - <a,s>
+        = sum(b_i) - < sum(a_i), s >
+        = sum(b_i) - sum( <a_i, s> )
+        = sum(<a_i , s> + e_i) - sum( <a_i, s> )
+        = sum(<a_i , s>) + sum(e_i) - sum( <a_i, s> )
+        = sum(e_i)
+    #+end_src
+
+    Since ~sum(e_i)~ is close to 0, the *bit must be 0*.
+
+    When the *encrypted bit is 1* we have the same, except ~r = sum(e_i) + floor(p/2)~, with the same argument, ~r~ is close to ~floor(p/2)~, then the *bit must be 1*.
