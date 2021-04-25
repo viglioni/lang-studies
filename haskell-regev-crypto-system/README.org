@@ -17,9 +17,10 @@
 *** Input   
    The ~app/Main.hs~ file contains the call of encryption and decryption of a byte ~[0, 0, 1, 0, 1, 0, 0, 1]~ with the following parameters:
    - Security parameter ~n = 80~
-   - Prime number ~p=1973~ between ~n^2~ and ~2n^2~
+   - Prime number ~p = 1973~ between ~n^2~ and ~2n^2~
 *** Output
-    Since the algorithm is probabilistc, the encr will be probably different on each call:
+    Since the algorithm is probabilistc, the encrypted message will be probably different on each call:
+    
     #+begin_src text :exports both 
       the encrypted msg is
       [EncryptedBit {sumA = [181,373,1334,299,348,533,1537,1737,996,1094,1028,340,233,939,1583,1079,16,
@@ -70,7 +71,7 @@
       [0,0,1,0,1,0,0,1]
 #+end_src
 *** With more security parameters
-    Using ~n=128~ and ~p=1717~
+    Using ~n = 128~ and ~p = 1717~
     #+begin_src shell :exports both 
       For a encryption schema with security of 128 bits and p = 17167, we have:
 
@@ -92,7 +93,7 @@
    - The discretization of a sample is done by multiplying it by ~p~, rounding and applying ~mod p~
    - We will define ~χ~ using ~β = 1/((√n) log^2 n)~
 *** Ecryption schema
-    ~m~ is defined by ~p~ and ~n~: ~m = (1+ε)(n+1)*log(p)
+    ~m~ is defined by ~p~ and ~n~: ~m = (1+ε)(n+1)*log(p)~
     - *Private key*: choose uniformly ~s~ from (~Zp)^n~
     - *Public key*:
       - Choose uniformly ~m~ vectors ~a_1, ..., a_m~ from (~Zp)^n~
