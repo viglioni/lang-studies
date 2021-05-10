@@ -8,4 +8,7 @@
   | regev-crypto-system | a cryptosystem proposed by Regev implemented in Haskell | Haskell           |
   | Project Euler       | my resolutions of Project Euler exercises               | Clojure / Haskell |
   |---------------------+---------------------------------------------------------+-------------------|
+* Obs.:
+   In order to run these haskell snippets you should add `:set +m` to your `~/.ghc/ghci.conf`
+
 

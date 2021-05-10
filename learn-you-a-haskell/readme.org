@@ -10,6 +10,3 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
     - [[./chapter-05.org][Chapter 5]]
     - [[./chapter-06.org][Chapter 6]]
             
-*** Obs.:
-    In order to run these haskell snippets you should add `set +m` to your `~/.ghc/ghci.conf`
-
