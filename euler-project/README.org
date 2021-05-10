@@ -1,2 +1,4 @@
 * Euler Project
-  My resolutions of the [[https://projecteuler.net/archives][Euler Project]] 
+  My resolutions of the [[https://projecteuler.net/archives][Euler Project]]
+
+  - [[./euler.org][Part I]]
