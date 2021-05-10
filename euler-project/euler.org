@@ -42,21 +42,6 @@
 
    By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.
    
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  :{
-  fibRec :: [Int] -> [Int]
-  fibRec list = if a >= 40 then list else fibRec (a+b):list
-    where a = list !! 0
-          b = list !! 1
-  :}
-  fibRec [2, 1]
-#+end_src
-
-#+RESULTS:
-: <interactive>:30:1-6: error:
-:     • Variable not in scope: fibRec :: [a0] -> t
-:     • Perhaps you meant one of these:
-:         ‘Ghci1.fib_rec’ (imported from Ghci1), ‘fib_rec’ (line 10)
 
 #+begin_src clojure :exports both :post org-clear-clojure-output(*this*)
   (defn fib-rec [lst]
