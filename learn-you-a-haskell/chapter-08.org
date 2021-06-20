@@ -1,0 +1,156 @@
+#+Title:
+#+startup: fold
+#+name: org-clear-haskell-output
+#+begin_src emacs-lisp :var strr="" :exports none
+  (format "%s" (replace-regexp-in-string (rx (and (| "*Main" "Prelude") (? "|") (? white) (? ">") (? white))) "" (format "%s" strr)))
+#+end_src
+
+
+We are going to create some types for a deck of cards
+The cards need to have an ordering, based on the [[http://en.wikipedia.org/wiki/Standard_52-card_deck#Rank_and_color][standard ranking]] 
+We are assuming Aces are high.
+Therefore, the following statements should be true:
+~(Card Ace Spades) > (Card King Spades)~
+~(Card Two Clubs) < (Card Three Clubs)~
+We are going to provide our own implementation of the Show typeclass for the Card type.
+When displaying the Card instance in GHCI, or calling show ~(Card digit suit)~, the ~String~ which should be displayed is ~"The <Digit> of <Suit>"~
+
+
+
+** The deck data types:
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     data Suit
+       = Clubs
+       | Diamonds
+       | Hearts
+       | Spades
+       deriving (Bounded, Enum, Eq, Ord, Show)
+      
+     data Digit
+       = Two
+       | Three
+       | Four
+       | Five
+       | Six
+       | Seven
+       | Eight
+       | Nine
+       | Ten
+       | Jack
+       | Queen
+       | King
+       | Ace
+       deriving (Bounded, Enum, Eq, Ord, Show)
+      
+     data Card =
+       Card
+         { digit :: Digit
+         , suit :: Suit
+         }
+       deriving (Eq, Ord)
+      
+     instance Show Card where
+       show card = "The " ++ (show $ digit card) ++ " of " ++ (show $ suit card)
+      
+     :}
+   #+end_src
+
+   #+RESULTS:
+
+** Better Card
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     betterCard :: Card -> Card -> Card
+     betterCard = max
+      
+     :}
+      
+     :{
+      
+     map (\(c1, c2) -> betterCard c1 c2)
+       [ (Card {suit = Spades, digit = Ace}, Card {suit = Spades, digit = King})
+       , (Card {suit = Hearts, digit = Ace}, Card {suit = Clubs, digit = Ace})
+       , (Card {suit = Diamonds, digit = Queen}, Card {suit = Spades, digit = Two})
+       ]
+      
+     :}
+   #+end_src
+
+   #+RESULTS:
+   : [The Ace of Spades,The Ace of Hearts,The Queen of Diamonds]
+
+** Playing hand
+   Here is a new Typeclass, which represents some kind of playing hand in a game.
+   It returns True for a "winning hand", depending on the rules for the type of class we are playing with
+   Implement Hand for Card, where play returns true if the list contains the Ace of Spades
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+      
+     class Hand a where
+        play :: [a] -> Bool
+      
+     instance Hand Card where
+       play hand = Card {suit = Spades, digit = Ace} `elem` hand
+      
+     :}
+     :{
+      
+     truthyHand =
+       [ Card {suit = Spades, digit = Ace}
+       , Card {suit = Hearts, digit = Ace}
+       , Card {suit = Spades, digit = King}
+       ]
+      
+      
+     falseyHand =
+       [ Card {suit = Clubs, digit = Ace}
+       , Card {suit = Hearts, digit = Ace}
+       , Card {suit = Spades, digit = King}
+       ]
+      
+     :}
+      
+     map play [truthyHand, falseyHand]
+      
+   #+end_src
+
+   #+RESULTS:
+   : [True,False]
+ 
+** Coin
+   Create a new Coin type
+   Implement Hand for Coin, where play returns true if there are ten heads in a row in the list
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     
+     data Coin
+       = Head
+       | Tail
+       deriving (Eq, Show)
+     
+     instance Hand Coin where
+       play coins =
+         if (length coins < 10)
+           then False
+           else (not $ elem Tail (take 10 coins)) || (play $ drop 1 coins)
+     
+     :}
+     :{
+     
+     truthyCoinHand =
+       [Head, Tail, Head, Head, Head, Head, Head, Head, Head, Head, Head, Head, Tail]
+     
+     falseyCoinHand =
+       [Head, Tail, Head, Head, Head, Head, Head, Head, Tail, Head, Head, Head, Tail]
+     
+     :}
+     
+     map play [truthyCoinHand, falseyCoinHand]
+#+end_src
+
+#+RESULTS:
+: [True,False]
