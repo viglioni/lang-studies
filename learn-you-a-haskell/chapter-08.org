@@ -7,13 +7,22 @@
 
 
 We are going to create some types for a deck of cards
+
 The cards need to have an ordering, based on the [[http://en.wikipedia.org/wiki/Standard_52-card_deck#Rank_and_color][standard ranking]] 
+
 We are assuming Aces are high.
+
 Therefore, the following statements should be true:
+
 ~(Card Ace Spades) > (Card King Spades)~
+
 ~(Card Two Clubs) < (Card Three Clubs)~
+
 We are going to provide our own implementation of the Show typeclass for the Card type.
-When displaying the Card instance in GHCI, or calling show ~(Card digit suit)~, the ~String~ which should be displayed is ~"The <Digit> of <Suit>"~
+
+When displaying the Card instance in GHCI, or calling show ~(Card digit suit)~, the ~String~ which
+
+should be displayed is ~"The <Digit> of <Suit>"~
 
 
 
@@ -83,7 +92,9 @@ When displaying the Card instance in GHCI, or calling show ~(Card digit suit)~, 
 
 ** Playing hand
    Here is a new Typeclass, which represents some kind of playing hand in a game.
+   
    It returns True for a "winning hand", depending on the rules for the type of class we are playing with
+   
    Implement Hand for Card, where play returns true if the list contains the Ace of Spades
 
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -122,6 +133,7 @@ When displaying the Card instance in GHCI, or calling show ~(Card digit suit)~, 
  
 ** Coin
    Create a new Coin type
+   
    Implement Hand for Coin, where play returns true if there are ten heads in a row in the list
 
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
