@@ -1,14 +1,14 @@
 * About
   Project containing some studies in some languages.
 * Projects
-  |---------------------+---------------------------------------------------------+-------------------|
-  | Dirname             | about                                                   | languages         |
-  |---------------------+---------------------------------------------------------+-------------------|
-  | learn-you-a-haskell | exercises inspired on the book Learn You A Haskell      | Haskell           |
-  | regev-crypto-system | a cryptosystem proposed by Regev implemented in Haskell | Haskell           |
-  | Project Euler       | my resolutions of Project Euler exercises               | Clojure / Haskell |
-  |---------------------+---------------------------------------------------------+-------------------|
+  |---------------------+----------------------------------------------------+-------------------|
+  | Dirname             | about                                              | languages         |
+  |---------------------+----------------------------------------------------+-------------------|
+  | learn-you-a-haskell | exercises inspired on the book Learn You A Haskell | Haskell           |
+  | regev-crypto-system | a cryptosystem proposed by Regev                   | Haskell           |
+  | Project Euler       | my resolutions of Project Euler exercises          | Clojure / Haskell |
+  |---------------------+----------------------------------------------------+-------------------|
 * Obs.:
-   In order to run these haskell snippets you should add `:set +m` to your `~/.ghc/ghci.conf`
+   In order to run these haskell snippets you should add ~:set +m~ to your ~~/.ghc/ghci.conf~
 
 
