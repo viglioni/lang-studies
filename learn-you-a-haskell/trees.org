@@ -7,26 +7,26 @@
 
 #+RESULTS: org-clear-haskell-output
 
-* Trees
   In this file we will define trees and some related functions
-** Binary Tree
-*** Type
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      :{
+
+* Binary Tree
+** Type
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
       
-      data BinTree a
-        = EmptyTree
-        | Node a (BinTree a) (BinTree a)
+     data BinTree a
+       = EmptyTree
+       | Node a (BinTree a) (BinTree a)
 
       
-      instance Show a => Show (BinTree a) where
-        show EmptyTree = " ()"
-        show (Node a left right) = " (" ++ (show a) ++ (show left) ++ (show right) ++ ")"
-      :}
- #+end_src
+     instance Show a => Show (BinTree a) where
+       show EmptyTree = " ()"
+       show (Node a left right) = " (" ++ (show a) ++ (show left) ++ (show right) ++ ")"
+     :}
+#+end_src
 
- #+RESULTS:
-*** Create single node (leaf)
+#+RESULTS:
+** Create single node (leaf)
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :{
       
@@ -37,7 +37,7 @@
 #+end_src
 
 #+RESULTS:
-*** Insert node
+** Insert node
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :{
       
