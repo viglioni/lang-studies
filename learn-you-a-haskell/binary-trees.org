@@ -79,6 +79,19 @@ In this file we will define trees and some related functions
     #+end_src
 
     #+RESULTS:
+*** Tree from a list
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+            :{
+            
+            tree
+            FromList :: (Ord a) => [a] -> BinTree a
+            treeFromList = foldl insertNode EmptyTree
+            
+            :}
+    #+end_src
+
+    #+RESULTS:
+
 *** List from tree
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :{
@@ -106,18 +119,30 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Count nodes
-     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       :{
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+      :{
       
-       countNodes :: BinTree a -> Int
-       countNodes EmptyTree = 0
-       countNodes (Node _ leftTree rightTree) =
-         1 + (countNodes leftTree) + (countNodes rightTree)
+      countNodes :: BinTree a -> Int
+      countNodes EmptyTree = 0
+      countNodes (Node _ leftTree rightTree) =
+        1 + (countNodes leftTree) + (countNodes rightTree)
       
-       :}
- #+end_src
+      :}
+    #+end_src
 
- #+RESULTS:
+    #+RESULTS:
+*** Tree height
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+      :{
+      
+      height EmptyTree = 0
+      height (Node _ leftTree rightTree) =
+        1 + max (height leftTree) (height rightTree)
+      
+      :}
+    #+end_src
+
+    #+RESULTS:
 
 ** Executing functions
 *** Creating a leaf
@@ -137,7 +162,7 @@ In this file we will define trees and some related functions
 
 *** Creating a binary tree from a list
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      foldl insertNode EmptyTree [4,2,1,3,9,7,6,8]
+      treeFromList [4,2,1,3,9,7,6,8]
     #+end_src
 
     #+RESULTS:
@@ -145,7 +170,7 @@ In this file we will define trees and some related functions
 
 *** Applying fmap on a tree, i.e. trees as functors
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      tree = foldl insertNode EmptyTree [4,2,1,3,9,7,6,8]
+      tree = treeFromList [4,2,1,3,9,7,6,8]
       fmap (* 10) tree       
     #+end_src
 
@@ -155,7 +180,7 @@ In this file we will define trees and some related functions
 *** Checking if an element is in the tree
      
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      tree = foldl insertNode EmptyTree [4,2,1,3,9,7,6,8]
+      tree = treeFromList [4,2,1,3,9,7,6,8]
       zip [1..10] $ map (elemTree tree) [1..10]
     #+end_src
 
@@ -164,7 +189,7 @@ In this file we will define trees and some related functions
 
 *** List from a tree
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      tree = foldl insertNode EmptyTree [4,2,1,3,9,7,6,8]
+      tree = treeFromList [4,2,1,3,9,7,6,8]
       listFromTree tree
     #+end_src
 
@@ -173,7 +198,7 @@ In this file we will define trees and some related functions
 
 *** Get all leafs form a tree
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      tree = foldl insertNode EmptyTree [4,2,1,3,9,7,6,8]
+      tree = treeFromList [4,2,1,3,9,7,6,8]
       leafs tree
     #+end_src
 
@@ -182,9 +207,18 @@ In this file we will define trees and some related functions
 
 *** Count nodes from a tree
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      tree = foldl insertNode EmptyTree [4,2,1,3,9,7,6,8]
+      tree = treeFromList [4,2,1,3,9,7,6,8]
       countNodes tree
     #+end_src
 
     #+RESULTS:
     : 8
+
+*** Tree height
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+      trees = map treeFromList [[] , [1], [1,2,3] , [2,1,3,4,5], [4,2,1,3,9,7,6,8]]
+      map height trees  
+    #+end_src
+
+    #+RESULTS:
+    : (0 1 3 4 4)
