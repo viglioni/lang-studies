@@ -83,23 +83,48 @@ In this file we will define trees and some related functions
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
             :{
             
-            tree
-            FromList :: (Ord a) => [a] -> BinTree a
+            treeFromList :: (Ord a) => [a] -> BinTree a
             treeFromList = foldl insertNode EmptyTree
             
             :}
     #+end_src
 
     #+RESULTS:
-
-*** List from tree
+*** Get node value
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :{
       
+      getValue :: BinTree a -> Maybe a
+      getValue EmptyTree = Nothing
+      getValue (Node x _ _) = Just x
+      
+      :}
+    #+end_src
+
+    #+RESULTS:
+
+*** List from a tree
+    In order to guarantee that the list will have the same insertion order, we always insert ~node~, ~left child node~, ~right child node~
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+      :{
+      
+      _getValue :: BinTree a -> [a]
+      _getValue tree =
+        case getValue tree of
+          Just x -> [x]
+          Nothing -> []
+      
+      _listFromTree :: BinTree a -> [a]
+      _listFromTree EmptyTree = []
+      _listFromTree (Node val leftTree rightTree) =
+        valLeft ++ valRight ++ (_listFromTree leftTree) ++ (_listFromTree rightTree)
+        where
+          valLeft = _getValue leftTree
+          valRight = _getValue rightTree
+      
       listFromTree :: BinTree a -> [a]
       listFromTree EmptyTree = []
-      listFromTree (Node val leftTree rightTree) =
-        val : (listFromTree leftTree) ++ (listFromTree rightTree)
+      listFromTree tree = _getValue tree ++ _listFromTree tree
       
       :}
     #+end_src
@@ -118,19 +143,6 @@ In this file we will define trees and some related functions
     #+end_src
 
     #+RESULTS:
-*** Count nodes
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      :{
-      
-      countNodes :: BinTree a -> Int
-      countNodes EmptyTree = 0
-      countNodes (Node _ leftTree rightTree) =
-        1 + (countNodes leftTree) + (countNodes rightTree)
-      
-      :}
-    #+end_src
-
-    #+RESULTS:
 *** Tree height
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       :{
@@ -144,6 +156,19 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 
+*** Count nodes
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+      :{
+      
+      countNodes :: BinTree a -> Int
+      countNodes EmptyTree = 0
+      countNodes (Node _ leftTree rightTree) =
+        1 + (countNodes leftTree) + (countNodes rightTree)
+      
+      :}
+    #+end_src
+
+    #+RESULTS:
 ** Executing functions
 *** Creating a leaf
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -194,7 +219,7 @@ In this file we will define trees and some related functions
     #+end_src
 
     #+RESULTS:
-    : (4 2 1 3 9 7 6 8)
+    : (4 2 9 1 3 7 6 8)
 
 *** Get all leafs form a tree
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -205,6 +230,14 @@ In this file we will define trees and some related functions
     #+RESULTS:
     : (1 3 6 8)
 
+*** Tree height
+    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+      trees = map treeFromList [[] , [1], [1,2,3] , [2,1,3,4,5], [4,2,1,3,9,7,6,8]]
+      map height trees  
+    #+end_src
+
+    #+RESULTS:
+    : (0 1 3 4 4)
 *** Count nodes from a tree
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
       tree = treeFromList [4,2,1,3,9,7,6,8]
@@ -214,11 +247,3 @@ In this file we will define trees and some related functions
     #+RESULTS:
     : 8
 
-*** Tree height
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-      trees = map treeFromList [[] , [1], [1,2,3] , [2,1,3,4,5], [4,2,1,3,9,7,6,8]]
-      map height trees  
-    #+end_src
-
-    #+RESULTS:
-    : (0 1 3 4 4)
