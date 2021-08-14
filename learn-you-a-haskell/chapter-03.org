@@ -19,6 +19,7 @@ Given the following type, create the functions
   deriving (Eq, Ord, Show, Bounded, Enum)   
 
 #+end_src
+
 ** get first (or last) colour
 *** get first
     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)

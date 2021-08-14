@@ -1,0 +1,27 @@
+#+Title:Chapter 12 - A fistfull of monads
+#+startup: fold
+#+name: org-clear-haskell-output
+#+begin_src emacs-lisp :var strr="" :exports none
+  (format "%s" (replace-regexp-in-string (rx (and (| "*Main" "Prelude") (? "|") (? white) (? ">") (? white))) "" (format "%s" strr)))
+#+end_src
+** Create a type called Validation
+   - The type constructor takes one parameter
+   - There are two Values: 
+     - Success, which takes that parameter and
+     - Fail String, which represents a failure, and a reason for that failure
+** Make the Validation a Monad
+** Create a function positiveCheck
+   - which takes a number and returns a successful Validation if it's positive and a failed Validation with a String message if not.
+     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+       positiveCheck :: (Num a, Ord a) => a -> Validation a
+     #+end_src
+** Create a function, evenCheck
+   - which returns a successful Validation if it's even and a failed Validation with a string message if it's odd
+     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+       evenCheck :: (Integral a)  =>  a -> Validation a
+     #+end_src
+** Create a function positiveAndEvenCheck
+   - Write a function which uses positiveCheck and evenCheck to make sure a number is both positive and even
+     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+       positiveAndEvenCheck :: (Num a, Ord a, Integral a) => a -> Validation a
+     #+end_src

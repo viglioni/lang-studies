@@ -11,6 +11,11 @@ My solutions of the exercises from [[https://github.com/noelmarkham/learn-you-a-
     - [[./chapter-06.org][Chapter 6]]
     - Chapter 7
     - [[./chapter-08.org][Chapter 8]]
+    - Chapter 9
+    - Chapter 10
+    - [[./chapter-11.org][Chapter 11]]
+    - [[./chapter-12.org][Chapter 12]]
+
 
 *** Another files
     |-------+---------------------------------|

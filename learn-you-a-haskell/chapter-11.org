@@ -1,0 +1,31 @@
+#+Title:Chapter 11 - Functors, Applicative Functors and Monoids
+#+startup: fold
+#+name: org-clear-haskell-output
+#+begin_src emacs-lisp :var strr="" :exports none
+(format "%s" (replace-regexp-in-string (rx (and (| "*Main" "Prelude") (? "|") (? white) (? ">") (? white))) "" (format "%s" strr)))
+#+end_src
+** List data type
+   We can use the following type to simulate our own list
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     import Control.Applicative
+     import Data.Monoid
+     
+     data List a = Empty | Value a (List a) deriving (Show)
+   #+end_src
+** Make List a functor
+** Create a function that appends two lists
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     combineLists:: List a -> List a -> List a
+     
+     #+end_src
+** Make List a monoid
+** Make List an applicative
+** Make sure that the List obeys the laws for Applicative and Monoid
+** Create some lists of numbers of different lengths
+   such as:
+   ~twoValueList = Value 10 $ Value 20 Empty~
+** Use <$> on the lists with a single-parameter function
+   such as ~plusTwo = (+2)~
+** Use <$> and <*> on the lists with a binary function
+** Create some lists of binary functions
+** Use <*> on the binary functions list and the number lists
