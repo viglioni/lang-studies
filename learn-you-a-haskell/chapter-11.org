@@ -156,11 +156,17 @@
      - By definition every list is appended when the first list is ~mempty~
      - By definition every list is either ~mempty~ or a recursive List with ~mempty~ as a base case, /i.e./ every non empty list has ~mempty~ as its last element
      - ~(a <> b) <> c =~
+       
        ~=(a1 (a2 ... (mempty))) <> (b1 (b2 ... (mempty))) <> c~
+       
        ~=(a1 (a2 ... (b1 (b2 ... (mempty))) <> (c1 (c2 ... (mempy)))~
+       
        ~=(a1 (a2 ... (b1 (b2 ... (c1 (c2 ... (mempy)))~
+       
        ~=(a1 (a2 ... (b <> c)))~
+       
        ~=a (b <> c)~
+       
        QED
 *** Applicative rules
 ** Use <$> on the lists with a single-parameter function
