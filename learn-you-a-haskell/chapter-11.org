@@ -2,30 +2,197 @@
 #+startup: fold
 #+name: org-clear-haskell-output
 #+begin_src emacs-lisp :var strr="" :exports none
-(format "%s" (replace-regexp-in-string (rx (and (| "*Main" "Prelude") (? "|") (? white) (? ">") (? white))) "" (format "%s" strr)))
+  (format "%s" (replace-regexp-in-string
+                (rx line-start (+ (| alphanumeric "." blank)) (and ">" (+ blank)))
+                "" (format "%s" strr)))
 #+end_src
+
+#+RESULTS: org-clear-haskell-output
+
+#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+  import Control.Applicative
+  import Data.Monoid
+  import Text.Show.Functions
+#+end_src
+
 ** List data type
    We can use the following type to simulate our own list
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-     import Control.Applicative
-     import Data.Monoid
+     :{
      
-     data List a = Empty | Value a (List a) deriving (Show)
-   #+end_src
-** Make List a functor
-** Create a function that appends two lists
-   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-     combineLists:: List a -> List a -> List a
+     data List a
+       = Empty
+       | Value a (List a)
+     
+     instance Show a => Show (List a) where
+       show Empty = ""
+       show (Value a list) = " (" ++ (show a) ++ (show list) ++ ")"
+     
+     :}
      
      #+end_src
+
+     #+RESULTS:
+
+** Make List a functor
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     instance Functor List where
+       fmap f Empty = Empty
+       fmap f (Value a list) = Value (f a) (fmap f list)
+     
+     :}
+#+end_src
+
+#+RESULTS:
+
+** Create a function that appends two lists
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+       
+     combineLists:: List a -> List a -> List a
+     combineLists Empty b = b
+     combineLists (Value a l) b = Value a (combineLists l b)
+     
+     :}
+     
+     combineLists (Value 2 (Value 3 Empty)) (Value 4 (Value 5 Empty))
+   #+end_src
+
+   #+RESULTS:
+   : (2 (3 (4 (5))))
+
 ** Make List a monoid
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     
+     instance Semigroup (List a) where
+       (<>) = combineLists
+     
+     instance Monoid (List a) where
+       mempty = Empty
+     
+     :}
+     
+     (Value 2 Empty) <> (Value 3 (Value 4 Empty))
+     
+#+end_src
+
+#+RESULTS:
+: (2 (3 (4)))
+
 ** Make List an applicative
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     zipWithList :: (a -> b -> c) -> List a -> List b -> List c
+     zipWithList _ Empty _ = Empty
+     zipWithList _ _ Empty = Empty
+     zipWithList f (Value a listA) (Value b listB) = Value (f a b) (zipWithList f listA listB)
+     :}
+     
+     zipWithList (+) (Value 2 (Value 3 Empty)) (Value 2 (Value 3 (Value 4 Empty)))
+     
+#+end_src
+
+#+RESULTS:
+: (4 (6))
+
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     instance Applicative List where
+       pure x = (Value x Empty)
+       fs <*> xs = zipWithList (\f x -> f x) fs xs
+     :}
+     
+#+end_src
+
+#+RESULTS:
+
+
+#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+  pure 8 :: List Int
+#+end_src
+
+#+RESULTS:
+: (8)
+
+#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+  pure (+) <*> pure 9 <*> pure 10 :: List Int
+#+end_src
+
+#+RESULTS:
+: (19)
+
+#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+  (+) <$> pure 9 <*> pure 10 :: List Int
+#+end_src
+
+#+RESULTS:
+: (19)
+
+** Create a List from a list []:
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     makeList :: [a] -> List a
+     makeList list = mconcat $ map pure list
+     :}
+     
+     makeList [1..10]
+     
+   #+end_src
+
+   #+RESULTS:
+   : (1 (2 (3 (4 (5 (6 (7 (8 (9 (10))))))))))
+
 ** Make sure that the List obeys the laws for Applicative and Monoid
-** Create some lists of numbers of different lengths
-   such as:
-   ~twoValueList = Value 10 $ Value 20 Empty~
+*** Monoid rules
+**** Identity law
+     - ~mempty <> a = a~: trivial
+     - ~a <> mempty~
+       - if ~a~ is ~mempty~: trivial
+       - if not ~a = (Value v List l)~, ~<>~ will be applied recursively unitil ~l is mempty~, then by definition it will concat ~mempty~, returning the original list. QED
+**** Associativity law
+     - By definition every list is appended when the first list is ~mempty~
+     - By definition every list is either ~mempty~ or a recursive List with ~mempty~ as a base case, /i.e./ every non empty list has ~mempty~ as its last element
+     - ~(a <> b) <> c =~
+       ~=(a1 (a2 ... (mempty))) <> (b1 (b2 ... (mempty))) <> c~
+       ~=(a1 (a2 ... (b1 (b2 ... (mempty))) <> (c1 (c2 ... (mempy)))~
+       ~=(a1 (a2 ... (b1 (b2 ... (c1 (c2 ... (mempy)))~
+       ~=(a1 (a2 ... (b <> c)))~
+       ~=a (b <> c)~
+       QED
+*** Applicative rules
 ** Use <$> on the lists with a single-parameter function
    such as ~plusTwo = (+2)~
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     (+2) <$> makeList [1,2,3]
+   #+end_src
+
+   #+RESULTS:
+   : (3 (4 (5)))
+
 ** Use <$> and <*> on the lists with a binary function
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     (*) <$> makeList [1,2,3] <*> makeList [4,5,6] :: List Int
+   #+end_src
+
+#+RESULTS:
+: (4 (10 (18)))
+
 ** Create some lists of binary functions
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     listOfFuncs = makeList [(+), (-), (*), (/)]
+     listOfFuncs
+#+end_src
+
+#+RESULTS:
+: (<function> (<function> (<function> (<function>))))
+
 ** Use <*> on the binary functions list and the number lists
+#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+  listOfFuncs <*> makeList [13..16] <*> makeList [1..4]
+#+end_src
+
+#+RESULTS:
+: (14.0 (12.0 (45.0 (4.0))))
