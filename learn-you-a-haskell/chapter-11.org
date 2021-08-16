@@ -164,18 +164,52 @@
      - By definition every list is either ~mempty~ or a recursive List with ~mempty~ as a base case, /i.e./ every non empty list has ~mempty~ as its last element
      - ~(a <> b) <> c =~
        
-       ~=(a1 (a2 ... (mempty))) <> (b1 (b2 ... (mempty))) <> c~
+       ~= (a1 (a2 ... (mempty))) <> (b1 (b2 ... (mempty))) <> c~
        
-       ~=(a1 (a2 ... (b1 (b2 ... (mempty))) <> (c1 (c2 ... (mempy)))~
+       ~= (a1 (a2 ... (b1 (b2 ... (mempty))) <> (c1 (c2 ... (mempy)))~
        
-       ~=(a1 (a2 ... (b1 (b2 ... (c1 (c2 ... (mempy)))~
+       ~= (a1 (a2 ... (b1 (b2 ... (c1 (c2 ... (mempy)))~
        
-       ~=(a1 (a2 ... (b <> c)))~
+       ~= (a1 (a2 ... (b <> c)))~
        
-       ~=a <> (b <> c)~
+       ~= a <> (b <> c)~
        
        QED
 *** Applicative rules
+**** pure id <*> v = v
+     ~= (id (id ...)) <*> v~
+     
+     ~=  zipWithList (\f x -> f x) (id (id ...)) (v1 (v2 ... (mempty)))~
+     
+     ~=  (id v1 (id v2 ... (mempty)))~
+     
+     ~= v~
+**** pure (.) <*> u <*> v <*> w = u <*> (v <*> w)
+     let ~o = (.)~:
+     
+     ~pure o <*> u <*> v <*> w =~
+
+     ~= (o (o ...)) <*> (u1 (u2 ... (mempy))) <*> v <*> w~
+
+     ~= (o u1 (o u2 ... (mempy))) <*> v <*> w~
+
+     ~= (o u1 v1 w1 (o u2 v2 w2 ... (mempy)))~
+
+     ~= (u1 . v1 w1 (u2 . v2 w2 ... (mempy)))~
+
+     ~= u <*> (v1 w1 (v2 w2 ... (mempy)))~
+
+     ~= u <*> (v <*> w)~               
+**** pure f <*> pure x = pure (f x)
+     ~pure f <*> pure x =~
+
+     ~= (f (f ...)) <*> (x (x ...))~
+
+     ~= (f x (f x ...))~
+
+     ~= pure (f x)~
+**** u <*> pure y = pure ($ y) <*> u
+     :eyes:
 ** Use <$> on the lists with a single-parameter function
    such as ~plusTwo = (+2)~
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
