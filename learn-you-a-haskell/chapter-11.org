@@ -28,11 +28,14 @@
        show Empty = ""
        show (Value a list) = " (" ++ (show a) ++ (show list) ++ ")"
      
+     singleton :: a -> List a
+     singleton a = Value a Empty
+     
      :}
      
-     #+end_src
+   #+end_src
 
-     #+RESULTS:
+   #+RESULTS:
 
 ** Make List a functor
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -42,14 +45,14 @@
        fmap f (Value a list) = Value (f a) (fmap f list)
      
      :}
-#+end_src
+   #+end_src
 
-#+RESULTS:
+   #+RESULTS:
 
 ** Create a function that appends two lists
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      :{
-       
+     
      combineLists:: List a -> List a -> List a
      combineLists Empty b = b
      combineLists (Value a l) b = Value a (combineLists l b)
@@ -76,66 +79,17 @@
      
      (Value 2 Empty) <> (Value 3 (Value 4 Empty))
      
-#+end_src
+   #+end_src
 
-#+RESULTS:
-: (2 (3 (4)))
-
-** Make List an applicative
-   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-     :{
-     zipWithList :: (a -> b -> c) -> List a -> List b -> List c
-     zipWithList _ Empty _ = Empty
-     zipWithList _ _ Empty = Empty
-     zipWithList f (Value a listA) (Value b listB) = Value (f a b) (zipWithList f listA listB)
-     :}
-     
-     zipWithList (+) (Value 2 (Value 3 Empty)) (Value 2 (Value 3 (Value 4 Empty)))
-     
-#+end_src
-
-#+RESULTS:
-: (4 (6))
-
-
-   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-     :{
-     instance Applicative List where
-       pure x = (Value x Empty)
-       fs <*> xs = zipWithList (\f x -> f x) fs xs
-     :}
-     
-#+end_src
-
-#+RESULTS:
-
-
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  pure 8 :: List Int
-#+end_src
-
-#+RESULTS:
-: (8)
-
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  pure (+) <*> pure 9 <*> pure 10 :: List Int
-#+end_src
-
-#+RESULTS:
-: (19)
-
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  (+) <$> pure 9 <*> pure 10 :: List Int
-#+end_src
-
-#+RESULTS:
-: (19)
+   #+RESULTS:
+   : (2 (3 (4)))
 
 ** Create a List from a list []:
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      :{
+     
      makeList :: [a] -> List a
-     makeList list = mconcat $ map pure list
+     makeList list = mconcat $ map singleton list
      :}
      
      makeList [1..10]
@@ -144,6 +98,59 @@
 
    #+RESULTS:
    : (1 (2 (3 (4 (5 (6 (7 (8 (9 (10))))))))))
+
+** Make List an applicative
+   - We will do it inspired by ZipList applicative
+     
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     zipWithList :: (a -> b -> c) -> List a -> List b -> List c
+     zipWithList _ Empty _ = Empty
+     zipWithList _ _ Empty = Empty
+     zipWithList f (Value a listA) (Value b listB) = Value (f a b) (zipWithList f listA listB)
+     :}
+     
+     zipWithList (+) (makeList [1,2,3])  (makeList [1,2,3,4])
+     
+   #+end_src
+
+   #+RESULTS:
+   : (2 (4 (6)))
+
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     instance Applicative List where
+       pure x = makeList $ repeat x
+       fs <*> xs = zipWithList (\f x -> f x) fs xs
+     :}
+     
+   #+end_src
+
+   #+RESULTS:
+
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     pure id <*> makeList [1..10]
+   #+end_src
+
+   #+RESULTS:
+   : (1 (2 (3 (4 (5 (6 (7 (8 (9 (10))))))))))
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     pure (+) <*> singleton 9 <*> singleton 10 :: List Int
+   #+end_src
+
+   #+RESULTS:
+   : (19)
+
+
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     (+) <$> singleton 9 <*> singleton 10 :: List Int
+   #+end_src
+
+   #+RESULTS:
+   : (19)
 
 ** Make sure that the List obeys the laws for Applicative and Monoid
 *** Monoid rules
@@ -172,33 +179,33 @@
 ** Use <$> on the lists with a single-parameter function
    such as ~plusTwo = (+2)~
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-     (+2) <$> makeList [1,2,3]
+     (+2) <$> makeList [1..10]
    #+end_src
 
    #+RESULTS:
-   : (3 (4 (5)))
+   : (3 (4 (5 (6 (7 (8 (9 (10 (11 (12))))))))))
 
 ** Use <$> and <*> on the lists with a binary function
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      (*) <$> makeList [1,2,3] <*> makeList [4,5,6] :: List Int
    #+end_src
 
-#+RESULTS:
-: (4 (10 (18)))
+   #+RESULTS:
+   : (4 (10 (18)))
 
 ** Create some lists of binary functions
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      listOfFuncs = makeList [(+), (-), (*), (/)]
      listOfFuncs
-#+end_src
+   #+end_src
 
-#+RESULTS:
-: (<function> (<function> (<function> (<function>))))
+   #+RESULTS:
+   : (<function> (<function> (<function> (<function>))))
 
 ** Use <*> on the binary functions list and the number lists
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  listOfFuncs <*> makeList [13..16] <*> makeList [1..4]
-#+end_src
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     listOfFuncs <*> makeList [1,2,3,4] <*> makeList [1,2,3,4]
+   #+end_src
 
-#+RESULTS:
-: (14.0 (12.0 (45.0 (4.0))))
+   #+RESULTS:
+   : (2.0 (0.0 (9.0 (1.0))))
