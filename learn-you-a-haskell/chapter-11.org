@@ -40,6 +40,7 @@
 ** Make List a functor
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      :{
+       
      instance Functor List where
        fmap f Empty = Empty
        fmap f (Value a list) = Value (f a) (fmap f list)
@@ -90,6 +91,7 @@
      
      makeList :: [a] -> List a
      makeList list = mconcat $ map singleton list
+       
      :}
      
      makeList [1..10]
@@ -104,10 +106,12 @@
      
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      :{
+     
      zipWithList :: (a -> b -> c) -> List a -> List b -> List c
      zipWithList _ Empty _ = Empty
      zipWithList _ _ Empty = Empty
      zipWithList f (Value a listA) (Value b listB) = Value (f a b) (zipWithList f listA listB)
+       
      :}
      
      zipWithList (+) (makeList [1,2,3])  (makeList [1,2,3,4])
@@ -120,9 +124,11 @@
 
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
      :{
+     
      instance Applicative List where
        pure x = makeList $ repeat x
        fs <*> xs = zipWithList (\f x -> f x) fs xs
+       
      :}
      
    #+end_src
@@ -191,6 +197,7 @@
       QED
       
     - ~pure (.) <*> u <*> v <*> w = u <*> (v <*> w)~
+      
       let ~o = (.)~:
 
       ~pure o <*> u <*> v <*> w =~
