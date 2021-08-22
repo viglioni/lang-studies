@@ -14,20 +14,20 @@
    - There are two Values: 
      - Success, which takes that parameter and
      - Fail String, which represents a failure, and a reason for that failure
-#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-  :{
-  data Validation a
-    = Success a
-    | Failure String 
-  
-  instance Show a => Show (Validation a) where
-    show (Failure s) = "Failure: " ++ s
-    show (Success a) = "Success " ++ show a
-  :}
-  
-#+end_src
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     data Validation a
+       = Success a
+       | Failure String 
+     
+     instance Show a => Show (Validation a) where
+       show (Failure s) = "Failure: " ++ s
+       show (Success a) = "Success " ++ show a
+     :}
+     
+   #+end_src
 
-#+RESULTS:
+   #+RESULTS:
 
 ** Make the Validation a Monad
    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
@@ -48,9 +48,9 @@
      
      :}
      
-#+end_src
+   #+end_src
 
-#+RESULTS:
+   #+RESULTS:
 
 ** Create a function positiveCheck
    - which takes a number and returns a successful Validation if it's positive and a failed Validation with a String message if not.
@@ -94,9 +94,7 @@
        (<=<) :: (Monad m) => (b -> m c) -> (a -> m b) -> (a -> m c)  
        f <=< g = (\x -> g x >>= f)  
        :}
-#+end_src
-
-#+RESULTS:
+     #+end_src
 
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
        :{
