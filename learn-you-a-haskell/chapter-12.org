@@ -2,26 +2,110 @@
 #+startup: fold
 #+name: org-clear-haskell-output
 #+begin_src emacs-lisp :var strr="" :exports none
-  (format "%s" (replace-regexp-in-string (rx (and (| "*Main" "Prelude") (? "|") (? white) (? ">") (? white))) "" (format "%s" strr)))
+  (format "%s" (replace-regexp-in-string
+                (rx line-start (+ (| alphanumeric "." blank)) (and ">" (+ blank)))
+                "" (format "%s" strr)))
 #+end_src
+
+#+RESULTS: org-clear-haskell-output
+
 ** Create a type called Validation
    - The type constructor takes one parameter
    - There are two Values: 
      - Success, which takes that parameter and
      - Fail String, which represents a failure, and a reason for that failure
+#+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+  :{
+  data Validation a
+    = Success a
+    | Failure String 
+  
+  instance Show a => Show (Validation a) where
+    show (Failure s) = "Failure: " ++ s
+    show (Success a) = "Success " ++ show a
+  :}
+  
+#+end_src
+
+#+RESULTS:
+
 ** Make the Validation a Monad
+   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+     :{
+     
+     instance Functor Validation where
+       fmap _ (Failure s) = Failure s
+       fmap f (Success a) = Success (f a)
+     
+     instance Applicative Validation where
+       pure x = Success x
+       (<*>) (Failure s) _ = Failure s
+       (<*>) (Success f) a = fmap f a
+     
+     instance Monad Validation where
+       (>>=) (Failure s) _ = (Failure s)
+       (>>=) (Success a) f = f a
+     
+     :}
+     
+#+end_src
+
+#+RESULTS:
+
 ** Create a function positiveCheck
    - which takes a number and returns a successful Validation if it's positive and a failed Validation with a String message if not.
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       positiveCheck :: (Num a, Ord a) => a -> Validation a
+       :{
+       positiveCheck :: (Num a, Ord a, Show a) => a -> Validation a
+       positiveCheck n =
+         if n > 0
+           then  Success n
+           else Failure $ show n ++ " is not positive"
+       :}
+       
+       map positiveCheck [-1, 1]
      #+end_src
+
+     #+RESULTS:
+     : [Failure: -1 is not positive,Success 1]
+
 ** Create a function, evenCheck
    - which returns a successful Validation if it's even and a failed Validation with a string message if it's odd
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       evenCheck :: (Integral a)  =>  a -> Validation a
+       :{
+       evenCheck :: (Integral a, Show a) => a -> Validation a
+       evenCheck n =
+         if (mod n  2 ) == 0
+           then  Success n
+           else Failure $ show n ++ " is not even"
+       :}
+       
+       map evenCheck [0..3]
+       
      #+end_src
+
+     #+RESULTS:
+     : [Success 0,Failure: 1 is not even,Success 2,Failure: 3 is not even]
+
 ** Create a function positiveAndEvenCheck
    - Write a function which uses positiveCheck and evenCheck to make sure a number is both positive and even
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
-       positiveAndEvenCheck :: (Num a, Ord a, Integral a) => a -> Validation a
+       :{
+       (<=<) :: (Monad m) => (b -> m c) -> (a -> m b) -> (a -> m c)  
+       f <=< g = (\x -> g x >>= f)  
+       :}
+#+end_src
+
+#+RESULTS:
+
+     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+       :{
+       positiveAndEvenCheck :: (Num a, Ord a, Integral a, Show a) => a -> Validation a
+       positiveAndEvenCheck = evenCheck <=< positiveCheck
+       :}
+       
+       map positiveAndEvenCheck [-2..2]
      #+end_src
+
+     #+RESULTS:
+     : [Failure: -2 is not positive,Failure: -1 is not positive,Failure: 0 is not positive,Failure: 1 is not even,Success 2]
