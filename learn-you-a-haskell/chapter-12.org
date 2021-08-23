@@ -21,8 +21,8 @@
        | Failure String 
      
      instance Show a => Show (Validation a) where
-       show (Failure s) = "Failure: " ++ s
-       show (Success a) = "Success " ++ show a
+       show (Failure s) = " Failure: " ++ s
+       show (Success a) = " Success " ++ show a
      :}
      
    #+end_src
@@ -67,7 +67,7 @@
      #+end_src
 
      #+RESULTS:
-     : [Failure: -1 is not positive,Success 1]
+     : [ Failure: -1 is not positive, Success 1]
 
 ** Create a function, evenCheck
    - which returns a successful Validation if it's even and a failed Validation with a string message if it's odd
@@ -85,9 +85,27 @@
      #+end_src
 
      #+RESULTS:
-     : [Success 0,Failure: 1 is not even,Success 2,Failure: 3 is not even]
+     : [ Success 0, Failure: 1 is not even, Success 2, Failure: 3 is not even]
 
-** Create a function positiveAndEvenCheck
+** Create a function, divisibleByThreeCheck
+   - which returns a successful Validation if it's divisible by 3 and a failed Validation with a string message if it's not
+     #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+       :{
+       divisibleByThreeCheck :: (Integral a, Show a) => a -> Validation a
+       divisibleByThreeCheck n =
+         if (mod n 3) == 0
+           then  Success n
+           else Failure $ show n ++ " is not divisible by three"
+       :}
+       
+       map divisibleByThreeCheck [0..3]
+       
+     #+end_src
+
+     #+RESULTS:
+     : [ Success 0, Failure: 1 is not divisible by three, Failure: 2 is not divisible by three, Success 3]
+
+** Create a function applyAllChecks
    - Write a function which uses positiveCheck and evenCheck to make sure a number is both positive and even
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
        :{
@@ -96,14 +114,16 @@
        :}
      #+end_src
 
+     #+RESULTS:
+
      #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
        :{
-       positiveAndEvenCheck :: (Num a, Ord a, Integral a, Show a) => a -> Validation a
-       positiveAndEvenCheck = evenCheck <=< positiveCheck
+       applyAllChecks :: (Num a, Ord a, Integral a, Show a) => a -> Validation a
+       applyAllChecks = evenCheck <=< positiveCheck <=< divisibleByThreeCheck
        :}
        
-       map positiveAndEvenCheck [-2..2]
+       map applyAllChecks [-2..6]
      #+end_src
 
      #+RESULTS:
-     : [Failure: -2 is not positive,Failure: -1 is not positive,Failure: 0 is not positive,Failure: 1 is not even,Success 2]
+     : [ Failure: -2 is not divisible by three, Failure: -1 is not divisible by three, Failure: 0 is not positive, Failure: 1 is not divisible by three, Failure: 2 is not divisible by three, Failure: 3 is not even, Failure: 4 is not divisible by three, Failure: 5 is not divisible by three, Success 6]
