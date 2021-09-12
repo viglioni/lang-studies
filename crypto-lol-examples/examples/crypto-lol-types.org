@@ -1,0 +1,41 @@
+#+title: Crypto.Lol.Types
+
+** Crypto Lol Types
+   [[https://hackage.haskell.org/package/lol-0.7.0.0/docs/Crypto-Lol-Types.html][Hackage]]
+*** goodQs
+    *hackage definition:* /An infinite list of primes greater than lower and congruent to 1 mod m./
+
+    ~goodQs :: ToInteger a => a -> a -> [a]~
+
+    ~goodQs a b~: infinite list of primes bigger than ~b~ and congruent to 1 ~mod a~
+   
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+      import Crypto.Lol.Types (goodQs)
+    #+end_src
+
+    #+RESULTS:
+
+    *20 first primes:*
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+      take 20 $ goodQs (1 :: Int) (1:: Int)
+    #+end_src 
+
+    #+RESULTS:
+    : (2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71)
+
+    *20 first primes bigger than 1000:*
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+      take 20 $ goodQs (1 :: Int) (1000 :: Int)
+    #+end_src 
+
+    #+RESULTS:
+    : (1009 1013 1019 1021 1031 1033 1039 1049 1051 1061 1063 1069 1087 1091 1093 1097 1103 1109 1117 1123)
+
+    *20 first primes congruent to 1 mod 5:*
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+      take 20 $ goodQs (5 :: Int) (1 :: Int)
+    #+end_src 
+
+    #+RESULTS:
+    : (11 31 41 61 71 101 131 151 181 191 211 241 251 271 281 311 331 401 421 431)
+

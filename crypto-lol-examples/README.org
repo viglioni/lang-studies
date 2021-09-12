@@ -1,0 +1,9 @@
+#+title: Examples for the lib Λoλ
+#+author: Laura Viglioni
+** About
+   - The purpose of this repo is to document some functions from [[https://hackage.haskell.org/package/lol-0.7.0.0/docs/Crypto-Lol-Types.html][Crypto.Lol]].
+   - If you want to execute the codeblocks, you need to build before:
+   #+begin_src shell :exports both 
+     $ stack build
+   #+end_src
+   - The examples are located in ~/examples~.
