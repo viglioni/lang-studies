@@ -1,0 +1,167 @@
+#+title: Complex numbers - using newtype
+
+
+** Type definition
+   
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*) 
+     :{
+     newtype Complex = Complex (Float, Float)
+     
+     instance Show Complex where
+       show (Complex (a, b)) =
+         show a ++
+         (if b < 0
+            then " - "
+            else " + ") ++
+         show (abs b) ++ "i"
+     
+     :}
+     
+     Complex (1,2)
+   #+end_src
+
+   #+RESULTS:
+   :  1.0 + 2.0i
+
+** Basic functions
+   
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     :{
+     conjugate :: Complex -> Complex
+     conjugate (Complex (a,b)) = Complex (a, -b)  
+     :}
+     
+     conjugate (Complex (1,2))
+   #+end_src
+
+   #+RESULTS:
+   :  1.0 - 2.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     :{
+     real :: Complex -> Float
+     real (Complex (a,_)) = a
+     
+     imag :: Complex -> Float
+     imag (Complex (_,b)) = b
+     
+     :}
+     
+     map ($ (Complex (1,2))) [real, imag]
+   #+end_src
+
+   #+RESULTS:
+   :  [1.0,2.0]
+
+** Instance of Num
+   
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     :{
+     instance Num Complex where
+         (+) (Complex (a, b)) (Complex (c, d)) = Complex (a+c, b + d)
+         (-) (Complex (a, b)) (Complex (c, d)) = Complex (a-c , b - d)
+         (*) (Complex (a, b)) (Complex (c, d)) = Complex (a*c - b*d, a*d + b*c)
+         negate (Complex (a, b)) = Complex (negate a ,negate b)
+         abs (Complex (a, b)) =  Complex ( sqrt $ a*a + b*b,  0)
+         fromInteger a = Complex (fromInteger a, 0)
+         signum (Complex (a, b)) = Complex (signum a, 0)
+     
+     :}
+   #+end_src
+
+   #+RESULTS:
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     Complex (1,1) + Complex (1,2)
+   #+end_src
+
+   #+RESULTS:
+   : 2.0 + 3.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     Complex (1,1) * Complex (1,2)
+   #+end_src
+
+   #+RESULTS:
+   : -1.0 + 3.0i
+
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     Complex (1,1) - Complex (1,2)
+   #+end_src
+
+   #+RESULTS:
+   : 0.0 - 1.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     negate $ Complex (1,1)
+   #+end_src
+
+   #+RESULTS:
+   : -1.0 - 1.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     abs $ Complex (1,1)
+   #+end_src
+
+   #+RESULTS:
+   : 1.4142135 + 0.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     fromInteger 10 :: Complex
+   #+end_src
+
+   #+RESULTS:
+   : 10.0 + 0.0i
+
+** Instance of Fractional
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     :{
+     instance Fractional Complex where
+       fromRational a = Complex (fromRational a, 0)
+       (/) (Complex (a, b))  (Complex (c, d)) = 
+         (Complex (a, b)) * conjugate (Complex (c, d)) *
+          Complex (1 / (c * c + d * d), 0)
+     :}
+   #+end_src
+
+   #+RESULTS:
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     fromRational 10 :: Complex
+   #+end_src
+
+   #+RESULTS:
+   : 10.0 + 0.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     Complex (1,1) / Complex (1,1)
+   #+end_src
+
+   #+RESULTS:
+   : 1.0 + 0.0i
+
+** Mapping
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     :{
+     mapReal :: (Float -> Float) -> Complex -> Complex
+     mapReal f (Complex (a,b)) = Complex (f a, b)
+     :}
+     
+     mapReal (+1) $ Complex (1,1)
+#+end_src
+
+#+RESULTS:
+:  2.0 + 1.0i
+
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
+     :{
+     mapImag :: (Float -> Float) -> Complex -> Complex
+     mapImag f (Complex (a,b)) = Complex (a,f b)
+     :}
+     
+     mapImag (+1) $ Complex (1,1)
+#+end_src
+
+#+RESULTS:
+:  1.0 + 2.0i

@@ -1,19 +1,11 @@
 #+Title: Binary Trees
 #+startup: fold
-#+name: org-clear-haskell-output
-#+begin_src emacs-lisp :var strr="" :exports none
-    (format "%s" (replace-regexp-in-string
-                  (rx (and (| "*Main" "Prelude") (? "|") (? ">"))) "" (format "%s" strr)))
-    
-#+end_src
-
-#+RESULTS: org-clear-haskell-output
 
 In this file we will define trees and some related functions
 
 
 ** Type
-   #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+   #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
      :{
       
      data BinTree a
@@ -35,7 +27,7 @@ In this file we will define trees and some related functions
    #+RESULTS:
 ** Functions
 *** Create single node (leaf)
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       leaf :: a -> BinTree a  
@@ -46,7 +38,7 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Insert node
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       insertNode :: (Ord a) => BinTree a -> a -> BinTree a
@@ -63,7 +55,7 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Searching for node
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       elemTree :: (Ord a) => BinTree a -> a -> Bool
@@ -80,7 +72,7 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Tree from a list
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
             :{
             
             treeFromList :: (Ord a) => [a] -> BinTree a
@@ -91,7 +83,7 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Get node value
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       getValue :: BinTree a -> Maybe a
@@ -105,7 +97,7 @@ In this file we will define trees and some related functions
 
 *** List from a tree
     In order to guarantee that the list will have the same insertion order, we always insert ~node~, ~left child node~, ~right child node~
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       _getValue :: BinTree a -> [a]
@@ -131,7 +123,7 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Get all leafs
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       leafs :: BinTree a -> [a]
@@ -144,7 +136,7 @@ In this file we will define trees and some related functions
 
     #+RESULTS:
 *** Tree height
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       height EmptyTree = 0
@@ -157,7 +149,7 @@ In this file we will define trees and some related functions
     #+RESULTS:
 
 *** Count nodes
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       :{
       
       countNodes :: BinTree a -> Int
@@ -171,14 +163,14 @@ In this file we will define trees and some related functions
     #+RESULTS:
 ** Executing functions
 *** Creating a leaf
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       leaf 10
     #+end_src
 
     #+RESULTS:
     : (10 _ _)
 
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       leaf  "string node"
     #+end_src
 
@@ -186,7 +178,7 @@ In this file we will define trees and some related functions
     : (string node _ _)
 
 *** Creating a binary tree from a list
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       treeFromList [4,2,1,3,9,7,6,8]
     #+end_src
 
@@ -194,7 +186,7 @@ In this file we will define trees and some related functions
     : (4 (2 (1 _ _) (3 _ _)) (9 (7 (6 _ _) (8 _ _)) _))
 
 *** Applying fmap on a tree, i.e. trees as functors
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       tree = treeFromList [4,2,1,3,9,7,6,8]
       fmap (* 10) tree       
     #+end_src
@@ -204,7 +196,7 @@ In this file we will define trees and some related functions
 
 *** Checking if an element is in the tree
      
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       tree = treeFromList [4,2,1,3,9,7,6,8]
       zip [1..10] $ map (elemTree tree) [1..10]
     #+end_src
@@ -213,7 +205,7 @@ In this file we will define trees and some related functions
     : ((1 True) (2 True) (3 True) (4 True) (5 False) (6 True) (7 True) (8 True) (9 True) (10 False))
 
 *** List from a tree
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       tree = treeFromList [4,2,1,3,9,7,6,8]
       listFromTree tree
     #+end_src
@@ -222,7 +214,7 @@ In this file we will define trees and some related functions
     : (4 2 9 1 3 7 6 8)
 
 *** Get all leafs form a tree
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       tree = treeFromList [4,2,1,3,9,7,6,8]
       leafs tree
     #+end_src
@@ -231,7 +223,7 @@ In this file we will define trees and some related functions
     : (1 3 6 8)
 
 *** Tree height
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       trees = map treeFromList [[] , [1], [1,2,3] , [2,1,3,4,5], [4,2,1,3,9,7,6,8]]
       map height trees  
     #+end_src
@@ -239,7 +231,7 @@ In this file we will define trees and some related functions
     #+RESULTS:
     : (0 1 3 4 4)
 *** Count nodes from a tree
-    #+begin_src haskell :exports both :post org-clear-haskell-output(*this*)
+    #+begin_src haskell :exports both :post org-babel-haskell-formatter(*this*)
       tree = treeFromList [4,2,1,3,9,7,6,8]
       countNodes tree
     #+end_src
