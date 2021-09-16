@@ -1,1 +1,9 @@
 #+title: Some haskell snippets
+
+|----------------+-------------------------------+--------------------------------|
+| name           | file                          | description                    |
+|----------------+-------------------------------+--------------------------------|
+| Binary Tree    | [[./binary-trees.org]]            | related functions, functor     |
+| Complex Number | [[./complex-numbers-newtype.org]] | instance of Num and Fractional |
+|----------------+-------------------------------+--------------------------------|
+
