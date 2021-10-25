@@ -1,0 +1,62 @@
+#+title: Week 7 - Folds and Monoids
+** About
+   - [[https://www.seas.upenn.edu/~cis194/spring13/lectures/07-folds-monoids.html][Lecture]]
+   - [[https://www.seas.upenn.edu/~cis194/spring13/hw/07-folds-monoids.pdf][Exercises]]
+
+** Exercise 1
+  
+*** Data Structure
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      import Data.Monoid
+      
+      :{
+      data JoinList m a
+        = Empty
+        | Single m a
+        | Append m (JoinList m a) (JoinList m a)
+        deriving (Eq, Show)
+      :}
+      
+      [Empty, Single (Product 2) 'a']
+#+end_src
+
+#+RESULTS:
+: 
+:  [Empty,Single (Product {getProduct = 2}) 'a']
+
+*** Helper function ~tag~
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      tag :: Monoid m => JoinList m a -> m
+      tag Empty = mempty
+      tag (Single m _) = m
+      tag (Append m _ _) = m
+      :}
+      
+      :{
+      list1 = Single (Product 2) 'x'
+      list2 = Append (Product 10) Empty Empty
+      :}
+      
+      tag Empty <> tag list1 <> tag list2 
+#+end_src
+
+#+RESULTS:
+: 
+:  Product {getProduct = 20}
+
+*** (+++) append function
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
+      (+++) Empty a = a
+      (+++) a Empty = a
+      (+++) a b = Append (tag a <> tag b) a b
+      :}
+      
+      Single (Product 2) 'x' +++ Single (Product 3) 'y'
+      #+end_src
+
+      #+RESULTS:
+      : 
+      :  Append (Product {getProduct = 6}) (Single (Product {getProduct = 2}) 'x') (Single (Product {getProduct = 3}) 'y')

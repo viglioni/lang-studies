@@ -1,0 +1,155 @@
+#+title: Week 7 - Folds and Monoids
+** About
+   - [[https://www.seas.upenn.edu/~cis194/spring13/lectures/07-folds-monoids.html][Lecture]]
+   - [[https://www.seas.upenn.edu/~cis194/spring13/hw/07-folds-monoids.pdf][Exercises]]
+
+** Loading exercise's files
+   - Loading ~Sized~ class
+     #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+       :load "./week-7-folds-and-monoids/Sized.hs"
+     #+end_src
+
+     #+RESULTS:
+     : [1 of 1] Compiling Sized            ( week-7-folds-and-monoids/Sized.hs, interpreted )
+     : Ok, one module loaded.
+
+** Exercise 1
+
+*** Data Structure
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      import Data.Monoid
+
+      :{
+      data JoinList m a
+        = Empty
+        | Single m a
+        | Append m (JoinList m a) (JoinList m a)
+        deriving (Eq, Show)
+      :}
+
+      [Empty, Single (Product 2) 'a']
+    #+end_src
+
+    #+RESULTS:
+    :
+    :  [Empty,Single (Product {getProduct = 2}) 'a']
+
+*** Helper function ~tag~
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      tag :: Monoid m => JoinList m a -> m
+      tag Empty = mempty
+      tag (Single m _) = m
+      tag (Append m _ _) = m
+      :}
+
+      :{
+      list1 = Single (Product 2) 'x'
+      list2 = Append (Product 10) Empty Empty
+      :}
+
+      tag Empty <> tag list1 <> tag list2
+    #+end_src
+
+    #+RESULTS:
+    :
+    :  Product {getProduct = 20}
+
+*** (+++) append function
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
+      (+++) Empty a = a
+      (+++) a Empty = a
+      (+++) a b = Append (tag a <> tag b) a b
+      :}
+
+      Single (Product 7) 'x' +++ Single (Product 3) 'y'
+    #+end_src
+
+    #+RESULTS:
+    :
+    :  Append (Product {getProduct = 21}) (Single (Product {getProduct = 7}) 'x') (Single (Product {getProduct = 3}) 'y')
+
+** Making JoinList a Monoid
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     :{
+     instance Monoid a => Semigroup (JoinList a b) where
+       (<>) = (+++)
+     :}
+
+     :{
+     instance Monoid a => Monoid (JoinList a b) where
+       mempty = Empty
+     :}
+
+     Single "StringsAre" 1 <> Single "MonoidsToo" 2
+   #+end_src
+
+   #+RESULTS:
+   :
+   :  Append "StringsAreMonoidsToo" (Single "StringsAre" 1) (Single "MonoidsToo" 2)
+
+** Exercise 2
+*** Given functions in the problem:
+
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      (!!?) :: [a] -> Int -> Maybe a
+      [] !!? _ = Nothing
+      _ !!? i | i < 0 = Nothing
+      (x:xs) !!? 0 = Just x
+      (x:xs) !!? i = xs !!? (i-1)
+      :}
+
+      :{
+      jlToList :: JoinList m a -> [a]
+      jlToList Empty = []
+      jlToList (Single _ a) = [a]
+      jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2
+      :}
+
+      jl = mconcat $ map (Single (Size 1)) ['a'..'e']
+      map (jlToList jl !!?) [-1..5]
+    #+end_src
+
+    #+RESULTS:
+    :
+    :  [Nothing,Just 'a',Just 'b',Just 'c',Just 'd',Just 'e',Nothing]
+*** indexJ function
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      indexJ :: (Sized b, Monoid b) => JoinList b a -> Int -> Maybe a
+      indexJ Empty _ = Nothing
+      indexJ _ i | i < 0 = Nothing
+      indexJ (Single b a) i | i > 0 = Nothing
+      indexJ (Single b a) i = Just a
+      indexJ (Append _ a b) i | i == 0 = indexJ a 0
+      indexJ (Append _ a b) i  = indexJ b (i - 1)
+      :}
+
+      jl = mconcat $ map (Single (Size 1)) $ ['a'..'e']
+      map (indexJ jl) [-1..5]
+    #+end_src
+
+    #+RESULTS:
+    :
+    :  [Nothing,Just 'a',Just 'b',Just 'c',Just 'd',Just 'e',Nothing]
+
+*** dropJ function
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      dropJ :: Int -> JoinList a b -> JoinList a b
+      dropJ _ Empty = Empty
+      dropJ i a | i < 1 = a
+      dropJ i (Single _ _) = Empty
+      dropJ i (Append _ a b) = dropJ (i - 1) b
+      :}
+      
+      jl = mconcat $ map (Single (Size 1)) $ ['a'..'e']
+      dropJ 2 jl
+    #+end_src
+
+    #+RESULTS:
+    : 
+    :  Append (Size 3) (Single (Size 1) 'c') (Append (Size 2) (Single (Size 1) 'd') (Single (Size 1) 'e'))

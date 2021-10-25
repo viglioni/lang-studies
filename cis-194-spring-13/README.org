@@ -1,0 +1,9 @@
+#+title: CIS 194 Spring 13
+#+author: Laura Viglioni
+
+My solutions of exercises from the course [[https://www.seas.upenn.edu/~cis194/spring13/][CIS-194 Spring 13]].
+
+- [[./week-7-folds-and-monoids.org][Week 7: Folds and Monoids]]
+- [[./week-8-io/README.org][Week 8: IO]]
+
+*Obs.:* To load the Haskell files provided by the exercises inside ~org~ files, I had to convert this project into a package. In other words, yaml files and everything inside ~app/~ could be ignored.q

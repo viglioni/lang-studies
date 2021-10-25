@@ -1,0 +1,175 @@
+#+title: Week 8 - IO
+** About
+   - [[https://www.seas.upenn.edu/~cis194/spring13/lectures/08-IO.html][Lecture]]
+   - [[https://www.seas.upenn.edu/~cis194/spring13/hw/08-IO.pdf][Exercises]]
+
+** Importing exercises files
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     :set -package containers
+     :load "./week-8-io/Employee.hs"
+   #+end_src
+
+   #+RESULTS:
+   : Loaded GHCi configuration from /Users/laura.viglioni/.ghc/ghci.conf
+   :  package flags have changed, resetting and loading new packages...
+   : [1 of 1] Compiling Employee         ( week-8-io/Employee.hs, interpreted )
+   : Ok, one module loaded.
+** Some employees
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     michael = Emp "Michael Scott" 10
+     holly = Emp "Holly Flax" 10
+     jim = Emp "Jim Halpert" 9
+     pam = Emp "Pam Beesly" 8
+     andy = Emp "Andy Bernard" 7
+     erin = Emp "Erin Hannon" 6
+     dwight = Emp "Dwight Shrute" 2
+     creed = Emp "Creed Bratton" 8
+     toby = Emp "Toby Flenderson" (-30)
+     angela = Emp "Angela Martin" (-10)
+   #+end_src
+
+   #+RESULTS:
+
+** My own instances of show
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     :{
+     instance Show Employee where
+       show (Emp name fun) = name ++ "\t-\t" ++ (show fun)
+     :}
+
+     jim
+   #+end_src
+
+   #+RESULTS:
+   : 
+   :  Jim Halpert	-	9
+
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     :{
+     instance Show GuestList where
+       show (GL employees totalFun) =
+         "\nTotal fun: " ++ (show totalFun) ++ "\n" ++ "Employee list:\n" ++ empList
+         where
+           empList = foldl (\acc val -> acc ++ (show val) ++ "\n") "" employees
+
+
+     :}
+
+     GL [dwight, creed] 10
+   #+end_src
+
+   #+RESULTS:
+   : 
+   :  
+   : Total fun: 10
+   : Employee list:
+   : Dwight Shrute	-	2
+   : Creed Bratton	-	8
+** Exercise 1
+*** glCons
+    Create a function ~glCons :: Employee -> GuestList -> GuestList~
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      glCons :: Employee -> GuestList -> GuestList
+      glCons employee (GL employees totalFun) =
+        GL (employee:employees) (empFun employee + totalFun)
+      :}
+
+      glCons michael (GL [] 0)
+    #+end_src
+
+    #+RESULTS:
+    : 
+    :  
+    : Total fun: 10
+    : Employee list:
+    : Michael Scott	-	10
+*** A monoid instance of GuestList
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      instance Semigroup GuestList where
+        (GL list1 fun1) <> (GL list2 fun2) = GL (list1 <> list2) (fun1 + fun2)
+
+      instance Monoid GuestList where
+        mempty = GL [] 0
+
+      -- helper functions
+      singletonGL :: Employee -> GuestList
+      singletonGL emp = GL [emp] (empFun emp)
+
+      glFromEmps :: [Employee] -> GuestList
+      glFromEmps = mconcat . map  singletonGL
+      :}
+
+
+      glFromEmps [jim, pam, michael, holly] -- uses mconcat
+    #+end_src
+
+    #+RESULTS:
+    : 
+    :  
+    : Total fun: 37
+    : Employee list:
+    : Jim Halpert	-	9
+    : Pam Beesly	-	8
+    : Michael Scott	-	10
+    : Holly Flax	-	10
+*** moreFun
+    ~moreFun :: GuestList -> GuestList -> GuestList~
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      :{
+      moreFun :: GuestList -> GuestList -> GuestList
+      moreFun = max
+
+      :}
+
+      :{
+      moreFun
+        (glFromEmps [jim, pam])
+        (glFromEmps [dwight, angela])
+      :}
+    #+end_src
+
+    #+RESULTS:
+    : 
+    :  
+    : Total fun: 17
+    : Employee list:
+    : Jim Halpert	-	9
+    : Pam Beesly	-	8
+** Exercise 2
+*** treeFold
+    ~treeFold :: ... -> Tree a -> b~
+    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+      --      treeFoldl fn initialVal (Node val []) = initialVal -- fn initialVal val
+      --treeFoldl _ initialVal _ = initialVal
+      -- treeFoldl fn initialVal (Node val forest) =
+      --   mconcat $ map (treeFoldl fn initialVal) forest
+      
+      
+      :{
+      
+      treeFoldl :: (b -> a -> b) -> b -> Tree a -> [b]
+      treeFoldl fn init (Node val []) = fn init val
+      treeFoldl fn init (Node val forest) = map (treeFoldl fn init) forest
+      :}
+    #+end_src
+
+    #+RESULTS:
+    #+begin_example
+
+
+    <interactive>:219:39-68: error:
+        • Occurs check: cannot construct the infinite type: b ~ [b]
+          Expected type: [b]
+            Actual type: [[b]]
+        • In the expression: map (treeFoldl fn init) forest
+          In an equation for ‘treeFoldl’:
+              treeFoldl fn init (Node val forest)
+                = map (treeFoldl fn init) forest
+        • Relevant bindings include
+            init :: b (bound at <interactive>:219:14)
+            fn :: b -> a -> b (bound at <interactive>:219:11)
+            treeFoldl :: (b -> a -> b) -> b -> Tree a -> [b]
+              (bound at <interactive>:219:1)
+    #+end_example
