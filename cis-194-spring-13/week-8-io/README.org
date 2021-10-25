@@ -140,36 +140,3 @@
 ** Exercise 2
 *** treeFold
     ~treeFold :: ... -> Tree a -> b~
-    #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-      --      treeFoldl fn initialVal (Node val []) = initialVal -- fn initialVal val
-      --treeFoldl _ initialVal _ = initialVal
-      -- treeFoldl fn initialVal (Node val forest) =
-      --   mconcat $ map (treeFoldl fn initialVal) forest
-      
-      
-      :{
-      
-      treeFoldl :: (b -> a -> b) -> b -> Tree a -> [b]
-      treeFoldl fn init (Node val []) = fn init val
-      treeFoldl fn init (Node val forest) = map (treeFoldl fn init) forest
-      :}
-    #+end_src
-
-    #+RESULTS:
-    #+begin_example
-
-
-    <interactive>:219:39-68: error:
-        • Occurs check: cannot construct the infinite type: b ~ [b]
-          Expected type: [b]
-            Actual type: [[b]]
-        • In the expression: map (treeFoldl fn init) forest
-          In an equation for ‘treeFoldl’:
-              treeFoldl fn init (Node val forest)
-                = map (treeFoldl fn init) forest
-        • Relevant bindings include
-            init :: b (bound at <interactive>:219:14)
-            fn :: b -> a -> b (bound at <interactive>:219:11)
-            treeFoldl :: (b -> a -> b) -> b -> Tree a -> [b]
-              (bound at <interactive>:219:1)
-    #+end_example
