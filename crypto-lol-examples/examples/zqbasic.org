@@ -26,9 +26,9 @@ Hackage]]
 ** Creating Z2, Z3 etc
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   type Z2 = Zq 2
-  zeroZ2 = 0 :: Z2
-  oneZ2  = 1 :: Z2
-  fiveZ2 = 5 :: Z2
+  zeroZ2  = 0 :: Z2
+  oneZ2   = 1 :: Z2
+  fiveZ2  = 5 :: Z2
 
   [zeroZ2, oneZ2, fiveZ2]
 #+end_src
@@ -64,8 +64,8 @@ Hackage]]
 
 *** Power
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  type Z50 = Zq 50
-  nineZ50 = 9 :: Z50
+  type Z50       = Zq 50
+  nineZ50        = 9 :: Z50
   squaredNineZ50 = nineZ50 ^- 2 
   cubeNineZ50    = nineZ50 ^- 3
   [squaredNineZ50, nineZ50 * nineZ50, cubeNineZ50, nineZ50 * nineZ50 * nineZ50]
@@ -87,7 +87,7 @@ Hackage]]
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   type Z3 = Zq 3
-  zeroZ3 = 0 :: Z3
+  zeroZ3  = 0 :: Z3
 
   -- should throw type error:
   zeroZ3 + zeroZ2
