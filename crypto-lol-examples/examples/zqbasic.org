@@ -1,6 +1,7 @@
 #+title: ZqBasic
 [[https://hackage.haskell.org/package/lol-0.7.0.0/docs/Crypto-Lol-Types.html#t:ZqBasic][
 Hackage]]
+
 [[https://github.com/cpeikert/Lol/blob/master/lol-apps/Crypto/Lol/Applications/Examples/SymmBGV.hs][Lol-apps example]]
 
 ** Imports
@@ -37,7 +38,7 @@ Hackage]]
 :  [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}]
 
 ** Basic operations
-
+*** +
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   [zeroZ2 + zeroZ2, zeroZ2 + oneZ2, oneZ2 + oneZ2]
 #+end_src
@@ -45,6 +46,7 @@ Hackage]]
 #+RESULTS:
 : [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 0}]
 
+*** *
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   [zeroZ2 * zeroZ2, zeroZ2 * oneZ2, oneZ2 * oneZ2]
 #+end_src
@@ -52,6 +54,7 @@ Hackage]]
 #+RESULTS:
 : [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}]
 
+*** /
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
  [zeroZ2 / oneZ2 , oneZ2 / oneZ2]
 #+end_src
@@ -59,10 +62,11 @@ Hackage]]
 #+RESULTS:
 : [ZqB {unZqB = 0},ZqB {unZqB = 1}]
 
+*** Power
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   type Z50 = Zq 50
   nineZ50 = 9 :: Z50
-  squaredNineZ50 = nineZ50 ^- 2 -- power
+  squaredNineZ50 = nineZ50 ^- 2 
   cubeNineZ50    = nineZ50 ^- 3
   [squaredNineZ50, nineZ50 * nineZ50, cubeNineZ50, nineZ50 * nineZ50 * nineZ50]
 #+end_src
@@ -71,6 +75,7 @@ Hackage]]
 : 
 :  [ZqB {unZqB = 31},ZqB {unZqB = 31},ZqB {unZqB = 29},ZqB {unZqB = 29}]
 
+*** Negate 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   negate nineZ50
 #+end_src
