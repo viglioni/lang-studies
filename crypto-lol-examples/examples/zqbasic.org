@@ -12,7 +12,6 @@ Hackage]]
   import Crypto.Lol.Types 
   import Crypto.Lol 
   import Algebra.Ring ((^))
-  import Crypto.Lol.Types.Unsafe.ZqBasic (unZqB)
   import qualified Prelude as P -- to avoid conflicts
 #+end_src
 
@@ -61,6 +60,27 @@ Hackage]]
 : [ZqB {unZqB = 0},ZqB {unZqB = 1}]
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  type Z50 = Zq 50
+  nineZ50 = 9 :: Z50
+  squaredNineZ50 = nineZ50 ^- 2 -- power
+  cubeNineZ50    = nineZ50 ^- 3
+  [squaredNineZ50, nineZ50 * nineZ50, cubeNineZ50, nineZ50 * nineZ50 * nineZ50]
+#+end_src
+
+#+RESULTS:
+: 
+:  [ZqB {unZqB = 31},ZqB {unZqB = 31},ZqB {unZqB = 29},ZqB {unZqB = 29}]
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  negate nineZ50
+#+end_src
+
+#+RESULTS:
+: ZqB {unZqB = 41}
+
+** Type safety
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   type Z3 = Zq 3
   zeroZ3 = 0 :: Z3
 
@@ -71,7 +91,7 @@ Hackage]]
 #+RESULTS:
 : 
 :  
-: <interactive>:217:10-15: error:
+: <interactive>:424:10-15: error:
 :     • Couldn't match type ‘2’ with ‘3’
 :       Expected type: Z3
 :         Actual type: Z2
@@ -82,8 +102,6 @@ Hackage]]
 ** Inverse, when exists
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  type Z50 = Zq 50
-  nineZ50 = 9 :: Z50
   nineZ50inv = recip nineZ50
 
   [nineZ50, nineZ50inv , nineZ50inv * nineZ50]
@@ -105,3 +123,11 @@ An element n of a ring Zq has inverse if and only if ~gcd n q = 1~
 : ZqB {unZqB = *** Exception: ZqB.recip fail: 5	50
 : CallStack (from HasCallStack):
 :   error, called at ./Crypto/Lol/Types/Unsafe/ZqBasic.hs:219:27 in lol-0.7.0.1-9IqnkYuIm434kiBNKkZDxM:Crypto.Lol.Types.Unsafe.ZqBasic
+
+** Extract number from type
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  lift nineZ50
+#+end_src
+
+#+RESULTS:
+: 9
