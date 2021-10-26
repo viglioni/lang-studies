@@ -1,0 +1,107 @@
+#+title: ZqBasic
+[[https://hackage.haskell.org/package/lol-0.7.0.0/docs/Crypto-Lol-Types.html#t:ZqBasic][
+Hackage]]
+[[https://github.com/cpeikert/Lol/blob/master/lol-apps/Crypto/Lol/Applications/Examples/SymmBGV.hs][Lol-apps example]]
+
+** Imports
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :set -package numeric-prelude
+  :set -XDataKinds
+  :set -XPolyKinds
+  :set -XRebindableSyntax     
+  import Crypto.Lol.Types 
+  import Crypto.Lol 
+  import Algebra.Ring ((^))
+  import Crypto.Lol.Types.Unsafe.ZqBasic (unZqB)
+  import qualified Prelude as P -- to avoid conflicts
+#+end_src
+
+#+RESULTS:
+** Creating the Zq type
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  type Zq q = ZqBasic q Int64
+#+end_src
+
+#+RESULTS:
+** Creating Z2, Z3 etc
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  type Z2 = Zq 2
+  zeroZ2 = 0 :: Z2
+  oneZ2  = 1 :: Z2
+  fiveZ2 = 5 :: Z2
+
+  [zeroZ2, oneZ2, fiveZ2]
+#+end_src
+
+#+RESULTS:
+: 
+:  [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}]
+
+** Basic operations
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  [zeroZ2 + zeroZ2, zeroZ2 + oneZ2, oneZ2 + oneZ2]
+#+end_src
+
+#+RESULTS:
+: [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 0}]
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  [zeroZ2 * zeroZ2, zeroZ2 * oneZ2, oneZ2 * oneZ2]
+#+end_src
+
+#+RESULTS:
+: [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}]
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+ [zeroZ2 / oneZ2 , oneZ2 / oneZ2]
+#+end_src
+
+#+RESULTS:
+: [ZqB {unZqB = 0},ZqB {unZqB = 1}]
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  type Z3 = Zq 3
+  zeroZ3 = 0 :: Z3
+
+  -- should throw type error:
+  zeroZ3 + zeroZ2
+#+end_src
+
+#+RESULTS:
+: 
+:  
+: <interactive>:217:10-15: error:
+:     • Couldn't match type ‘2’ with ‘3’
+:       Expected type: Z3
+:         Actual type: Z2
+:     • In the second argument of ‘(+)’, namely ‘zeroZ2’
+:       In the expression: zeroZ3 + zeroZ2
+:       In an equation for ‘it’: it = zeroZ3 + zeroZ2
+
+** Inverse, when exists
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  type Z50 = Zq 50
+  nineZ50 = 9 :: Z50
+  nineZ50inv = recip nineZ50
+
+  [nineZ50, nineZ50inv , nineZ50inv * nineZ50]
+
+#+end_src
+
+#+RESULTS:
+: 
+:  [ZqB {unZqB = 9},ZqB {unZqB = 39},ZqB {unZqB = 1}]
+
+An element n of a ring Zq has inverse if and only if ~gcd n q = 1~
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  -- should throw
+  recip (5 :: Z50)
+#+end_src
+
+#+RESULTS:
+: 
+: ZqB {unZqB = *** Exception: ZqB.recip fail: 5	50
+: CallStack (from HasCallStack):
+:   error, called at ./Crypto/Lol/Types/Unsafe/ZqBasic.hs:219:27 in lol-0.7.0.1-9IqnkYuIm434kiBNKkZDxM:Crypto.Lol.Types.Unsafe.ZqBasic
