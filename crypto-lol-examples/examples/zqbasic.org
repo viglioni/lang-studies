@@ -14,6 +14,7 @@ Hackage]]
   import Crypto.Lol 
   import Algebra.Ring ((^))
   import qualified Prelude as P -- to avoid conflicts
+  import System.Random (randomIO)
 #+end_src
 
 #+RESULTS:
@@ -36,6 +37,18 @@ Hackage]]
 #+RESULTS:
 : 
 :  [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}]
+
+Notice that the lib has some predefined prime types that can be used here:
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  type Z13 = Zq Prime13
+
+  (10 :: Z13) * (2 :: Z13)
+#+end_src
+
+#+RESULTS:
+: 
+:  ZqB {unZqB = 7}
 
 ** Basic operations
 *** +
@@ -96,7 +109,7 @@ Hackage]]
 #+RESULTS:
 : 
 :  
-: <interactive>:424:10-15: error:
+: <interactive>:106:10-15: error:
 :     • Couldn't match type ‘2’ with ‘3’
 :       Expected type: Z3
 :         Actual type: Z2
@@ -136,3 +149,20 @@ An element n of a ring Zq has inverse if and only if ~gcd n q = 1~
 
 #+RESULTS:
 : 9
+
+** Elements from a ring
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+values :: [Z13]
+#+end_src
+
+#+RESULTS:
+: [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 2},ZqB {unZqB = 3},ZqB {unZqB = 4},ZqB {unZqB = 5},ZqB {unZqB = 6},ZqB {unZqB = 7},ZqB {unZqB = 8},ZqB {unZqB = 9},ZqB {unZqB = 10},ZqB {unZqB = 11},ZqB {unZqB = 12}]
+
+** Random element
+The [[https://hackage.haskell.org/package/lol-0.7.0.0/docs/Crypto-Lol-Types-Unsafe-ZqBasic.html#i:id:ZqBasic:Random:39][functions]] from ~System.Random~ can be used with ~ZqBasic~:
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+randomIO :: (IO Z13)
+#+end_src
+
+#+RESULTS:
+: ZqB {unZqB = 11}
