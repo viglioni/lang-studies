@@ -31,12 +31,14 @@ Hackage]]
   oneZ2   = 1 :: Z2
   fiveZ2  = 5 :: Z2
 
-  [zeroZ2, oneZ2, fiveZ2]
+ mapM_ print [zeroZ2, oneZ2, fiveZ2]
 #+end_src
 
 #+RESULTS:
 : 
-:  [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}]
+: ZqB {unZqB = 0}
+: ZqB {unZqB = 1}
+: ZqB {unZqB = 1}
 
 Notice that the lib has some predefined prime types that can be used here:
 
@@ -48,32 +50,37 @@ Notice that the lib has some predefined prime types that can be used here:
 
 #+RESULTS:
 : 
-:  ZqB {unZqB = 7}
+: ZqB {unZqB = 7}
 
 ** Basic operations
 *** +
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  [zeroZ2 + zeroZ2, zeroZ2 + oneZ2, oneZ2 + oneZ2]
+  mapM_ print [zeroZ2 + zeroZ2, zeroZ2 + oneZ2, oneZ2 + oneZ2]
 #+end_src
 
 #+RESULTS:
-: [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 0}]
+: ZqB {unZqB = 0}
+: ZqB {unZqB = 1}
+: ZqB {unZqB = 0}
 
 *** *
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  [zeroZ2 * zeroZ2, zeroZ2 * oneZ2, oneZ2 * oneZ2]
+  mapM_ print [zeroZ2 * zeroZ2, zeroZ2 * oneZ2, oneZ2 * oneZ2]
 #+end_src
 
 #+RESULTS:
-: [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}]
+: ZqB {unZqB = 0}
+: ZqB {unZqB = 0}
+: ZqB {unZqB = 1}
 
 *** /
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
- [zeroZ2 / oneZ2 , oneZ2 / oneZ2]
+ mapM_ print [zeroZ2 / oneZ2 , oneZ2 / oneZ2]
 #+end_src
 
 #+RESULTS:
-: [ZqB {unZqB = 0},ZqB {unZqB = 1}]
+: ZqB {unZqB = 0}
+: ZqB {unZqB = 1}
 
 *** Power
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -81,12 +88,15 @@ Notice that the lib has some predefined prime types that can be used here:
   nineZ50        = 9 :: Z50
   squaredNineZ50 = nineZ50 ^- 2 
   cubeNineZ50    = nineZ50 ^- 3
-  [squaredNineZ50, nineZ50 * nineZ50, cubeNineZ50, nineZ50 * nineZ50 * nineZ50]
+  mapM_ print [squaredNineZ50, nineZ50 * nineZ50, cubeNineZ50, nineZ50 * nineZ50 * nineZ50]
 #+end_src
 
 #+RESULTS:
 : 
-:  [ZqB {unZqB = 31},ZqB {unZqB = 31},ZqB {unZqB = 29},ZqB {unZqB = 29}]
+: ZqB {unZqB = 31}
+: ZqB {unZqB = 31}
+: ZqB {unZqB = 29}
+: ZqB {unZqB = 29}
 
 *** Negate 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -108,8 +118,8 @@ Notice that the lib has some predefined prime types that can be used here:
 
 #+RESULTS:
 : 
-:  
-: <interactive>:106:10-15: error:
+: 
+: <interactive>:580:10-15: error:
 :     • Couldn't match type ‘2’ with ‘3’
 :       Expected type: Z3
 :         Actual type: Z2
@@ -122,13 +132,15 @@ Notice that the lib has some predefined prime types that can be used here:
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   nineZ50inv = recip nineZ50
 
-  [nineZ50, nineZ50inv , nineZ50inv * nineZ50]
+  mapM_ print [nineZ50, nineZ50inv , nineZ50inv * nineZ50]
 
 #+end_src
 
 #+RESULTS:
 : 
-:  [ZqB {unZqB = 9},ZqB {unZqB = 39},ZqB {unZqB = 1}]
+: ZqB {unZqB = 9}
+: ZqB {unZqB = 39}
+: ZqB {unZqB = 1}
 
 An element n of a ring Zq has inverse if and only if ~gcd n q = 1~
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -152,17 +164,31 @@ An element n of a ring Zq has inverse if and only if ~gcd n q = 1~
 
 ** Elements from a ring
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-values :: [Z13]
+  mapM_ print (values :: [Z13])
 #+end_src
 
 #+RESULTS:
-: [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 2},ZqB {unZqB = 3},ZqB {unZqB = 4},ZqB {unZqB = 5},ZqB {unZqB = 6},ZqB {unZqB = 7},ZqB {unZqB = 8},ZqB {unZqB = 9},ZqB {unZqB = 10},ZqB {unZqB = 11},ZqB {unZqB = 12}]
+#+begin_example
+ZqB {unZqB = 0}
+ZqB {unZqB = 1}
+ZqB {unZqB = 2}
+ZqB {unZqB = 3}
+ZqB {unZqB = 4}
+ZqB {unZqB = 5}
+ZqB {unZqB = 6}
+ZqB {unZqB = 7}
+ZqB {unZqB = 8}
+ZqB {unZqB = 9}
+ZqB {unZqB = 10}
+ZqB {unZqB = 11}
+ZqB {unZqB = 12}
+#+end_example
 
 ** Random element
 The [[https://hackage.haskell.org/package/lol-0.7.0.0/docs/Crypto-Lol-Types-Unsafe-ZqBasic.html#i:id:ZqBasic:Random:39][functions]] from ~System.Random~ can be used with ~ZqBasic~:
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-randomIO :: (IO Z13)
+  randomIO :: (IO Z13)
 #+end_src
 
 #+RESULTS:
-: ZqB {unZqB = 11}
+: ZqB {unZqB = 6}
