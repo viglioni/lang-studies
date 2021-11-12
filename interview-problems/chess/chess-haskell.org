@@ -38,8 +38,6 @@ The types here does not guarantee that the table is a ~8x8~ one.
 
    type Positions = [Position]
 
-   type WalkFn = (Position -> Position)
-
    data Direction
      = N
      | NE
@@ -157,6 +155,11 @@ The types here does not guarantee that the table is a ~8x8~ one.
 :  [(1,2)]
 : [(1,1),(1,2)]
 
+#+RESULTS:
+: 
+:  [(1,2)]
+: [(1,1),(1,2)]
+
 - Gets the next square's coords
   
  #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -173,6 +176,8 @@ The types here does not guarantee that the table is a ~8x8~ one.
    :}
 
 #+end_src
+
+#+RESULTS:
 
 
 *** Walking functions
