@@ -2,3 +2,7 @@
 In this sub repo I'll post some solutions to interview problems.
 * Content
 - [[./chess/README.org][Chess problem]]
+* Installing
+** Haskell install
+- `stack build` on the root of this sub-repo
+- The `app` dir can be ignored
