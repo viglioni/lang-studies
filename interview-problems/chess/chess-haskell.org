@@ -143,7 +143,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
    :{
    addToList :: Positions -> Maybe Position -> Positions
    addToList coords Nothing = coords
-   addToList coords (Just pos) = pos:coords
+   addToList coords (Just pos) = pos : coords
    :}
 
    addToList [(1,2)] Nothing
@@ -186,10 +186,11 @@ The types here does not guarantee that the table is a ~8x8~ one.
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
-  walkInDirection :: ChessTable ->  Maybe Position -> Positions -> Direction -> Positions
+  walkInDirection ::
+       ChessTable -> Maybe Position -> Positions -> Direction -> Positions
   walkInDirection _ Nothing posList _ = posList
   walkInDirection table (Just pos) posList direction =
-    let nextPosition = walkToSquare  table $ getNextSquare direction pos
+    let nextPosition = walkToSquare table $ getNextSquare direction pos
         newPosList = addToList posList nextPosition
      in walkInDirection table nextPosition newPosList direction
   :}
@@ -198,16 +199,16 @@ The types here does not guarantee that the table is a ~8x8~ one.
 
   print "Table"
   unsafeSet Piece testPosition chessTable
-  print "vertical walkInDirection"
+  print "vertical walk"
   walkInDirection chessTable (Just testPosition) [] N
   walkInDirection chessTable (Just testPosition) [] S
-  print "horizontal walkInDirection"
+  print "horizontal walk"
   walkInDirection chessTable (Just testPosition) [] E
   walkInDirection chessTable (Just testPosition) [] W
-  print "main diagonal walkInDirection"
+  print "main diagonal walk"
   walkInDirection chessTable (Just testPosition) [] NW
   walkInDirection chessTable (Just testPosition) [] SE
-  print "antidiagonal walkInDirection"
+  print "antidiagonal walk"
   walkInDirection chessTable (Just testPosition) [] NE
   walkInDirection chessTable (Just testPosition) [] SW
 
@@ -248,7 +249,7 @@ antidiagonal walkInDirection
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
    :{
-   walkInSign :: [Direction] ->ChessTable -> Position -> Positions ->  Positions
+   walkInSign :: [Direction] -> ChessTable -> Position -> Positions -> Positions
    walkInSign directions table unsafePos posList =
      let pos = walkToSquare table unsafePos
          squares = map (walkInDirection table pos posList) $ directions
@@ -296,10 +297,10 @@ antidiagonal walkInDirection
   :{
   walk :: ChessPiece -> ChessTable -> Position -> Positions
   walk Bishop table pos = walkInX table pos []
-  walk Tower  table pos = walkInPlus table pos []
-  walk Queen  table pos =
+  walk Tower table pos = walkInPlus table pos []
+  walk Queen table pos =
     let plusWalk = walkInPlus table pos []
-        xWalk    = walkInX    table pos []
+        xWalk = walkInX table pos []
      in plusWalk ++ xWalk
 
   :}
