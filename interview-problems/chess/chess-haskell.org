@@ -94,9 +94,9 @@ The types here does not guarantee that the table is a ~8x8~ one.
 └                                                 ┘
 #+end_example
 
-** Functions!
+** Helper Functions!
 
-*** Helper functions
+
 
 *Checks if the square is free*
   
@@ -118,7 +118,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 : Nothing
 
 
-*Returns the coords if the square is walkable
+*Returns the coords if the square is walkable*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
@@ -180,7 +180,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 #+RESULTS:
 
 
-*** Walking functions
+** Walking functions
 
 *Walk in one way*
 
@@ -243,7 +243,6 @@ antidiagonal walkInDirection
 #+end_example
 
 
-**** Walk in + or in x
 
 *Walk in sign -- a helper function*
 
@@ -290,7 +289,7 @@ antidiagonal walkInDirection
 : [(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
 
 
-*** Pieces walking
+** Pieces walking
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
 
