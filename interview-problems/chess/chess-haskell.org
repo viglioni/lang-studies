@@ -7,7 +7,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 ** Imports
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
- import Data.Matrix
+  import Data.Matrix
 #+end_src
 
 #+RESULTS:
@@ -16,7 +16,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
-  
+
    data Square
      = Free
      | Occupied
@@ -98,7 +98,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 
 *** Helper functions
 
-- Checks if the square is free
+*Checks if the square is free*
   
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
@@ -118,7 +118,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 : Nothing
 
 
-- Returns the coords if the square is walkable
+*Returns the coords if the square is walkable
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
@@ -137,17 +137,17 @@ The types here does not guarantee that the table is a ~8x8~ one.
 : Nothing
 : Nothing
 
-- Adds a position to the position list if the position exists:
+*Adds a position to the position list if the position exists:*
 
- #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-   :{
-   addToList :: Positions -> Maybe Position -> Positions
-   addToList coords Nothing = coords
-   addToList coords (Just pos) = pos : coords
-   :}
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  addToList :: Positions -> Maybe Position -> Positions
+  addToList coords Nothing = coords
+  addToList coords (Just pos) = pos : coords
+  :}
 
-   addToList [(1,2)] Nothing
-   addToList [(1,2)] $ Just (1,1)
+  addToList [(1,2)] Nothing
+  addToList [(1,2)] $ Just (1,1)
 #+end_src
 
 #+RESULTS:
@@ -160,20 +160,20 @@ The types here does not guarantee that the table is a ~8x8~ one.
 :  [(1,2)]
 : [(1,1),(1,2)]
 
-- Gets the next square's coords
+*Gets the next square's coords*
   
- #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-   :{
-   getNextSquare :: Direction -> Position -> Position
-   getNextSquare N  (row, col) = (row - 1, col    )
-   getNextSquare NE (row, col) = (row - 1, col + 1)
-   getNextSquare E  (row, col) = (row    , col + 1)
-   getNextSquare SE (row, col) = (row + 1, col + 1)
-   getNextSquare S  (row, col) = (row + 1, col    )
-   getNextSquare SW (row, col) = (row + 1, col - 1)
-   getNextSquare W  (row, col) = (row    , col - 1)
-   getNextSquare NW (row, col) = (row - 1, col - 1)
-   :}
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  getNextSquare :: Direction -> Position -> Position
+  getNextSquare N  (row, col) = (row - 1, col    )
+  getNextSquare NE (row, col) = (row - 1, col + 1)
+  getNextSquare E  (row, col) = (row    , col + 1)
+  getNextSquare SE (row, col) = (row + 1, col + 1)
+  getNextSquare S  (row, col) = (row + 1, col    )
+  getNextSquare SW (row, col) = (row + 1, col - 1)
+  getNextSquare W  (row, col) = (row    , col - 1)
+  getNextSquare NW (row, col) = (row - 1, col - 1)
+  :}
 
 #+end_src
 
@@ -182,7 +182,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 
 *** Walking functions
 
-- Walk in one way
+*Walk in one way*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
@@ -245,23 +245,23 @@ antidiagonal walkInDirection
 
 **** Walk in + or in x
 
-- Walk in sign -- a helper function
+*Walk in sign -- a helper function*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-   :{
-   walkInSign :: [Direction] -> ChessTable -> Position -> Positions -> Positions
-   walkInSign directions table unsafePos posList =
-     let pos = walkToSquare table unsafePos
-         squares = map (walkInDirection table pos posList) $ directions
-      in mconcat squares
-   :}
+  :{
+  walkInSign :: [Direction] -> ChessTable -> Position -> Positions -> Positions
+  walkInSign directions table unsafePos posList =
+    let pos = walkToSquare table unsafePos
+        squares = map (walkInDirection table pos posList) $ directions
+     in mconcat squares
+  :}
 
-  #+end_src
+#+end_src
 
-  #+RESULTS:
+#+RESULTS:
 
 
-- Walk in plus and X sign
+*Walk in plus and X sign*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
    :{
@@ -278,7 +278,7 @@ antidiagonal walkInDirection
   walkInPlus chessTable testPosition []
   print "Walking in x sign"
   walkInX chessTable testPosition []
-  #+end_src
+#+end_src
 
 #+RESULTS:
 : 
