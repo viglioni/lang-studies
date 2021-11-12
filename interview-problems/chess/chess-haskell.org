@@ -1,4 +1,8 @@
 * Chess Problem
+** About
+This is a type safe solution for the problem, /i.e./, types are enough to guarantee you are checking the possible squares accordingly to your piece and you are always inside the chess table.
+
+The types here does not guarantee that the table is a ~8x8~ one.
 
 ** Imports
 
@@ -116,7 +120,7 @@
 : Nothing
 
 
-Returns the coords if the square is walkable
+- Returns the coords if the square is walkable
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
@@ -235,7 +239,7 @@ antidiagonal walkInDirection
 
 **** Walk in + or in x
 
-Walk in sign -- a helper function
+- Walk in sign -- a helper function
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
    :{
@@ -251,7 +255,7 @@ Walk in sign -- a helper function
   #+RESULTS:
 
 
-Walk in plus sign
+- Walk in plus and X sign
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
    :{
@@ -281,6 +285,7 @@ Walk in plus sign
 
 
 *** Pieces walking
+
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
 
   :{
