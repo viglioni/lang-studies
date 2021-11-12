@@ -1,0 +1,329 @@
+* Chess Problem
+
+** Imports
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+ import Data.Matrix
+#+end_src
+
+#+RESULTS:
+
+** Types
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  
+   data Square
+     = Free
+     | Occupied
+     | Piece
+     deriving (Eq)
+
+   instance Show Square where
+     show Free = show "[ ]"
+     show Occupied = show "[X]"
+     show Piece = show "[O]"
+
+   type ChessTable = Matrix Square
+
+   type RowIdx = Int
+
+   type ColIdx = Int
+
+   type Position = (RowIdx, ColIdx)
+
+   type Positions = [Position]
+
+   type WalkFn = (Position -> Position)
+
+   data Direction
+     = N
+     | NE
+     | E
+     | SE
+     | S
+     | SW
+     | W
+     | NW
+     deriving (Eq, Show)
+
+   data ChessPiece
+     = Queen
+     | Bishop
+     | Tower
+     deriving (Eq, Show)
+
+   :}
+#+end_src
+
+#+RESULTS:
+
+** A random table to be used as input
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  chessTable =
+    fromLists
+      [ [Free, Free, Free, Free, Free, Free, Occupied, Free]
+      , [Free, Occupied, Free, Free, Free, Free, Free, Free]
+      , [Free, Free, Free, Free, Free, Occupied, Free, Free]
+      , [Free, Free, Free, Free, Free, Occupied, Free, Free]
+      , [Free, Free, Free, Free, Occupied, Free, Free, Free]
+      , [Free, Free, Free, Free, Occupied, Free, Free, Free]
+      , [Free, Occupied, Free, Free, Free, Free, Free, Occupied]
+      , [Free, Free, Free, Occupied, Free, Free, Free, Free]
+      ]
+  :}
+  chessTable
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+┌                                                 ┐
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" │
+│ "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" │
+│ "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" │
+└                                                 ┘
+#+end_example
+
+** Functions!
+
+*** Helper functions
+
+- Checks if the square is free
+  
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  isFree :: Square -> Maybe Square
+  isFree Free = Just Free
+  isFree Occupied = Nothing
+
+  :}
+
+  isFree Free
+  isFree Occupied
+#+end_src
+
+#+RESULTS:
+: 
+:  Just "[ ]"
+: Nothing
+
+
+Returns the coords if the square is walkable
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  walkToSquare :: ChessTable -> Position -> Maybe Position
+  walkToSquare t (r, c) = safeGet r c t >>= isFree >>= (\_ -> Just (r, c))
+  :}
+
+  walkToSquare chessTable (1, 1) 
+  walkToSquare chessTable (1, 7) 
+  walkToSquare chessTable (1, 9) 
+#+end_src
+
+#+RESULTS:
+: 
+:  Just (1,1)
+: Nothing
+: Nothing
+
+- Adds a position to the position list if the position exists:
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+   addToList :: Positions -> Maybe Position -> Positions
+   addToList coords Nothing = coords
+   addToList coords (Just pos) = pos:coords
+   :}
+
+   addToList [(1,2)] Nothing
+   addToList [(1,2)] $ Just (1,1)
+#+end_src
+
+#+RESULTS:
+: 
+:  [(1,2)]
+: [(1,1),(1,2)]
+
+- Gets the next square's coords
+  
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+   getNextSquare :: Direction -> Position -> Position
+   getNextSquare N  (row, col) = (row - 1, col    )
+   getNextSquare NE (row, col) = (row - 1, col + 1)
+   getNextSquare E  (row, col) = (row    , col + 1)
+   getNextSquare SE (row, col) = (row + 1, col + 1)
+   getNextSquare S  (row, col) = (row + 1, col    )
+   getNextSquare SW (row, col) = (row + 1, col - 1)
+   getNextSquare W  (row, col) = (row    , col - 1)
+   getNextSquare NW (row, col) = (row - 1, col - 1)
+   :}
+
+#+end_src
+
+
+*** Walking functions
+
+- Walk in one way
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  walkInDirection :: ChessTable ->  Maybe Position -> Positions -> Direction -> Positions
+  walkInDirection _ Nothing posList _ = posList
+  walkInDirection table (Just pos) posList direction =
+    let nextPosition = walkToSquare  table $ getNextSquare direction pos
+        newPosList = addToList posList nextPosition
+     in walkInDirection table nextPosition newPosList direction
+  :}
+
+  testPosition = (6,3) :: Position
+
+  print "Table"
+  unsafeSet Piece testPosition chessTable
+  print "vertical walkInDirection"
+  walkInDirection chessTable (Just testPosition) [] N
+  walkInDirection chessTable (Just testPosition) [] S
+  print "horizontal walkInDirection"
+  walkInDirection chessTable (Just testPosition) [] E
+  walkInDirection chessTable (Just testPosition) [] W
+  print "main diagonal walkInDirection"
+  walkInDirection chessTable (Just testPosition) [] NW
+  walkInDirection chessTable (Just testPosition) [] SE
+  print "antidiagonal walkInDirection"
+  walkInDirection chessTable (Just testPosition) [] NE
+  walkInDirection chessTable (Just testPosition) [] SW
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+ "Table"
+┌                                                 ┐
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" │
+│ "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[O]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" │
+│ "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" │
+└                                                 ┘
+vertical walkInDirection
+[(1,3),(2,3),(3,3),(4,3),(5,3)]
+[(8,3),(7,3)]
+horizontal walkInDirection
+[(6,4)]
+[(6,1),(6,2)]
+main diagonal walkInDirection
+[(4,1),(5,2)]
+[(8,5),(7,4)]
+antidiagonal walkInDirection
+[(4,5),(5,4)]
+[]
+#+end_example
+
+
+**** Walk in + or in x
+
+Walk in sign -- a helper function
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+   walkInSign :: [Direction] ->ChessTable -> Position -> Positions ->  Positions
+   walkInSign directions table unsafePos posList =
+     let pos = walkToSquare table unsafePos
+         squares = map (walkInDirection table pos posList) $ directions
+      in mconcat squares
+   :}
+
+  #+end_src
+
+  #+RESULTS:
+
+
+Walk in plus sign
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+   walkInPlus :: ChessTable -> Position -> Positions -> Positions
+   walkInPlus = walkInSign [N, S, E, W]
+
+   walkInX :: ChessTable -> Position -> Positions -> Positions
+   walkInX = walkInSign [NE, SE, NW, SW]
+  :}
+
+  print "Trying to start in a invalid position:"
+  walkInPlus chessTable (9,9) []
+  print "Walking in + sign"
+  walkInPlus chessTable testPosition []
+  print "Walking in x sign"
+  walkInX chessTable testPosition []
+  #+end_src
+
+#+RESULTS:
+: 
+:  "Trying to start in a invalid position:"
+: []
+: Walking in + sign
+: [(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2)]
+: Walking in x sign
+: [(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
+
+
+*** Pieces walking
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+
+  :{
+  walk :: ChessPiece -> ChessTable -> Position -> Positions
+  walk Bishop table pos = walkInX table pos []
+  walk Tower  table pos = walkInPlus table pos []
+  walk Queen  table pos =
+    let plusWalk = walkInPlus table pos []
+        xWalk    = walkInX    table pos []
+     in plusWalk ++ xWalk
+
+  :}
+
+  print "Table"
+  unsafeSet Piece testPosition chessTable
+  print "Bishop"
+  walk   Bishop chessTable testPosition
+  print "Tower"
+  walk   Tower chessTable testPosition
+  print "Queen"
+  walk   Queen chessTable testPosition
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+ "Table"
+┌                                                 ┐
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" │
+│ "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[ ]" "[O]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" │
+│ "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" "[ ]" "[X]" │
+│ "[ ]" "[ ]" "[ ]" "[X]" "[ ]" "[ ]" "[ ]" "[ ]" │
+└                                                 ┘
+Bishop
+[(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
+Tower
+[(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2)]
+Queen
+[(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2),(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
+#+end_example
+ 

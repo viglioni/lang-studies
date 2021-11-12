@@ -1,0 +1,6 @@
+*  Chess Problem
+You are given a chess table with some pieces on it (doesn't matter which pieces are), a position in this table for your piece and you must return all possible squares that your piece can go. You can assume all other pieces on the table have the same colour as yours, so you doesn't need to think about taking these pieces.
+
+You must solve this problem for the Queen, the Bishop and the Tower.
+* Solutions
+- [[./chess-haskell.org][Solution in haskell]]
