@@ -397,16 +397,18 @@ antidiagonal walk
 : 
 :  [(5,2),(6,2),(7,3),(7,4),(6,4),(5,4),(5,3)]
 
+*Walk in L*
+
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
-  horse :: ChessTable -> Position -> Positions
-  horse table pos =
+  walkInL :: ChessTable -> Position -> Positions
+  walkInL table pos =
     let positions = getHorsePositions pos
         squares = map (walkToSquare table) positions
      in foldl addToList [] squares
   :}
 
-  horse chessTable testPosition
+  walkInL chessTable testPosition
 #+end_src
 
 #+RESULTS:
@@ -425,7 +427,7 @@ antidiagonal walk
   walk Bishop  table pos = walkInX     table pos
   walk Tower   table pos = walkInPlus  table pos
   walk King    table pos = starWalk    table pos
-  walk Horse   table pos = horse   table pos
+  walk Horse   table pos = walkInL   table pos
   walk Queen table pos =
     let plusWalk = walkInPlus table pos 
         xWalk = walkInX table pos 
