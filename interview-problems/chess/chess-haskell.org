@@ -230,14 +230,14 @@ Bonus: adding the possibilities for
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
-    getHorsePositions :: Position -> Positions
-    getHorsePositions (r, c) =
+    getPositionsInL :: Position -> Positions
+    getPositionsInL (r, c) =
           concat
             [[(r + two, c + one), (r + one, c + two)] | two <- [-2, 2], one <- [-1, 1]]
         :}
 
 
-  printPossibilities emptyTable testPosition $ getHorsePositions testPosition
+  printPossibilities emptyTable testPosition $ getPositionsInL testPosition
 #+end_src
 
 #+RESULTS:
@@ -403,7 +403,7 @@ antidiagonal walk
   :{
   walkInL :: ChessTable -> Position -> Positions
   walkInL table pos =
-    let positions = getHorsePositions pos
+    let positions = getPositionsInL pos
         squares = map (walkToSquare table) positions
      in foldl addToList [] squares
   :}
