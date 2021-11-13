@@ -7,7 +7,7 @@ The types here does not guarantee that the table is a ~8x8~ one.
 Bonus: adding the possibilities for
 - [X] king
 - [X] pawn
-- [ ] horse
+- [X] horse
 
 ** Imports
 
@@ -25,13 +25,15 @@ Bonus: adding the possibilities for
    data Square
      = Free
      | Occupied
-     | Piece
+     | Piece    -- for visualization purpose
+     | Walkable -- idem
      deriving (Eq)
 
    instance Show Square where
      show Free     = "[ ]"
      show Occupied = "[X]"
-     show Piece    = "[O]"
+     show Piece    = "[O]" 
+     show Walkable = "[#]" 
 
    type ChessTable = Matrix Square
 
@@ -62,6 +64,7 @@ Bonus: adding the possibilities for
      | Tower
      | Pawn
      | King
+     | Horse
      deriving (Eq, Show)
 
    :}
@@ -69,7 +72,9 @@ Bonus: adding the possibilities for
 
 #+RESULTS:
 
-** A random table to be used as input
+** Tables and position to be used as input
+
+*A random one*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
@@ -103,9 +108,43 @@ Bonus: adding the possibilities for
 └                                 ┘
 #+end_example
 
+*An empty one and a position*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  testPosition = (6,3) :: Position
+  emptyTable = fmap (const Free) chessTable
+  emptyTable
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+ ┌                                 ┐
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+└                                 ┘
+#+end_example
+
 ** Helper Functions!
 
+*Prints a table with all possibilities*
 
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  printPossibilities :: ChessTable -> Position -> Positions -> ChessTable
+  printPossibilities table piecePos movementsPos =
+    let tableWithPiece = setElem Piece piecePos table
+     in foldr (setElem Walkable) tableWithPiece movementsPos
+  :}
+#+end_src
+
+#+RESULTS:
 
 *Checks if the square is free*
   
@@ -114,7 +153,6 @@ Bonus: adding the possibilities for
   isFree :: Square -> Maybe Square
   isFree Free = Just Free
   isFree Occupied = Nothing
-
   :}
 
   isFree Free
@@ -188,6 +226,35 @@ Bonus: adding the possibilities for
 
 #+RESULTS:
 
+*Gets all squares at a "L distance" of the given position*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+    getHorsePositions :: Position -> Positions
+    getHorsePositions (r, c) =
+          concat
+            [[(r + two, c + one), (r + one, c + two)] | two <- [-2, 2], one <- [-1, 1]]
+        :}
+
+
+  printPossibilities emptyTable testPosition $ getHorsePositions testPosition
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+ ┌                                 ┐
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [#] [ ] [#] [ ] [ ] [ ] [ ] │
+│ [#] [ ] [ ] [ ] [#] [ ] [ ] [ ] │
+│ [ ] [ ] [O] [ ] [ ] [ ] [ ] [ ] │
+│ [#] [ ] [ ] [ ] [#] [ ] [ ] [ ] │
+│ [ ] [#] [ ] [#] [ ] [ ] [ ] [ ] │
+└                                 ┘
+#+end_example
+
 ** Walking functions
 
 *Walk in one way*
@@ -202,8 +269,6 @@ Bonus: adding the possibilities for
         newPosList = addToList posList nextPosition
      in walkInDirection table nextPosition newPosList direction
   :}
-
-  testPosition = (6,3) :: Position
 
   print "Table"
   unsafeSet Piece testPosition chessTable
@@ -332,61 +397,187 @@ antidiagonal walk
 : 
 :  [(5,2),(6,2),(7,3),(7,4),(6,4),(5,4),(5,3)]
 
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  horse :: ChessTable -> Position -> Positions
+  horse table pos =
+    let positions = getHorsePositions pos
+        squares = map (walkToSquare table) positions
+     in foldl addToList [] squares
+  :}
+
+  horse chessTable testPosition
+#+end_src
+
+#+RESULTS:
+: 
+:  [(7,5),(8,2),(7,1),(4,4),(5,1),(4,2)]
+
 ** Pieces walking
+
+*Our main function*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
 
   :{
   walk :: ChessPiece -> ChessTable -> Position -> Positions
-  walk Pawn   table pos = walkForward table pos  
-  walk Bishop table pos = walkInX     table pos 
-  walk Tower  table pos = walkInPlus  table pos 
-  walk King   table pos = starWalk    table pos
-  walk Queen  table pos =
+  walk Pawn    table pos = walkForward table pos
+  walk Bishop  table pos = walkInX     table pos
+  walk Tower   table pos = walkInPlus  table pos
+  walk King    table pos = starWalk    table pos
+  walk Horse   table pos = horse   table pos
+  walk Queen table pos =
     let plusWalk = walkInPlus table pos 
         xWalk = walkInX table pos 
      in plusWalk ++ xWalk
 
   :}
 
-  print "Table"
-  unsafeSet Piece testPosition chessTable
-  print "Bishop"
-  walk   Bishop chessTable testPosition
-  print "Tower"
-  walk   Tower chessTable testPosition
-  print "Queen"
-  walk   Queen chessTable testPosition
-  print "Pawn"
-  walk   Pawn chessTable testPosition
-  print "King"
-  walk   King chessTable testPosition
 
+#+end_src
+
+#+RESULTS:
+ 
+ *Pawn walking*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   pawn = walk Pawn chessTable testPosition
+   printPossibilities chessTable testPosition pawn
+   pawn
 #+end_src
 
 #+RESULTS:
 #+begin_example
 
- "Table"
 ┌                                 ┐
 │ [ ] [ ] [ ] [ ] [ ] [ ] [X] [ ] │
 │ [ ] [X] [ ] [ ] [ ] [ ] [ ] [ ] │
 │ [ ] [ ] [ ] [ ] [ ] [X] [ ] [ ] │
 │ [ ] [ ] [ ] [ ] [ ] [X] [ ] [ ] │
-│ [ ] [ ] [ ] [ ] [X] [ ] [ ] [ ] │
+│ [ ] [ ] [#] [ ] [X] [ ] [ ] [ ] │
 │ [ ] [ ] [O] [ ] [X] [ ] [ ] [ ] │
 │ [ ] [X] [ ] [ ] [ ] [ ] [ ] [X] │
 │ [ ] [ ] [ ] [X] [ ] [ ] [ ] [ ] │
 └                                 ┘
-Bishop
-[(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
-Tower
-[(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2)]
-Queen
-[(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2),(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
-Pawn
 [(5,3)]
-King
+#+end_example
+
+ *Horse walking*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   horse = walk Horse chessTable testPosition
+   printPossibilities chessTable testPosition horse
+   horse
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+┌                                 ┐
+│ [ ] [ ] [ ] [ ] [ ] [ ] [X] [ ] │
+│ [ ] [X] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [X] [ ] [ ] │
+│ [ ] [#] [ ] [#] [ ] [X] [ ] [ ] │
+│ [#] [ ] [ ] [ ] [X] [ ] [ ] [ ] │
+│ [ ] [ ] [O] [ ] [X] [ ] [ ] [ ] │
+│ [#] [X] [ ] [ ] [#] [ ] [ ] [X] │
+│ [ ] [#] [ ] [X] [ ] [ ] [ ] [ ] │
+└                                 ┘
+[(7,5),(8,2),(7,1),(4,4),(5,1),(4,2)]
+#+end_example
+
+ *Tower walking*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   tower = walk Tower chessTable testPosition
+   printPossibilities chessTable testPosition tower
+   tower
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+┌                                 ┐
+│ [ ] [ ] [#] [ ] [ ] [ ] [X] [ ] │
+│ [ ] [X] [#] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [#] [ ] [ ] [X] [ ] [ ] │
+│ [ ] [ ] [#] [ ] [ ] [X] [ ] [ ] │
+│ [ ] [ ] [#] [ ] [X] [ ] [ ] [ ] │
+│ [#] [#] [O] [#] [X] [ ] [ ] [ ] │
+│ [ ] [X] [#] [ ] [ ] [ ] [ ] [X] │
+│ [ ] [ ] [#] [X] [ ] [ ] [ ] [ ] │
+└                                 ┘
+[(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2)]
+#+end_example
+
+ *Bishop walking*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   bishop = walk Bishop chessTable testPosition
+   printPossibilities chessTable testPosition bishop
+   bishop
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+┌                                 ┐
+│ [ ] [ ] [ ] [ ] [ ] [ ] [X] [ ] │
+│ [ ] [X] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [X] [ ] [ ] │
+│ [#] [ ] [ ] [ ] [#] [X] [ ] [ ] │
+│ [ ] [#] [ ] [#] [X] [ ] [ ] [ ] │
+│ [ ] [ ] [O] [ ] [X] [ ] [ ] [ ] │
+│ [ ] [X] [ ] [#] [ ] [ ] [ ] [X] │
+│ [ ] [ ] [ ] [X] [#] [ ] [ ] [ ] │
+└                                 ┘
+[(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
+#+end_example
+
+ *King walking*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   king = walk King chessTable testPosition
+   printPossibilities chessTable testPosition king
+   king
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+┌                                 ┐
+│ [ ] [ ] [ ] [ ] [ ] [ ] [X] [ ] │
+│ [ ] [X] [ ] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [X] [ ] [ ] │
+│ [ ] [ ] [ ] [ ] [ ] [X] [ ] [ ] │
+│ [ ] [#] [#] [#] [X] [ ] [ ] [ ] │
+│ [ ] [#] [O] [#] [X] [ ] [ ] [ ] │
+│ [ ] [X] [#] [#] [ ] [ ] [ ] [X] │
+│ [ ] [ ] [ ] [X] [ ] [ ] [ ] [ ] │
+└                                 ┘
 [(5,2),(6,2),(7,3),(7,4),(6,4),(5,4),(5,3)]
 #+end_example
- 
+
+ *Queen walking*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   queen = walk Queen chessTable testPosition
+   printPossibilities chessTable testPosition queen
+   queen
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+┌                                 ┐
+│ [ ] [ ] [#] [ ] [ ] [ ] [X] [ ] │
+│ [ ] [X] [#] [ ] [ ] [ ] [ ] [ ] │
+│ [ ] [ ] [#] [ ] [ ] [X] [ ] [ ] │
+│ [#] [ ] [#] [ ] [#] [X] [ ] [ ] │
+│ [ ] [#] [#] [#] [X] [ ] [ ] [ ] │
+│ [#] [#] [O] [#] [X] [ ] [ ] [ ] │
+│ [ ] [X] [#] [#] [ ] [ ] [ ] [X] │
+│ [ ] [ ] [#] [X] [#] [ ] [ ] [ ] │
+└                                 ┘
+[(1,3),(2,3),(3,3),(4,3),(5,3),(8,3),(7,3),(6,4),(6,1),(6,2),(4,5),(5,4),(8,5),(7,4),(4,1),(5,2)]
+#+end_example
