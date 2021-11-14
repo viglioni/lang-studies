@@ -1,25 +1,27 @@
-
-name:                crypto-lol-examples
-version:             0.1.0.0
-github:              "githubuser/regev-cryptosystem-lol"
-license:             GPL-3.0
-author:              "Laura Viglioni"
-maintainer:          "l106665@dac.unicamp.br"
-copyright:           "2021 Laura Viglioni"
+name: crypto-lol-examples
+version: 0.1.0.0
+github: "githubuser/regev-cryptosystem-lol"
+license: GPL-3.0
+author: "Laura Viglioni"
+maintainer: "l106665@dac.unicamp.br"
+copyright: "2021 Laura Viglioni"
 
 extra-source-files:
-- README.org
-description:         Please see the README on GitHub at <https://github.com/githubuser/#readme>
+  - README.org
+description: Please see the README on GitHub at <https://github.com/githubuser/#readme>
 
 dependencies:
-- base >= 4.7 && < 5
-- lol
-        
+  - base >= 4.7 && < 5
+  - lol
+  - numeric-prelude
+  - tagged-transformer >= 0.8.1
+  - random
+
 executables:
   crypto-lol-examples-exe:
-    main:                HelloWorld.hs
-    source-dirs:         app
+    main: HelloWorld.hs
+    source-dirs: app
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N

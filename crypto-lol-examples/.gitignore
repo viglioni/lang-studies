@@ -2,3 +2,5 @@ stack.yaml.lock
 *.cabal
 **/.DS_Store
 .stack-work/*
+app/*
+!app/HelloWorld.hs

@@ -24,27 +24,31 @@
      type Zq q = ZqBasic q Int64
      type Z2 = Zq Prime2
      type Z3 = Zq Prime3
-     
+
      type GF8 = GF Z2 3
      type GF9 = GF Z3 2
-     
+
    #+end_src
+
+   #+RESULTS:
+
 *** GF elements
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-     a8 = fromList [0, 0, 0] :: GF8
-     b8 = fromList [0, 0, 1] :: GF8
-     c8 = fromList [0, 1, 0] :: GF8
-     d8 = fromList [0, 1, 1] :: GF8
-     
-     a9 = fromList [0, 0] :: GF9
-     b9 = fromList [0, 1] :: GF9
-     c9 = fromList [0, 2] :: GF9
-     d9 = fromList [1, 0] :: GF9
-     
-     print "x + x^2 :: GF8"
-     d8
-     print "2x :: GF9"
-     c9
+  a8 = fromList [0, 0, 0] :: GF8
+  b8 = fromList [0, 0, 1] :: GF8
+  c8 = fromList [0, 1, 0] :: GF8
+  d8 = fromList [0, 1, 1] :: GF8
+
+  a9 = fromList [0, 0] :: GF9
+  b9 = fromList [0, 1] :: GF9
+  c9 = fromList [0, 2] :: GF9
+  d9 = fromList [1, 0] :: GF9
+
+  print "x + x^2 :: GF8"
+  d8
+  print "2x :: GF9"
+  c9
+
 #+end_src
 
 #+RESULTS:
@@ -60,8 +64,11 @@
 #+end_src
 
 #+RESULTS:
-: [ZqB {unZqB = 1},ZqB {unZqB = 0}]
-: [1,0]
+: 
+:  "x + x^2 :: GF8"
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}])
+: 2x :: GF9
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 2}])
 
 ** Basic operations
 
@@ -77,13 +84,8 @@
     #+end_src
 
     #+RESULTS:
-    : GF8:
-    : GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 0}])
-    : GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}])
-    : GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}])
-    : GF9:
-    : GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 2}])
-    : GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0}])
+    : [ZqB {unZqB = 1},ZqB {unZqB = 0}]
+    : [1,0]
 
 *** *
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -93,9 +95,13 @@ c8 * d8
 #+end_src
 
 #+RESULTS:
-: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 0}])
-: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}])
-: GF (Polynomial.fromCoeffs [ZqB {unZqB = 1},ZqB {unZqB = 1},ZqB {unZqB = 1}])
+: GF8:
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 0}])
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}])
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0},ZqB {unZqB = 1}])
+: GF9:
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 2}])
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0}])
 
 *** /
 Notice that the lib provides only Field instances for ~GF(2^n)~ where ~n in [1, 128]~ so we can't multiple, divide or inverse ~GF9~ elements.
@@ -104,6 +110,8 @@ Notice that the lib provides only Field instances for ~GF(2^n)~ where ~n in [1, 
 #+end_src
 
 #+RESULTS:
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 0}])
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}])
 : GF (Polynomial.fromCoeffs [ZqB {unZqB = 1},ZqB {unZqB = 1},ZqB {unZqB = 1}])
 
 *** Power
@@ -112,7 +120,7 @@ Notice that the lib provides only Field instances for ~GF(2^n)~ where ~n in [1, 
 #+end_src
 
 #+RESULTS:
-: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}])
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 1},ZqB {unZqB = 1},ZqB {unZqB = 1}])
 
 *** Negade
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -120,6 +128,16 @@ Notice that the lib provides only Field instances for ~GF(2^n)~ where ~n in [1, 
   mapM_ print $ map negate [a8, b8, c8, d8]
   print "GF9"
   mapM_ print $ map negate [a9, b9, c9, d9]
+#+end_src
+
+#+RESULTS:
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}])
+
+** Elements
+The same here for instances of ~Enumerable~.
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  print "GF8 elements"
+  mapM_ print (values :: [GF8])
 #+end_src
 
 #+RESULTS:
@@ -136,11 +154,10 @@ GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1}])
 GF (Polynomial.fromCoeffs [ZqB {unZqB = 2},ZqB {unZqB = 0}])
 #+end_example
 
-** Elements
-The same here for instances of ~Enumerable~.
+** Random element
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  print "GF8 elements"
-  mapM_ print (values :: [GF8])
+  randomIO :: IO GF8
+  randomIO :: IO GF9
 #+end_src
 
 #+RESULTS:
@@ -154,16 +171,6 @@ The same here for instances of ~Enumerable~.
 : GF (Polynomial.fromCoeffs [ZqB {unZqB = 1},ZqB {unZqB = 1},ZqB {unZqB = 0}])
 : GF (Polynomial.fromCoeffs [ZqB {unZqB = 1},ZqB {unZqB = 1},ZqB {unZqB = 1}])
 
-** Random element
-#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  randomIO :: IO GF8
-  randomIO :: IO GF9
-#+end_src
-
-#+RESULTS:
-: GF (Polynomial.fromCoeffs [ZqB {unZqB = 1},ZqB {unZqB = 1},ZqB {unZqB = 1}])
-: GF (Polynomial.fromCoeffs [ZqB {unZqB = 2},ZqB {unZqB = 2}])
-
 ** Size of GF
 Instances  for ~GF(2^n)~ 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
@@ -172,7 +179,7 @@ Instances  for ~GF(2^n)~
 #+end_src
 
 #+RESULTS:
-: TagT {untagT = Identity 8}
-: 8
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 1},ZqB {unZqB = 1}])
+: GF (Polynomial.fromCoeffs [ZqB {unZqB = 0},ZqB {unZqB = 0}])
 
 
