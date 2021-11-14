@@ -1,17 +1,16 @@
 * About
   Project containing some studies in some languages.
 * Projects
-  |---------------------+----------------------------------------------------+-------------------|
-  | Dirname             | about                                              | languages         |
-  |---------------------+----------------------------------------------------+-------------------|
-  | [[./learn-you-a-haskell/README.org][Learn You A Haskell]] | exercises inspired on the book Learn You A Haskell | Haskell           |
-  | [[./regev-cryptosystem/README.org][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Haskell           |
-  | [[./euler-project/README.org][Project Euler]]       | my resolutions of Project Euler exercises          | Clojure / Haskell |
-  | [[./crypto-lol-examples/README.org][Crypto-Λoλ-examples]] | examples of functions from the Λoλ lib             | Haskell           |
-  | [[./cis-194-spring-13/README.org][CIS-194 Spring 13]]   | exs. from the course CIS-194 from Penn University  | Haskell           |
-  | [[./haskell/README.org][Haskell]]             | exercises and random stuff in general              | Haskell           |
-  | [[./interview-problems/README.org][Interview Problems]]  | solutions of code interview problems               | Haskell           |
-  |---------------------+----------------------------------------------------+-------------------|
+  |---------------------+----------------------------------------------------+-----------|
+  | Dirname             | about                                              | languages |
+  |---------------------+----------------------------------------------------+-----------|
+  | [[./learn-you-a-haskell/README.org][Learn You A Haskell]] | exercises inspired on the book Learn You A Haskell | Haskell   |
+  | [[./regev-cryptosystem/README.org][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Haskell   |
+  | [[./crypto-lol-examples/README.org][Crypto-Λoλ-examples]] | examples of functions from the Λoλ lib             | Haskell   |
+  | [[./cis-194-spring-13/README.org][CIS-194 Spring 13]]   | exs. from the course CIS-194 from Penn University  | Haskell   |
+  | [[./haskell/README.org][Haskell]]             | exercises and random stuff in general              | Haskell   |
+  | [[./interview-problems/README.org][Interview Problems]]  | solutions of code interview problems               | Haskell   |
+  |---------------------+----------------------------------------------------+-----------|
 * Obs.:
    In order to run these haskell snippets you should add ~:set +m~ to your ~~/.ghc/ghci.conf~
 
