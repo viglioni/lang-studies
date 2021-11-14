@@ -1,4 +1,4 @@
-#+Title: Chapter 03: types amd typeclasses
+#+Title: Chapter 03: types and typeclasses
 #+startup: fold
 #+name: org-clear-haskell-output
 #+begin_src emacs-lisp :var strr="" :exports none

@@ -1,4 +1,4 @@
-#+Title:
+#+Title: Making our Types and Typeclasses
 #+startup: fold
 #+name: org-clear-haskell-output
 #+begin_src emacs-lisp :var strr="" :exports none
