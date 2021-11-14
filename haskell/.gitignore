@@ -1,4 +1,4 @@
-*
-!.projectile
-!.gitignore
-!*.org
+app/*
+!app/HelloWorld.hs
+.stack-work/*
+dist-newstyle/*

@@ -1,0 +1,125 @@
+#+title: Complex numbers - using data
+#+author: Laura Viglioni
+
+** Type definition
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     :{
+     data Complex a b =
+       Complex a b
+     
+     instance (Show a, Show b, Num b, Ord b) => Show (Complex a b) where
+       show (Complex a b) =
+         show a ++
+         (if b < 0
+            then " - "
+            else " + ") ++
+         show (abs b) ++ "i"
+     
+     real :: Complex a b -> a
+     real (Complex a b) = a
+     
+     imag :: Complex a b -> b
+     imag (Complex a b) = b
+     
+     :}
+     
+      Complex 11 (-2)
+     #+end_src
+
+     #+RESULTS:
+     : 
+     :  11 - 2i
+
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  map ($ Complex 1 2) [real, imag]
+#+end_src
+
+#+RESULTS:
+: [1,2]
+
+** Instance of Num
+
+  *Obs.:* in order to instantiate ~Num~ for any kind of existing number, we had to define ~abs~ as the square of the norm instead the norm itself.
+  
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     :set -XFlexibleInstances
+     :set -XFlexibleContexts
+     :{
+     instance (Num a) => Num (Complex a a) where
+       (+) (Complex a1 b1) (Complex a2 b2) = Complex (a1 + a2) (b1 + b2)
+       (-) (Complex a1 b1) (Complex a2 b2) = Complex (a1 - a2) (b1 - b2)
+       (*) (Complex a1 b1) (Complex a2 b2) = Complex (a1*a2 - b1*b2) (a1*b2 + b1*a2)
+       negate (Complex a b) = Complex (negate a) (negate b)
+       abs (Complex a b) = Complex (a*a + b*b) 0
+       signum (Complex a b) = Complex (signum a) 0
+       fromInteger a = Complex (fromInteger a) 0
+     
+     
+     conjugate :: (Num b) => (Complex a b) -> (Complex a b)
+     conjugate (Complex a b) = Complex a (negate b)
+     
+     :}
+#+end_src
+
+#+RESULTS:
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  map (\f -> f (Complex 1 1) (Complex 2 3)) [(+), (-), (*)]
+#+end_src
+
+#+RESULTS:
+: [3 + 4i,-1 - 2i,-1 + 5i]
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  map ($ (Complex 1 1)) [negate, abs, signum, conjugate]
+#+end_src
+
+#+RESULTS:
+: [-1 - 1i,2 + 0i,1 + 0i,1 - 1i]
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  fromInteger 10 :: (Complex Double Double)
+#+end_src
+
+#+RESULTS:
+: 10.0 + 0.0i
+
+** Instance of Fractional
+   #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+     
+     :{
+     instance (Num a, Fractional a) => Fractional (Complex a a) where
+       fromRational b = Complex (fromRational b) 0
+       (/) z1 z2 = z1 * conjZ2 * inverseSquaredNormOfZ2
+         where
+           conjZ2 = conjugate z2
+           inverseSquaredNormOfZ2 = Complex (1 / real (z2 * conjZ2)) 0
+     :}
+#+end_src
+
+#+RESULTS:
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  (Complex 1.0 2.0) / (Complex 3.0 1.0)
+#+end_src
+
+#+RESULTS:
+: 0.5 + 0.5i
+
+** Instance of Functor
+   #+begin_src haskell :exports both :results output:post org-babel-haskell-formatter(*this*)
+     :{
+     -- mapReal :: (a -> c) -> Complex a b -> Complex c b
+     -- mapReal f (Complex a b) = Complex (f a) b
+     
+     -- mapImag :: (b -> c) -> Complex a b -> Complex a c
+     -- mapImag f (Complex a b) = Complex a (f b)
+     instance Functor (Complex a) where
+       fmap f (Complex a b) = Complex a (f b)
+     :}
+     
+     --map ($ Complex 1 2) [mapReal (+1), mapImag (-1)]
+#+end_src
+
+

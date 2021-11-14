@@ -1,9 +1,10 @@
 #+title: Some haskell snippets
 
-|----------------+-------------------------------+--------------------------------|
-| name           | file                          | description                    |
-|----------------+-------------------------------+--------------------------------|
-| Binary Tree    | [[./binary-trees.org]]            | related functions, functor     |
-| Complex Number | [[./complex-numbers-newtype.org]] | instance of Num and Fractional |
-|----------------+-------------------------------+--------------------------------|
+|---------------------------+----------------------------------------------|
+| file                      | description                                  |
+|---------------------------+----------------------------------------------|
+| [[./data-modeling/binary-trees.org][Binary Trees]]              | related functions, functor                   |
+| [[./data-modeling/complex-numbers-newtype.org][Complex numbers (newtype)]] | instance of Num and Fractional using newtype |
+| [[./data-modeling/complex-numbers-data.org][Complex numbers (data)]]    |                                              |
+|---------------------------+----------------------------------------------|
 
