@@ -1,0 +1,29 @@
+* Paint fill
+The goal of this problem is to implement a paint fill function, as in MS Paint fill tool.
+
+*Input* :
+- a matrix (of integers e.g.) representing a image, where each matrix cell represents a pixel.
+- a position of a pixel to be clicked
+- a new colour to fill from this pixel
+
+*Output*: a new image filled from a pixel.
+
+Example:
+- image
+| 1 | 2 | 3 | 1 |
+| 1 | 1 | 3 | 1 |
+| 2 | 1 | 2 | 2 |
+| 3 | 3 | 3 | 1 |
+
+- position (1,1)
+- colour 2
+- Output:
+| 2 | 2 | 3 | 1 |
+| 2 | 2 | 3 | 1 |
+| 2 | 2 | 2 | 2 |
+| 3 | 3 | 3 | 1 |
+
+  
+* Solutions
+- [[./paint-fill.haskell.org][Solution in Haskell]]
+
