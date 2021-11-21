@@ -1,0 +1,164 @@
+* Paint fill
+- [[./README.org][Check README]]
+
+** Imports
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  import Data.Matrix
+  import Data.Maybe
+#+end_src
+
+#+RESULTS:
+
+** Types
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  data Colour
+    = Blue
+    | Red
+    | Black
+    deriving (Eq)
+
+  instance Show Colour where
+    show Blue = "🔵"
+    show Red = "🔺"
+    show Black = "⬛"
+
+  type Image = Matrix Colour
+
+  type Row = Int
+
+  type Col = Int
+
+  type Position = (Row, Col)
+
+  type Positions = [Position]
+  :}
+#+end_src
+
+#+RESULTS:
+
+** Image input
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  image =
+    fromLists
+      [ [Red, Red, Black, Blue]
+      , [Red, Red, Black, Red]
+      , [Blue, Blue, Black, Blue]
+      , [Blue, Blue, Blue, Red]
+      ]
+  :}
+  image
+#+end_src
+
+#+RESULTS:
+: 
+: ┌         ┐
+: │ 🔺 🔺 ⬛ 🔵 │
+: │ 🔺 🔺 ⬛ 🔺 │
+: │ 🔵 🔵 ⬛ 🔵 │
+: │ 🔵 🔵 🔵 🔺 │
+: └         ┘
+
+** Functions
+
+*Get pixel*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  getColour :: Image -> Position -> Maybe Colour
+  getColour img (r, c) = safeGet r c img
+  :}
+#+end_src
+
+#+RESULTS:
+
+ *Get all 8-neighbour pixels that share the same colour*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+   getNeighbours8 :: Image -> Position -> Positions
+   getNeighbours8 img (r, c) =
+     let coords =
+           [(r + i, c + j) | i <- [-1, 0, 1], j <- [-1, 0, 1], (i, j) /= (0, 0)]
+      in filter (\pos -> getColour img pos == getColour img (r, c)) coords
+   :}
+
+#+end_src
+
+#+RESULTS:
+
+** Main
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  paint :: Colour -> Image -> Position -> Image
+  paint c img pos =
+    if newImg == img
+      then img
+      else foldl (paint c) newImg neighbours
+    where
+      currColour = getColour img pos
+      newImg = fromMaybe img $ safeSet c pos img
+      neighbours = getNeighbours8 img pos
+  :}
+#+end_src
+
+#+RESULTS:
+
+*Test cases*
+
+Notice that our matrix indexing starts on 1 and not 0
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  print "Original image"
+  image
+  print "fill blue on (1,1)"
+  paint Blue image (1,1)
+  print "fill black on (4,4)"
+  paint Black image (4,4) 
+  print "fill black on a already black position"
+  paint Black image (1,3)
+  print "try to fill on a invalid position (returns the same img)"
+  paint Black image (5,5)
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Original image
+┌         ┐
+│ 🔺 🔺 ⬛ 🔵 │
+│ 🔺 🔺 ⬛ 🔺 │
+│ 🔵 🔵 ⬛ 🔵 │
+│ 🔵 🔵 🔵 🔺 │
+└         ┘
+fill blue on (1,1)
+┌         ┐
+│ 🔵 🔵 ⬛ 🔵 │
+│ 🔵 🔵 ⬛ 🔺 │
+│ 🔵 🔵 ⬛ 🔵 │
+│ 🔵 🔵 🔵 🔺 │
+└         ┘
+fill black on (4,4)
+┌         ┐
+│ 🔺 🔺 ⬛ 🔵 │
+│ 🔺 🔺 ⬛ 🔺 │
+│ 🔵 🔵 ⬛ 🔵 │
+│ 🔵 🔵 🔵 ⬛ │
+└         ┘
+fill black on a already black position
+┌         ┐
+│ 🔺 🔺 ⬛ 🔵 │
+│ 🔺 🔺 ⬛ 🔺 │
+│ 🔵 🔵 ⬛ 🔵 │
+│ 🔵 🔵 🔵 🔺 │
+└         ┘
+try to fill on a invalid position
+┌         ┐
+│ 🔺 🔺 ⬛ 🔵 │
+│ 🔺 🔺 ⬛ 🔺 │
+│ 🔵 🔵 ⬛ 🔵 │
+│ 🔵 🔵 🔵 🔺 │
+└         ┘
+#+end_example
