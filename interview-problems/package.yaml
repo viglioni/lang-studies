@@ -13,6 +13,10 @@ description: Please see the README on GitHub at <https://github.com/githubuser/#
 dependencies:
   - base >= 4.7 && < 5
   - matrix
+  - containers
+  - dates
+  - regex-posix
+  - regex-compat
 
 executables:
   interview-problems-exe:

@@ -2,3 +2,7 @@ resolver: lts-17.13
 
 packages:
   - .
+extra-deps:
+  - dates-0.2.3.0@sha256:915a2fc85ea818542851ed54a85abe6a042e7d78f470a5a6db032768f6c6415a,2179
+
+allow-newer: true
