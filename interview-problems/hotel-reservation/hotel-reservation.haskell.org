@@ -44,7 +44,7 @@
     | Fri
     | Sat
     | Sun
-    deriving (Show, Eq)
+    deriving (Show, Eq, Enum)
 
   type ReservationDates = [Day]
 
@@ -131,11 +131,11 @@
   :{
   getRateFunction :: Customer -> Day -> Rate
   getRateFunction Regular d
-    | d `elem` [Mon, Tue, Wed, Thu, Fri] = weekdayRateRegular
+    | d `elem` [Mon .. Fri] = weekdayRateRegular
   getRateFunction Regular d
     | d `elem` [Sat, Sun] = weekendRateRegular
   getRateFunction Rewards d
-    | d `elem` [Mon, Tue, Wed, Thu, Fri] = weekdayRateRewards
+    | d `elem` [Mon .. Fri] = weekdayRateRewards
   getRateFunction Rewards d
     | d `elem` [Sat, Sun] = weekendRateRewards
   :}
