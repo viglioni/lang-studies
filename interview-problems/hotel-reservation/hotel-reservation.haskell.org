@@ -1,0 +1,242 @@
+* Hotel Reservation
+- [[./README.org][Check readme]]
+  
+** Headers and imports
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :set -XGeneralizedNewtypeDeriving
+  import Text.Regex
+  import Data.String
+#+end_src
+
+#+RESULTS:
+
+** Types
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  newtype USD =
+    USD Int
+    deriving (Num, Eq)
+
+  instance Show USD where
+    show (USD a) = "US$ " ++ show a ++ ".00"
+
+  instance Ord USD where
+    (USD a) <= (USD b) = a <= b
+
+  data HotelName
+    = Lakewood
+    | Bridgewood
+    | Ridgewood
+    deriving (Show, Eq)
+
+  data Customer
+    = Regular
+    | Rewards
+    deriving (Show, Eq)
+
+  data Day
+    = Mon
+    | Tue
+    | Wed
+    | Thu
+    | Fri
+    | Sat
+    | Sun
+    deriving (Show, Eq)
+
+  type ReservationDates = [Day]
+
+  type Rating = Int
+
+  data Hotel =
+    Hotel
+      { name :: HotelName
+      , rating :: Rating
+      , weekdayRateRegular :: USD
+      , weekdayRateRewards :: USD
+      , weekendRateRegular :: USD
+      , weekendRateRewards :: USD
+      }
+    deriving (Show, Eq)
+
+  instance Ord Hotel where
+    a <= b = rating a <= rating b
+
+  type Hotels = [Hotel]
+
+  type Rate = Hotel -> USD
+
+  type Input = String
+
+  :}
+#+end_src
+
+#+RESULTS:
+
+** Our variables
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  lakewood = Hotel Lakewood 3 (USD 110) (USD 80) (USD 90) (USD 80)
+  bridgewood = Hotel Bridgewood 4 (USD 160) (USD 110) (USD 60) (USD 50)
+  ridgewood = Hotel Ridgewood 5 (USD 220) (USD 100) (USD 150) (USD 40)
+
+  lakewood
+  bridgewood
+  ridgewood
+#+end_src
+
+#+RESULTS:
+: 
+:  Hotel {name = Lakewood, rating = 3, weekdayRateRegular = US$ 110.00, weekdayRateRewards = US$ 80.00, weekendRateRegular = US$ 90.00, weekendRateRewards = US$ 80.00}
+: Hotel {name = Bridgewood, rating = 4, weekdayRateRegular = US$ 160.00, weekdayRateRewards = US$ 110.00, weekendRateRegular = US$ 60.00, weekendRateRewards = US$ 50.00}
+: Hotel {name = Ridgewood, rating = 5, weekdayRateRegular = US$ 220.00, weekdayRateRewards = US$ 100.00, weekendRateRegular = US$ 150.00, weekendRateRewards = US$ 40.00}
+
+** Functions
+
+*Get Day from string*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  getReservationDate :: String -> Maybe Day
+  getReservationDate "(mon)" = Just Mon
+  getReservationDate "(tues)" = Just Tue
+  getReservationDate "(wed)" = Just Wed
+  getReservationDate "(thur)" = Just Thu
+  getReservationDate "(fri)" = Just Fri
+  getReservationDate "(sat)" = Just Sat
+  getReservationDate "(sun)" = Just Sun
+  getReservationDate _ = Nothing
+  :}
+#+end_src
+
+#+RESULTS:
+
+*Get Customer from string*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  getCustomer :: String -> Maybe Customer
+  getCustomer "Regular" = Just Regular
+  getCustomer "Rewards" = Just Rewards
+  getustomer _ = Nothing
+  :}
+#+end_src
+
+#+RESULTS:
+
+*Get which hotel function we should use*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  getRateFunction :: Customer -> Day -> Rate
+  getRateFunction Regular d
+    | d `elem` [Mon, Tue, Wed, Thu, Fri] = weekdayRateRegular
+  getRateFunction Regular d
+    | d `elem` [Sat, Sun] = weekendRateRegular
+  getRateFunction Rewards d
+    | d `elem` [Mon, Tue, Wed, Thu, Fri] = weekdayRateRewards
+  getRateFunction Rewards d
+    | d `elem` [Sat, Sun] = weekendRateRewards
+  :}
+#+end_src
+
+#+RESULTS:
+
+*Calc the reservation price*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  reservationPrice :: Customer -> ReservationDates -> Hotel -> USD
+  reservationPrice cust dates hotel =
+    sum $ map (getRateFunction cust) dates <*> [hotel]
+
+  :}
+
+  reservationPrice Regular [Sat, Sun, Mon, Tue] lakewood
+#+end_src
+
+#+RESULTS:
+: 
+:  US$ 400.00
+
+*Get cheapest hotel*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  cheapestHotel :: Hotels -> Customer -> ReservationDates -> HotelName
+  cheapestHotel hotels cust dates =
+    let prices = map (reservationPrice cust dates) hotels
+     in name . snd . minimum $ zip prices hotels
+  :}
+#+end_src
+
+#+RESULTS:
+
+** Parsing the input
+ *Parsing customer type*
+
+ #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+    :{
+    parseCustomer :: Input -> Maybe Customer
+    parseCustomer input =
+      let rx = mkRegex "^(Regular|Rewards)"
+          match = fmap head $ matchRegex rx input
+       in  match >>= getCustomer
+   :}
+#+end_src
+
+#+RESULTS:
+
+*Parse dates*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  parseReservations :: Input -> Maybe ReservationDates
+  parseReservations input =
+    let rx = mkRegex "(\\([a-z]{3,4}\\))"
+        dates = tail . words $ input
+        matches = map (fmap head . matchRegex rx) dates
+     in sequence $ map (>>= getReservationDate) matches
+  :}
+#+end_src
+
+#+RESULTS:
+
+** Main
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  main :: Input -> Maybe HotelName
+  main input =
+    let customer = parseCustomer input
+        reservations = parseReservations input
+        hotels = [lakewood, bridgewood, ridgewood]
+     in cheapestHotel hotels <$> customer <*> reservations
+  :}
+
+  -- valid inputs
+  input1 = "Regular: 16Mar2009(mon), 17Mar2009(tues), 18Mar2009(wed)"
+  input2 = "Regular: 20Mar2009(fri), 21Mar2009(sat), 22Mar2009(sun)"
+  input3 = "Rewards: 26Mar2009(thur), 27Mar2009(fri), 28Mar2009(sat)"
+
+  -- invalid inputs
+  input4 = "bla: 26Mar2009(thur), 27Mar2009(fri), 28Mar2009(sat)"
+  input5 = "Rewards: 26Mar2009(bla), 27Mar2009(fri), 28Mar2009(sat)"
+
+  print "valid inputs"
+  mapM_ print . map main $ [input1, input2, input3]
+
+  print "invalid inputs"
+  mapM_ print . map main $ [input4, input5]
+#+end_src
+
+#+RESULTS:
+: 
+:  "valid inputs"
+: Just Lakewood
+: Just Bridgewood
+: Just Lakewood
+:  "invalid inputs"
+: Nothing
+: Nothing
+
