@@ -4,7 +4,7 @@
 ** Headers and imports
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :set -XGeneralizedNewtypeDeriving
-  import Text.Regex
+  import Text.Regex.Posix
   import Data.String
 #+end_src
 
@@ -70,6 +70,8 @@
 
   type Input = String
 
+  type RxString = String
+
   :}
 #+end_src
 
@@ -119,7 +121,7 @@
   getCustomer :: String -> Maybe Customer
   getCustomer "Regular" = Just Regular
   getCustomer "Rewards" = Just Rewards
-  getustomer _ = Nothing
+  getCustomer _ = Nothing
   :}
 #+end_src
 
@@ -174,36 +176,42 @@
 #+RESULTS:
 
 ** Parsing the input
- *Parsing customer type*
 
- #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-    :{
-    parseCustomer :: Input -> Maybe Customer
-    parseCustomer input =
-      let rx = mkRegex "^(Regular|Rewards)"
-          match = fmap head $ matchRegex rx input
-       in  match >>= getCustomer
-   :}
-#+end_src
-
-#+RESULTS:
-
-*Parse dates*
+*A match function*
 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
-  parseReservations :: Input -> Maybe ReservationDates
-  parseReservations input =
-    let rx = mkRegex "(\\([a-z]{3,4}\\))"
-        dates = tail . words $ input
-        matches = map (fmap head . matchRegex rx) dates
-     in sequence $ map (>>= getReservationDate) matches
+  match :: RxString -> Input -> [Maybe String]
+  match rx input =
+    let res = input =~ rx :: [[String]]
+     in if res == []
+          then [Nothing]
+          else map (Just . head) res
+
+  
+  matchInput :: (String -> Maybe a) -> RxString -> Input -> Maybe [a]
+  matchInput fn rx =  sequence . map (>>= fn) . match rx 
   :}
 #+end_src
 
 #+RESULTS:
 
-** Main
+*Parse input*
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  parseReservations :: Input -> Maybe ReservationDates
+  parseReservations = matchInput getReservationDate "\\([a-z]{3,4}\\)"
+
+  parseCustomer :: Input -> Maybe Customer
+  parseCustomer = fmap head . matchInput getCustomer "^Regular|Rewards"
+
+  :}
+#+end_src
+
+#+RESULTS:
+
+** Main 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
   main :: Input -> Maybe HotelName
@@ -228,6 +236,7 @@
 
   print "invalid inputs"
   mapM_ print . map main $ [input4, input5]
+
 #+end_src
 
 #+RESULTS:
