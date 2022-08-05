@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "pre push hooks started"
+npm run typecheck
+echo "pre push hooks finished"

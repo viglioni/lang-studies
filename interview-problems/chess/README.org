@@ -3,4 +3,5 @@ You are given a chess table with some pieces on it (doesn't matter which pieces 
 
 You must solve this problem for the Queen, the Bishop and the Tower.
 * Solutions
-- [[./chess-haskell.org][Solution in haskell]]
+- [[./haskell-hs/chess-haskell.org][Solution in haskell]]
+- [[./chess-ts/README.org][Solution in TypeScript]]
