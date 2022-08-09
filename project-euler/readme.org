@@ -2,7 +2,7 @@
 
 In this file I will solve problems from [[https://projecteuler.net/archives][Project Euler]] using Elixir lang.
 
-** Resusable modules
+** Reusable modules
 #+begin_src elixir :exports code :results output 
   defmodule Prime do
     defp possible_factors(n), do: 2..(n |> :math.sqrt() |> ceil)
