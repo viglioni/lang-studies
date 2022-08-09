@@ -13,16 +13,25 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 
     def possible_prime_factors(n), do: n |> possible_factors |> Enum.filter(&prime?/1)
   end
+
+  defmodule NumberTheory do
+    def gcd(a, 0), do: a
+    def gcd(0, a), do: a
+
+    def gcd(a, b), do: gcd(min(a, b), rem(max(a, b), min(a, b)))
+
+    def lcm(a, b), do: div(a * b, gcd(a, b))
+  end
 #+end_src
 
 #+RESULTS:
 : [33mwarning: [0mredefining module Prime (current version defined in memory)
 :   iex:1
 : 
-: {:module, Prime,
-:  <<70, 79, 82, 49, 0, 0, 9, 80, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 45, 0,
-:    0, 0, 29, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8, 95,
-:    95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:possible_prime_factors, 1}}
+: {:module, NumberTheory,
+:  <<70, 79, 82, 49, 0, 0, 6, 240, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 185,
+:    0, 0, 0, 21, 19, 69, 108, 105, 120, 105, 114, 46, 78, 117, 109, 98, 101, 114,
+:    84, 104, 101, 111, 114, 121, 8, 95, 95, ...>>, {:lcm, 2}}
 
 
 
@@ -105,4 +114,14 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 
 #+RESULTS:
 : 698896
+
+** Problem 5
+*What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?*
+
+#+begin_src elixir :exports both :results output 
+  1..20 |> Enum.reduce(1, &NumberTheory.lcm/2)
+#+end_src
+
+#+RESULTS:
+: 232792560
 
