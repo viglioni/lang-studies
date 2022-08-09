@@ -1,0 +1,105 @@
+#+title: Project Euler solutions
+
+In this file I will solve problems from [[https://projecteuler.net/archives][Project Euler]] using Elixir lang.
+
+** Resusable modules
+#+begin_src elixir :exports code :results output 
+  defmodule Prime do
+    def possible_factors(n), do: 2..(n |> :math.sqrt() |> ceil)
+
+    def divides?(a, b), do: rem(b, a) == 0
+
+    def prime?(n), do: n |> possible_factors |> Enum.filter(&divides?(&1, n)) |> (&(&1 == [])).()
+  end
+#+end_src
+
+#+RESULTS:
+: [33mwarning: [0mredefining module Prime (current version defined in memory)
+:   iex:1
+: 
+: {:module, Prime,
+:  <<70, 79, 82, 49, 0, 0, 8, 176, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 22,
+:    0, 0, 0, 28, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8,
+:    95, 95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:prime?, 1}}
+
+** Problem 1
+*Find the sum of all the multiples of 3 or 5 below 1000.*
+
+#+begin_src elixir :exports both :results output 
+  multiple_of_3_or_5 = fn n -> rem(n, 5) * rem(n, 3) == 0 end
+  1..999 |> Enum.filter(multiple_of_3_or_5) |> Enum.sum()
+#+end_src
+
+#+RESULTS:
+: 233168
+
+** Problem 2
+
+*By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.*
+
+#+begin_src elixir :exports both :results output 
+  require Integer
+
+  defmodule Ex2 do
+    @limit 4_000_000
+
+    defp fib(list) do
+      curr = list |> Enum.take(2) |> Enum.sum()
+
+      if curr < @limit do
+        fib([curr | list])
+      else
+        list
+      end
+    end
+
+    defp even?(x), do: rem(x, 2) == 0
+
+    def fib_even_sum() do
+      [1, 1] |> fib |> Enum.filter(&even?/1) |> Enum.sum()
+    end
+  end
+
+  Ex2.fib_even_sum()
+#+end_src
+
+#+RESULTS:
+: 4613732
+
+** Problem 3
+
+*What is the largest prime factor of the number 600851475143?*
+
+#+begin_src elixir :exports both :results output 
+  largest_prime_factor = fn n ->
+    n
+    |> Prime.possible_factors()
+    |> Enum.filter(&Prime.prime?/1)
+    |> Enum.filter(&Prime.divides?(&1, n))
+    |> List.last()
+  end
+
+  largest_prime_factor.(600_851_475_143)
+#+end_src
+
+#+RESULTS:
+: 6857
+
+** Problem 4
+
+*Find the largest palindrome made from the product of two 3-digit numbers.*
+
+#+begin_src elixir :exports both :results output 
+  palindrome? = fn n ->
+    str = Integer.to_string(n)
+    str == String.reverse(str)
+  end
+
+  numbers = 999..100
+
+  Enum.zip_with(numbers, numbers, &(&1 * &2)) |> Enum.filter(palindrome?) |> hd
+#+end_src
+
+#+RESULTS:
+: 698896
+

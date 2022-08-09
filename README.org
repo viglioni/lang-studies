@@ -10,6 +10,7 @@
   | [[./cis-194-spring-13/README.org][CIS-194 Spring 13]]   | exs. from the course CIS-194 from Penn University  | Haskell      |
   | [[./haskell/README.org][Haskell]]             | exercises and random stuff in general              | Haskell      |
   | [[./interview-problems/README.org][Interview Problems]]  | solutions of code interview problems               | Haskell . TS |
+  | [[./project-euler/readme.org][project euler]]       | solutions of project euler problems                | Elixir       |
   |---------------------+----------------------------------------------------+--------------|
 * Obs.:
    In order to run these haskell snippets you should add ~:set +m~ to your ~~/.ghc/ghci.conf~
