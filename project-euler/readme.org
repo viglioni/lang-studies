@@ -3,17 +3,46 @@
 In this file I will solve problems from [[https://projecteuler.net/archives][Project Euler]] using Elixir lang.
 
 ** Reusable modules
+*** Prime module
 #+begin_src elixir :exports code :results output 
   defmodule Prime do
-    defp possible_factors(n), do: 2..(n |> :math.sqrt() |> ceil)
+    defp ceil_sqrt(n), do: n |> :math.sqrt() |> ceil
+
+    defp possible_factors(n), do: 2..ceil_sqrt(n)
 
     def divides?(a, b), do: rem(b, a) == 0
 
+    def prime?(2), do: true
     def prime?(n), do: n |> possible_factors |> Enum.filter(&divides?(&1, n)) |> (&(&1 == [])).()
 
-    def possible_prime_factors(n), do: n |> possible_factors |> Enum.filter(&prime?/1)
-  end
+    def primes do
+      Stream.concat(2..2, Stream.iterate(3, fn n -> n + 2 end)) |> Stream.filter(&prime?/1)
+    end
 
+    def nth_prime(n) do
+      primes() |> Stream.drop(n - 1) |> Enum.take(1) |> hd
+    end
+
+    def take(n), do: primes() |> Enum.take(n)
+
+    def possible_prime_factors(n) do
+      max_val = ceil_sqrt(n)
+      primes() |> Stream.take_while(fn el -> el <= max_val end) |> Enum.to_list()
+    end
+  end
+#+end_src
+
+#+RESULTS:
+: [33mwarning: [0mredefining module Prime (current version defined in memory)
+:   iex:1
+: 
+: {:module, Prime,
+:  <<70, 79, 82, 49, 0, 0, 14, 124, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 195,
+:    0, 0, 0, 46, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8,
+:    95, 95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:possible_prime_factors, 1}}
+
+*** Number Theory Module
+#+begin_src elixir :exports code :results output 
   defmodule NumberTheory do
     def gcd(a, 0), do: a
     def gcd(0, a), do: a
@@ -25,7 +54,7 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 #+end_src
 
 #+RESULTS:
-: [33mwarning: [0mredefining module Prime (current version defined in memory)
+: [33mwarning: [0mredefining module NumberTheory (current version defined in memory)
 :   iex:1
 : 
 : {:module, NumberTheory,
