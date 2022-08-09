@@ -109,7 +109,8 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 
   numbers = 999..100
 
-  Enum.zip_with(numbers, numbers, &(&1 * &2)) |> Enum.filter(palindrome?) |> hd
+  Stream.zip_with(numbers, numbers, &(&1 * &2)) |> Stream.filter(palindrome?) |> Enum.take(1) |> hd
+
 #+end_src
 
 #+RESULTS:
@@ -124,4 +125,18 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 
 #+RESULTS:
 : 232792560
+
+** Problem 6
+*Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.*
+
+#+begin_src elixir :exports both :results output 
+  square_of_the_sum = fn n -> div(n * (n + 1), 2) ** 2 end
+
+  sum_of_the_squares = fn n -> div(n * (n + 1) * (2 * n + 1), 6) end
+
+  square_of_the_sum.(100) - sum_of_the_squares.(100)
+#+end_src
+
+#+RESULTS:
+: 25164150
 
