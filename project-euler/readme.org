@@ -169,3 +169,13 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 #+RESULTS:
 : 25164150
 
+** Problem 7
+*What is the 10 001st prime number?*
+
+#+begin_src elixir :exports both :results output 
+  Prime.nth_prime 10_001
+#+end_src
+
+#+RESULTS:
+: 104743
+
