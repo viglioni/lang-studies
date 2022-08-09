@@ -5,11 +5,13 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 ** Resusable modules
 #+begin_src elixir :exports code :results output 
   defmodule Prime do
-    def possible_factors(n), do: 2..(n |> :math.sqrt() |> ceil)
+    defp possible_factors(n), do: 2..(n |> :math.sqrt() |> ceil)
 
     def divides?(a, b), do: rem(b, a) == 0
 
     def prime?(n), do: n |> possible_factors |> Enum.filter(&divides?(&1, n)) |> (&(&1 == [])).()
+
+    def possible_prime_factors(n), do: n |> possible_factors |> Enum.filter(&prime?/1)
   end
 #+end_src
 
@@ -18,9 +20,11 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 :   iex:1
 : 
 : {:module, Prime,
-:  <<70, 79, 82, 49, 0, 0, 8, 176, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 22,
-:    0, 0, 0, 28, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8,
-:    95, 95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:prime?, 1}}
+:  <<70, 79, 82, 49, 0, 0, 9, 80, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 45, 0,
+:    0, 0, 29, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8, 95,
+:    95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:possible_prime_factors, 1}}
+
+
 
 ** Problem 1
 *Find the sum of all the multiples of 3 or 5 below 1000.*
@@ -73,8 +77,7 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 #+begin_src elixir :exports both :results output 
   largest_prime_factor = fn n ->
     n
-    |> Prime.possible_factors()
-    |> Enum.filter(&Prime.prime?/1)
+    |> Prime.possible_prime_factors()
     |> Enum.filter(&Prime.divides?(&1, n))
     |> List.last()
   end
