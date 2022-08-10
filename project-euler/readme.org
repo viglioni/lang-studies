@@ -39,8 +39,6 @@ Solutions:
 | [[readme.org/#Problem-11][11]] | [[readme.org/#Problem-12][12]] |   |   |   |   |   |   |   |    |
 
 
-Solutions: [[readme.org#Problem-1][1]], [[readme.org#Problem-2][2]], [[readme.org#Problem-3][3]], [[readme.org#Problem-4][4]], [[readme.org#Problem-5][5]], [[readme.org#Problem-6][6]], [[readme.org#Problem-7][7]], [[readme.org#Problem-8][8]], [[readme.org#Problem-9][9]], [[readme.org#Problem-10][10]], [[readme.org#Problem-11][11]]
-
 ** Reusable modules
 *** Number Theory Module
 #+begin_src elixir :exports code :results output 
