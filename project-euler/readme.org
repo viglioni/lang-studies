@@ -4,6 +4,8 @@
 In this file I will solve problems from [[https://projecteuler.net/archives][Project Euler]] using Elixir
 lang.
 
+Problems: [[*Problem 9][9]],
+
 ** Reusable modules
 *** Prime module
 #+begin_src elixir :exports code :results output 
