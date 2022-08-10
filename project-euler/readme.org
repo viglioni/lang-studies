@@ -4,20 +4,84 @@
 In this file I will solve problems from [[https://projecteuler.net/archives][Project Euler]] using Elixir
 lang.
 
+
+Solutions:
+#+begin_src emacs-lisp :exports results :results table
+  (require 'functional)
+
+  (let  ((headings '()))
+
+    (defun add-to-index (text)
+      (add-to-list 'headings text t))
+
+    (defun format-link (heading-text)
+      (let ((link (replace-regexp-in-string " " "-" heading-text))
+            (text (replace-regexp-in-string "[^0-9]" "" heading-text)))
+        (format "[[readme.org/#%s][%s]]" link text)))
+
+    (defun chunks (lst)
+      (seq-partition lst 10))
+
+    (org-map-entries
+     (lambda ()
+       (add-to-index (org-element-property :title (org-element-at-point))))
+     "LEVEL=2")
+
+
+    (fp/pipe headings
+      ((seq-filter (lambda (el) (regex-matches "Problem" el)))
+       (seq-map 'format-link)
+       (chunks))))
+#+end_src
+
+#+RESULTS:
+| [[readme.org/#Problem-1][1]]  | [[readme.org/#Problem-2][2]]  | [[readme.org/#Problem-3][3]] | [[readme.org/#Problem-4][4]] | [[readme.org/#Problem-5][5]] | [[readme.org/#Problem-6][6]] | [[readme.org/#Problem-7][7]] | [[readme.org/#Problem-8][8]] | [[readme.org/#Problem-9][9]] | [[readme.org/#Problem-10][10]] |
+| [[readme.org/#Problem-11][11]] | [[readme.org/#Problem-12][12]] |   |   |   |   |   |   |   |    |
+
+
 Solutions: [[readme.org#Problem-1][1]], [[readme.org#Problem-2][2]], [[readme.org#Problem-3][3]], [[readme.org#Problem-4][4]], [[readme.org#Problem-5][5]], [[readme.org#Problem-6][6]], [[readme.org#Problem-7][7]], [[readme.org#Problem-8][8]], [[readme.org#Problem-9][9]], [[readme.org#Problem-10][10]], [[readme.org#Problem-11][11]]
 
 ** Reusable modules
-*** Prime module
+*** Number Theory Module
 #+begin_src elixir :exports code :results output 
-  defmodule Prime do
-    defp ceil_sqrt(n), do: n |> :math.sqrt() |> ceil
+  defmodule NumberTheory do
+    def gcd(a, 0), do: a
+    def gcd(0, a), do: a
+    def gcd(a, b), do: gcd(min(a, b), rem(max(a, b), min(a, b)))
 
-    defp possible_factors(n), do: 2..ceil_sqrt(n)
+    def lcm(a, b), do: div(a * b, gcd(a, b))
+
+    def naturals, do: Stream.iterate(1, fn n -> n + 1 end)
+
+    def max_prime_divisor(n), do: n |> :math.sqrt() |> ceil
+
+    def possible_factors(n), do: 2..max_prime_divisor(n)
 
     def divides?(a, b), do: rem(b, a) == 0
 
+    def divisors(n) do
+      1..n |> Enum.filter(&divides?(&1, n))
+    end
+  end
+#+end_src
+
+#+RESULTS:
+: {:module, NumberTheory,
+:  <<70, 79, 82, 49, 0, 0, 12, 176, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 108,
+:    0, 0, 0, 39, 19, 69, 108, 105, 120, 105, 114, 46, 78, 117, 109, 98, 101, 114,
+:    84, 104, 101, 111, 114, 121, 8, 95, 95, ...>>, {:divisors, 1}}
+
+*** Prime module
+#+begin_src elixir :exports code :results output 
+  defmodule Prime do
     def prime?(2), do: true
-    def prime?(n), do: n |> possible_factors |> Enum.filter(&divides?(&1, n)) |> (&(&1 == [])).()
+
+    def prime?(n),
+      do:
+        n
+        |> NumberTheory.possible_factors()
+        |> Enum.filter(&NumberTheory.divides?(&1, n))
+        |> (&(&1 == [])).()
 
     def primes do
       Stream.concat(2..2, Stream.iterate(3, fn n -> n + 2 end)) |> Stream.filter(&prime?/1)
@@ -32,41 +96,17 @@ Solutions: [[readme.org#Problem-1][1]], [[readme.org#Problem-2][2]], [[readme.or
     def take_while(func), do: primes() |> Stream.take_while(func) |> Enum.to_list()
 
     def possible_prime_factors(n) do
-      max_val = ceil_sqrt(n)
+      max_val = NumberTheory.max_prime_divisor(n)
       primes() |> Stream.take_while(fn el -> el <= max_val end) |> Enum.to_list()
     end
   end
 #+end_src
 
 #+RESULTS:
-: [33mwarning: [0mredefining module Prime (current version defined in memory)
-:   iex:1
-: 
 : {:module, Prime,
-:  <<70, 79, 82, 49, 0, 0, 15, 52, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 195,
-:    0, 0, 0, 46, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8,
+:  <<70, 79, 82, 49, 0, 0, 13, 216, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 187,
+:    0, 0, 0, 41, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8,
 :    95, 95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:possible_prime_factors, 1}}
-
-*** Number Theory Module
-#+begin_src elixir :exports code :results output 
-  defmodule NumberTheory do
-    def gcd(a, 0), do: a
-    def gcd(0, a), do: a
-
-    def gcd(a, b), do: gcd(min(a, b), rem(max(a, b), min(a, b)))
-
-    def lcm(a, b), do: div(a * b, gcd(a, b))
-  end
-#+end_src
-
-#+RESULTS:
-: [33mwarning: [0mredefining module NumberTheory (current version defined in memory)
-:   iex:1
-: 
-: {:module, NumberTheory,
-:  <<70, 79, 82, 49, 0, 0, 6, 240, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 185,
-:    0, 0, 0, 21, 19, 69, 108, 105, 120, 105, 114, 46, 78, 117, 109, 98, 101, 114,
-:    84, 104, 101, 111, 114, 121, 8, 95, 95, ...>>, {:lcm, 2}}
 
 *** Set Module
 
@@ -86,7 +126,6 @@ Solutions: [[readme.org#Problem-1][1]], [[readme.org#Problem-2][2]], [[readme.or
 :  <<70, 79, 82, 49, 0, 0, 6, 188, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 242,
 :    0, 0, 0, 20, 10, 69, 108, 105, 120, 105, 114, 46, 83, 101, 116, 8, 95, 95,
 :    105, 110, 102, 111, 95, 95, 10, 97, 116, ...>>, {:cartesian_prod, 2}}
-
 
 ** Problem 1
 *Find the sum of all the multiples of 3 or 5 below 1000.*
@@ -273,7 +312,6 @@ We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 = 2mn(m^4 - n^4)$
 #+RESULTS:
 : {{375, 200, 425}, 31875000}
 
-
 ** Problem 10
 *Find the sum of all the primes below two million.*
 
@@ -390,6 +428,23 @@ We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 = 2mn(m^4 - n^4)$
 
 
 
+** Problem 12
 
+*What is the value of the first triangle number to have over five
+hundred divisors?*
+#+begin_src elixir :exports both :results output 
+  triangle_number = fn idx -> div(idx * (idx + 1), 2) end
+  count_divisors = fn n -> n |> NumberTheory.divisors() |> length end
+  check_divisors = fn n -> count_divisors.(n) > 100 end
+
+  NumberTheory.naturals()
+  |> Stream.map(triangle_number)
+  |> Stream.filter(check_divisors)
+  |> Enum.take(1)
+  |> hd
+#+end_src
+
+#+RESULTS:
+: 73920
 
 
