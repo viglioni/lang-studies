@@ -1,5 +1,5 @@
 #+title: Project Euler solutions
-
+#+options: tex:t
 In this file I will solve problems from [[https://projecteuler.net/archives][Project Euler]] using Elixir lang.
 
 ** Reusable modules
@@ -204,4 +204,52 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 
 #+RESULTS:
 : {[5, 5, 7, 6, 6, 8, 9, 6, 6, 4, 8, 9, 5], 23514624000}
+
+** Problem 9
+
+*There exists exactly one Pythagorean triplet for which a + b + c = 1000.
+Find the product abc.*
+
+Solution:
+
+For $m,n$, a pitagorean triplet can be defined as:
+$a = m^2 - n^2$
+$b = 2mn$
+$c = m^2 + n^2$
+
+Therefore $a+b+c = 2m^2 + 2mn = 1000 \therefore m^2 +mn = 500$
+
+We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 =
+2mn(m^4 - n^4)$
+
+#+begin_src elixir :exports both :results output 
+  cartesian_prod = fn set_a, set_b ->
+    Stream.flat_map(set_a, fn x -> Stream.map(set_b, fn y -> {x, y} end) end)
+  end
+
+  nums = 1..500
+
+  get_abc = fn {m, n} -> {m * m - n * n, 2 * m * n, m * m + n * n} end
+
+  check_abc = fn {a, b, c} -> a > 0 and b > 0 and c > 0 end
+
+  check_mn = fn {a, b} ->
+    a ** 2 + a * b === 500 and {a, b} |> get_abc.() |> check_abc.()
+  end
+
+  calc_abc = fn {a, b, c} -> {{a, b, c}, a * b * c} end
+
+  cartesian_prod.(nums, nums)
+  |> Stream.filter(check_mn)
+  |> Stream.map(get_abc)
+  |> Stream.map(calc_abc)
+  |> Enum.take(1)
+  |> hd
+#+end_src
+
+#+RESULTS:
+: {{375, 200, 425}, 31875000}
+
+
+
 
