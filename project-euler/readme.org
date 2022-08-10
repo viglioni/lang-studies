@@ -17,7 +17,7 @@ Solutions:
     (defun format-link (heading-text)
       (let ((link (replace-regexp-in-string " " "-" heading-text))
             (text (replace-regexp-in-string "[^0-9]" "" heading-text)))
-        (format "[[readme.org/#%s][%s]]" link text)))
+        (format "[[readme.org#%s][%s]]" link text)))
 
     (defun chunks (lst)
       (seq-partition lst 10))
@@ -35,8 +35,8 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-| [[readme.org/#Problem-1][1]]  | [[readme.org/#Problem-2][2]]  | [[readme.org/#Problem-3][3]] | [[readme.org/#Problem-4][4]] | [[readme.org/#Problem-5][5]] | [[readme.org/#Problem-6][6]] | [[readme.org/#Problem-7][7]] | [[readme.org/#Problem-8][8]] | [[readme.org/#Problem-9][9]] | [[readme.org/#Problem-10][10]] |
-| [[readme.org/#Problem-11][11]] | [[readme.org/#Problem-12][12]] |   |   |   |   |   |   |   |    |
+| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]] | [[readme.org#Problem-4][4]] | [[readme.org#Problem-5][5]] | [[readme.org#Problem-6][6]] | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
+| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] |   |   |   |   |   |   |   |    |
 
 
 ** Reusable modules
