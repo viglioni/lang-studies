@@ -213,14 +213,17 @@ Find the product abc.*
 Solution:
 
 For $m,n$, a pitagorean triplet can be defined as:
+
 $a = m^2 - n^2$
+
 $b = 2mn$
+
 $c = m^2 + n^2$
+
 
 Therefore $a+b+c = 2m^2 + 2mn = 1000 \therefore m^2 +mn = 500$
 
-We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 =
-2mn(m^4 - n^4)$
+We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 = 2mn(m^4 - n^4)$
 
 #+begin_src elixir :exports both :results output 
   cartesian_prod = fn set_a, set_b ->
