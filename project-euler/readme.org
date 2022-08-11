@@ -34,8 +34,8 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]] | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
-| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] | [[readme.org#Problem-15][15]] |   |   |   |   |    |
+| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]]  | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
+| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] | [[readme.org#Problem-15][15]] | [[readme.org#Problem-16][16]] |   |   |   |    |
 
 
 ** Reusable modules
@@ -123,6 +123,19 @@ Solutions:
 :  <<70, 79, 82, 49, 0, 0, 6, 188, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 242,
 :    0, 0, 0, 20, 10, 69, 108, 105, 120, 105, 114, 46, 83, 101, 116, 8, 95, 95,
 :    105, 110, 102, 111, 95, 95, 10, 97, 116, ...>>, {:cartesian_prod, 2}}
+
+*** Helper functions
+#+begin_src elixir :exports code :results output 
+  fst = fn {a, _} -> a end
+  snd = fn {_, a} -> a end
+
+  split_integer = fn n ->
+    n |> Integer.to_string() |> String.split("", trim: true) |> Enum.map(&String.to_integer/1)
+  end
+#+end_src
+
+#+RESULTS:
+: #Function<42.3316493/1 in :erl_eval.expr/6>
 
 ** Problem 1
 *Find the sum of all the multiples of 3 or 5 below 1000.*
@@ -245,13 +258,6 @@ Solutions:
 
 #+begin_src elixir :exports both :results output 
   number = 7_316_717_653_133_062_491_922_511_967_442_657_474_235_534_919_493_496_983_520_312_774_506_326_239_578_318_016_984_801_869_478_851_843_858_615_607_891_129_494_954_595_017_379_583_319_528_532_088_055_111_254_069_874_715_852_386_305_071_569_329_096_329_522_744_304_355_766_896_648_950_445_244_523_161_731_856_403_098_711_121_722_383_113_622_298_934_233_803_081_353_362_766_142_828_064_444_866_452_387_493_035_890_729_629_049_156_044_077_239_071_381_051_585_930_796_086_670_172_427_121_883_998_797_908_792_274_921_901_699_720_888_093_776_657_273_330_010_533_678_812_202_354_218_097_512_545_405_947_522_435_258_490_771_167_055_601_360_483_958_644_670_632_441_572_215_539_753_697_817_977_846_174_064_955_149_290_862_569_321_978_468_622_482_839_722_413_756_570_560_574_902_614_079_729_686_524_145_351_004_748_216_637_048_440_319_989_000_889_524_345_065_854_122_758_866_688_116_427_171_479_924_442_928_230_863_465_674_813_919_123_162_824_586_178_664_583_591_245_665_294_765_456_828_489_128_831_426_076_900_422_421_902_267_105_562_632_111_110_937_054_421_750_694_165_896_040_807_198_403_850_962_455_444_362_981_230_987_879_927_244_284_909_188_845_801_561_660_979_191_338_754_992_005_240_636_899_125_607_176_060_588_611_646_710_940_507_754_100_225_698_315_520_005_593_572_972_571_636_269_561_882_670_428_252_483_600_823_257_530_420_752_963_450
-
-  fst = fn {a, _} -> a end
-  snd = fn {_, a} -> a end
-
-  split_integer = fn n ->
-    n |> Integer.to_string() |> String.split("", trim: true) |> Enum.map(&String.to_integer/1)
-  end
 
   number_list = number |> split_integer.()
 
@@ -613,3 +619,14 @@ $n \rightarrow 3n + 1$ (n is odd)
 
 #+RESULTS:
 : 1479753045347481921354360422400000000
+
+** Problem 16
+
+*What is the sum of the digits of the number $2^{1000}$ ?*
+
+#+begin_src elixir :exports both :results output 
+  2**1000 |> split_integer.() |> Enum.sum()
+#+end_src
+
+#+RESULTS:
+: 1366
