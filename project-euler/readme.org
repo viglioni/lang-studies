@@ -34,8 +34,8 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]] | [[readme.org#Problem-5][5]] | [[readme.org#Problem-6][6]] | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
-| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] |   |   |   |   |   |   |    |
+| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]] | [[readme.org#Problem-6][6]] | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
+| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] |   |   |   |   |   |    |
 
 
 ** Reusable modules
@@ -422,7 +422,6 @@ We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 = 2mn(m^4 - n^4)$
 
 
 
-
 ** Problem 12
 
 *What is the value of the first triangle number to have over five
@@ -554,3 +553,50 @@ hundred divisors?*
 
 #+RESULTS:
 : '5537376230'
+
+** Problem 14
+
+*The following iterative sequence is defined for the set of positive integers:*
+
+$n \rightarrow n/2$ (n is even)
+
+$n \rightarrow 3n + 1$ (n is odd)
+
+*Although it has not been proved yet (Collatz Problem), it is thought that all starting numbers finish at 1. Which starting number, under one million, produces the longest chain?*
+
+#+begin_src elixir :exports both :results output 
+  defmodule Ex14 do
+    defp even?(n), do: rem(n, 2) == 0
+
+    defp calc_next(curr) do
+      if even?(curr) do
+        div(curr, 2)
+      else
+        3 * curr + 1
+      end
+    end
+
+    defp collatz_rec(lst) do
+      curr = hd(lst)
+
+      if curr == 1 do
+        lst
+      else
+        [calc_next(curr) | lst] |> collatz_rec()
+      end
+    end
+
+    def collatz(n), do: collatz_rec([n])
+
+    def count_chain(n) do
+      {length(collatz(n)), n}
+    end
+
+    def sdn({_, a}), do: a
+  end
+
+  1..1_000_000 |> Enum.map(&Ex14.count_chain/1) |> Enum.max() |> Ex14.sdn()
+#+end_src
+
+#+RESULTS:
+: 837799
