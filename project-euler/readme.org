@@ -34,8 +34,8 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]]  | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
-| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] | [[readme.org#Problem-15][15]] | [[readme.org#Problem-16][16]] |   |   |   |    |
+| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]]  | [[readme.org#Problem-7][7]]  | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
+| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] | [[readme.org#Problem-15][15]] | [[readme.org#Problem-16][16]] | [[readme.org#Problem-17][17]] |   |   |    |
 
 
 ** Reusable modules
@@ -427,7 +427,6 @@ We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 = 2mn(m^4 - n^4)$
 : 70600674
 
 
-
 ** Problem 12
 
 *What is the value of the first triangle number to have over five
@@ -630,3 +629,86 @@ $n \rightarrow 3n + 1$ (n is odd)
 
 #+RESULTS:
 : 1366
+
+** Problem 17
+
+*If all the numbers from 1 to 1000 (one thousand) inclusive were written out in words, how many letters would be used?*
+
+#+begin_src elixir :exports both :results output 
+  num_map = %{
+    0 => "",
+    1 => "one",
+    2 => "two",
+    3 => "three",
+    4 => "four",
+    5 => "five",
+    6 => "six",
+    7 => "seven",
+    8 => "eight",
+    9 => "nine",
+    10 => "ten",
+    11 => "eleven",
+    12 => "twelve",
+    13 => "thirteen",
+    14 => "fourteen",
+    15 => "fifteen",
+    16 => "sixteen",
+    17 => "seventeen",
+    18 => "eighteen",
+    19 => "nineteen",
+    20 => "twenty",
+    30 => "thirty",
+    40 => "fourty",
+    50 => "fifty",
+    60 => "sixty",
+    70 => "seventy",
+    80 => "eighty",
+    90 => "ninety"
+  }
+
+  first_two = fn n ->
+    if n < 21 do
+      num_map[n]
+    else
+      unity = rem(n, 10)
+      decimal = n - unity
+      String.trim("#{num_map[decimal]} #{num_map[unity]}")
+    end
+  end
+
+  write_num = fn n ->
+    dec = rem(n, 100)
+    hundred_digit = n |> rem(1000) |> div(100)
+    thousand_digit = div(n, 1000)
+
+    hundred =
+      if hundred_digit > 0 do
+        "#{num_map[hundred_digit]} hundred and "
+      else
+        ""
+      end
+
+    thousand =
+      if thousand_digit > 0 do
+        "#{num_map[thousand_digit]} thousand "
+      else
+        ""
+      end
+
+    (thousand <> hundred <> first_two.(dec))
+    |> String.replace(~r/and[[:blank:]]$/, "")
+    |> String.trim()
+  end
+
+  count_number = fn n ->
+    n
+    |> write_num.()
+    |> String.replace(~r/[[:blank:]]/, "")
+    |> String.length()
+  end
+
+  1..1000 |> Enum.map(count_number) |> Enum.sum()
+#+end_src
+
+#+RESULTS:
+: 21221
