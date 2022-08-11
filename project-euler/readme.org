@@ -34,8 +34,8 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]] | [[readme.org#Problem-6][6]] | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
-| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] |   |   |   |   |   |    |
+| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]] | [[readme.org#Problem-7][7]] | [[readme.org#Problem-8][8]] | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
+| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] | [[readme.org#Problem-15][15]] |   |   |   |   |    |
 
 
 ** Reusable modules
@@ -600,3 +600,16 @@ $n \rightarrow 3n + 1$ (n is odd)
 
 #+RESULTS:
 : 837799
+
+** Problem 15
+
+*Starting in the top left corner of a 20×20 grid, and only being able to move to the right and down, how many routes to the bottom right are there through a 20×20 grid?*
+
+#+begin_src elixir :exports both :results output 
+  factorial = fn n -> 1..n |> Enum.product() end
+
+  div(factorial.(20) * factorial.(20), factorial.(2) * factorial.(2))
+#+end_src
+
+#+RESULTS:
+: 1479753045347481921354360422400000000
