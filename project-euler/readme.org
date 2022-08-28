@@ -30,23 +30,33 @@ Solutions:
         (format "[[readme.org#%s][%s]]" link text)))
 
     (defun chunks (lst)
-      (seq-partition lst 10))
+      (seq-partition lst (calc-chunk-size (length lst))))
+
+
+    (defun add-hlines (table)
+      (append '(hline) table '(hline)))
 
     (org-map-entries
      (lambda ()
-       (add-to-index (org-element-property :title (org-element-at-point))))
+       (add-to-list 'headings
+                    (org-element-property :title (org-element-at-point))
+                    t))
      "LEVEL=2")
 
 
     (fp/pipe headings
       ((seq-filter (lambda (el) (regex-matches "Problem" el)))
        (seq-map 'format-link)
-       (chunks))))
+       (chunks)
+       (add-hlines))))
 #+end_src
 
 #+RESULTS:
-| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]]  | [[readme.org#Problem-7][7]]  | [[readme.org#Problem-8][8]]  | [[readme.org#Problem-9][9]] | [[readme.org#Problem-10][10]] |
-| [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] | [[readme.org#Problem-15][15]] | [[readme.org#Problem-16][16]] | [[readme.org#Problem-17][17]] | [[readme.org#Problem-18][18]] |   |    |
+|----+----+----+----+----+----+----|
+| [[readme.org#Problem-1][1]]  | [[readme.org#Problem-2][2]]  | [[readme.org#Problem-3][3]]  | [[readme.org#Problem-4][4]]  | [[readme.org#Problem-5][5]]  | [[readme.org#Problem-6][6]]  | [[readme.org#Problem-7][7]]  |
+| [[readme.org#Problem-8][8]]  | [[readme.org#Problem-9][9]]  | [[readme.org#Problem-10][10]] | [[readme.org#Problem-11][11]] | [[readme.org#Problem-12][12]] | [[readme.org#Problem-13][13]] | [[readme.org#Problem-14][14]] |
+| [[readme.org#Problem-15][15]] | [[readme.org#Problem-16][16]] | [[readme.org#Problem-17][17]] | [[readme.org#Problem-18][18]] | [[readme.org#Problem-19][19]] | [[readme.org#Problem-20][20]] | [[readme.org#Problem-21][21]] |
+|----+----+----+----+----+----+----|
 
 
 ** Reusable modules
@@ -70,14 +80,19 @@ Solutions:
     def divisors(n) do
       1..n |> Enum.filter(&divides?(&1, n))
     end
+
+    def !(n), do: 1..n |> Enum.product()
   end
 #+end_src
 
 #+RESULTS:
+: [33mwarning: [0mredefining module NumberTheory (current version defined in memory)
+:   iex:1
+: 
 : {:module, NumberTheory,
-:  <<70, 79, 82, 49, 0, 0, 12, 176, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 108,
-:    0, 0, 0, 39, 19, 69, 108, 105, 120, 105, 114, 46, 78, 117, 109, 98, 101, 114,
-:    84, 104, 101, 111, 114, 121, 8, 95, 95, ...>>, {:divisors, 1}}
+:  <<70, 79, 82, 49, 0, 0, 13, 100, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 118,
+:    0, 0, 0, 41, 19, 69, 108, 105, 120, 105, 114, 46, 78, 117, 109, 98, 101, 114,
+:    84, 104, 101, 111, 114, 121, 8, 95, 95, ...>>, {:!, 1}}
 
 *** Prime module
 #+begin_src elixir :exports code :results output 
@@ -112,7 +127,7 @@ Solutions:
 
 #+RESULTS:
 : {:module, Prime,
-:  <<70, 79, 82, 49, 0, 0, 13, 216, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 187,
+:  <<70, 79, 82, 49, 0, 0, 13, 224, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 1, 187,
 :    0, 0, 0, 41, 12, 69, 108, 105, 120, 105, 114, 46, 80, 114, 105, 109, 101, 8,
 :    95, 95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:possible_prime_factors, 1}}
 
@@ -127,11 +142,11 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-: [33mwarning: [0mredefining module Set (current version defined in memory)
+: [33mwarning: [0mredefining module Set (current version loaded from /opt/homebrew/Cellar/elixir/1.13.4_1/bin/../lib/elixir/ebin/Elixir.Set.beam)
 :   iex:1
 : 
 : {:module, Set,
-:  <<70, 79, 82, 49, 0, 0, 6, 188, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 242,
+:  <<70, 79, 82, 49, 0, 0, 6, 196, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 242,
 :    0, 0, 0, 20, 10, 69, 108, 105, 120, 105, 114, 46, 83, 101, 116, 8, 95, 95,
 :    105, 110, 102, 111, 95, 95, 10, 97, 116, ...>>, {:cartesian_prod, 2}}
 
@@ -147,6 +162,7 @@ Solutions:
 
 #+RESULTS:
 : #Function<42.3316493/1 in :erl_eval.expr/6>
+
 
 ** Problem 1
 *Find the sum of all the multiples of 3 or 5 below 1000.*
@@ -437,7 +453,6 @@ We want $abc = (m^2 - n^2)(2mn)(m^2+n^2) = 2 m^5 n - 2 m n^5 = 2mn(m^4 - n^4)$
 #+RESULTS:
 : 70600674
 
-
 ** Problem 12
 
 *What is the value of the first triangle number to have over five
@@ -622,9 +637,7 @@ $n \rightarrow 3n + 1$ (n is odd)
 *Starting in the top left corner of a 20×20 grid, and only being able to move to the right and down, how many routes to the bottom right are there through a 20×20 grid?*
 
 #+begin_src elixir :exports both :results output 
-  factorial = fn n -> 1..n |> Enum.product() end
-
-  div(factorial.(20) * factorial.(20), factorial.(2) * factorial.(2))
+  div(NumberTheory.!(20) * NumberTheory.!(20), NumberTheory.!(2) * NumberTheory.!(2))
 #+end_src
 
 #+RESULTS:
@@ -798,4 +811,90 @@ $n \rightarrow 3n + 1$ (n is odd)
 
 #+RESULTS:
 : 1074
+
+** Problem 19
+
+#+begin_src elixir :exports both :results output 
+    months = [
+      jan: 31,
+      feb: 28,
+      feb_leap: 29,
+      mar: 31,
+      apr: 30,
+      may: 31,
+      jun: 30,
+      jul: 31,
+      aug: 31,
+      sep: 30,
+      oct: 31,
+      nov: 31,
+      dec: 31
+    ]
+
+    leap_year? = fn year -> NumberTheory.gcd(80, year) > NumberTheory.gcd(50, year) end
+
+    days_in_year = fn year ->
+      if leap_year?.(year) do
+        366
+      else
+        365
+      end
+    end
+
+    month_length = fn month -> months[month] end
+
+    months_length = fn year ->
+      feb =
+        if leap_year?.(year) do
+          :feb_leap
+        else
+          :feb
+        end
+
+      [:jan, feb, :mar, :apr, :may, :jun, :jul, :aug, :sep, :oct, :nov, :dec]
+      |> Enum.map(month_length)
+    end
+
+    sunday? = fn day -> rem(day, 7) === 6 end
+
+    years = 1901..2000
+
+    num_days = years |> Enum.map(days_in_year) |> Enum.sum()
+
+    days = 1..num_days
+
+    sundays = days |> Enum.filter(sunday?)
+
+    first_of_each_month =
+      years
+      |> Enum.map(months_length)
+      |> List.flatten()
+      |> Enum.reduce([1], fn val, [x | xs] -> [val + x | [x | xs]] end)
+
+
+    sundays_firsts = first_of_each_month |> Enum.filter(&Enum.member?(sundays, &1)) |> length
+#+end_src
+
+#+RESULTS:
+: 173
+
+** Problem 20
+#+begin_src elixir :exports both :results output 
+  100 |> NumberTheory.!() |> split_integer.() |> Enum.sum()
+#+end_src
+
+#+RESULTS:
+: 648
+
+** Problem 21
+#+begin_src elixir :exports both :results output 
+  d = fn n -> n |> NumberTheory.divisors() |> List.pop_at(-1) |> snd.() |> Enum.sum() end
+
+  amicable? = fn n -> n |> d.() |> d.() === n end
+
+  2..9999 |> Enum.filter(amicable?) |> length
+#+end_src
+
+#+RESULTS:
+: 14
 
