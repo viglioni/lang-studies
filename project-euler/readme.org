@@ -6,12 +6,23 @@ In this file I will solve problems from [[https://projecteuler.net/archives][Pro
 
 Solutions:
 #+begin_src emacs-lisp :exports results :results table
+
   (require 'functional)
 
   (let  ((headings '()))
+    (defun make-pair (len d)
+      (cons (% len d) d))
 
-    (defun add-to-index (text)
-      (add-to-list 'headings text t))
+    (defun calc-chunk-size (len)
+      (let* ((divisors '(15 14 13 12 11 10 9 8 7 6 5))
+             (size (fp/upipe divisors
+                     (fp/partial 'mapcar (fp/partial 'make-pair len))
+                     (fp/partial 'asoc-filter-keys (fp/partial '= 0))
+                     (lambda (alist) (asoc-sort-keys alist '>))
+                     'car-safe
+                     'cdr-safe)))
+        (or size (calc-chunk-size (inc len)))))
+
 
     (defun format-link (heading-text)
       (let ((link (replace-regexp-in-string " " "-" heading-text))
