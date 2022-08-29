@@ -813,6 +813,7 @@ $n \rightarrow 3n + 1$ (n is odd)
 : 1074
 
 ** Problem 19
+- [[https://gist.github.com/lynn/321330a404e21d90785be470a22e35ac][about the leap_year function]]
 
 #+begin_src elixir :exports both :results output 
     months = [
