@@ -4,12 +4,13 @@
   |---------------------+----------------------------------------------------+--------------|
   | Dirname             | about                                              | langs        |
   |---------------------+----------------------------------------------------+--------------|
-  | [[./learn-you-a-haskell/README.org][Learn You A Haskell]] | exercises inspired on the book Learn You A Haskell | Haskell      |
-  | [[./regev-cryptosystem/README.org][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Haskell      |
-  | [[./crypto-lol-examples/README.org][Crypto-Λoλ-examples]] | examples of functions from the Λoλ lib             | Haskell      |
   | [[./cis-194-spring-13/README.org][CIS-194 Spring 13]]   | exs. from the course CIS-194 from Penn University  | Haskell      |
+  | [[./crypto-lol-examples/README.org][Crypto-Λoλ-examples]] | examples of functions from the Λoλ lib             | Haskell      |
   | [[./haskell/README.org][Haskell]]             | exercises and random stuff in general              | Haskell      |
   | [[./interview-problems/README.org][Interview Problems]]  | solutions of code interview problems               | Haskell . TS |
+  | [[./learn-you-a-haskell/README.org][Learn You A Haskell]] | exercises inspired on the book Learn You A Haskell | Haskell      |
+  | [[./regev-cryptosystem/README.org][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Haskell      |
+  | [[./regev-cryptosystem-elixir][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Elixir       |
   | [[./project-euler/readme.org][project euler]]       | solutions of project euler problems                | Elixir       |
   |---------------------+----------------------------------------------------+--------------|
 * Obs.:
