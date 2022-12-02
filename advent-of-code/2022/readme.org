@@ -1,5 +1,4 @@
 #+title: Advent of Code 2022
-#+startup: hideblocks
 
 Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using Haskell
 
@@ -24,20 +23,19 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 
 #+RESULTS:
 
-** Helper functions
+** Utils
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
 
+
   listToTuple [a, b] = (a, b)
 
-  class (Enum a, Eq a, Bounded a) =>
-        Cyclic a
-    where
+  -- TypeClass to define cyclic elements
+  class (Enum a, Eq a, Bounded a) => Cyclic a where
     next :: a -> a
     next el
       | el == maxBound = minBound
       | otherwise = succ el
-    
     prev :: a -> a
     prev el
       | el == minBound = maxBound
