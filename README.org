@@ -1,3 +1,4 @@
+# -*- olivetti-minimum-body-width: 100; -*-
 * About
   Project containing some studies in some languages.
 * Projects
@@ -12,6 +13,7 @@
   | [[./regev-cryptosystem/README.org][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Haskell      |
   | [[./regev-cryptosystem-elixir][Regev Cryptosystem]]  | a cryptosystem proposed by Regev                   | Elixir       |
   | [[./project-euler/readme.org][project euler]]       | solutions of project euler problems                | Elixir       |
+  | [[./advent-of-code/README.org][Advent of Code]]      | solutions to the challenges                        | Haskell      |
   |---------------------+----------------------------------------------------+--------------|
 * Obs.:
    In order to run these haskell snippets you should add ~:set +m~ to your ~~/.ghc/ghci.conf~

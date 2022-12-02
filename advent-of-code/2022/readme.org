@@ -1,0 +1,230 @@
+#+title: Advent of Code 2022
+
+
+Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using Haskell
+
+*Solutions:*
+#+begin_src emacs-lisp :exports results :results table
+
+  (require "functional)
+  (require "asoc)
+
+  (let  ((headings "()))
+    (defun make-pair (len d)
+      (cons (% len d) d))
+
+    (defun calc-chunk-size (len)
+      (let* ((divisors "(15 14 13 12 11 10 9 8 7 6 5))
+             (size (fp/upipe divisors
+                     (fp/partial "mapcar (fp/partial "make-pair len))
+                     (fp/partial "asoc-filter-keys (fp/partial "= 0))
+                     (lambda (alist) (asoc-sort-keys alist ">))
+                     "car-safe
+                     "cdr-safe)))
+        (or size (calc-chunk-size (inc len)))))
+
+
+    (defun format-link (heading-text)
+      (let ((link (replace-regexp-in-string " " "-" heading-text))
+            (text (replace-regexp-in-string "[^0-9]" "" heading-text)))
+        (format "[[readme.org#%s][%s]]" link text)))
+
+    (defun chunks (lst)
+      (seq-partition lst (calc-chunk-size (length lst))))
+
+
+    (defun add-hlines (table)
+      (append "(hline) table "(hline)))
+
+    (org-map-entries
+     (lambda ()
+       (add-to-list "headings
+                    (org-element-property :title (org-element-at-point))
+                    t))
+     "LEVEL=2")
+
+
+    (fp/pipe headings
+      ((seq-filter (lambda (el) (regex-matches "Day" el)))
+       (seq-map "format-link)
+       (chunks)
+       (add-hlines))))
+#+end_src
+
+#+RESULTS:
+|---|
+| [[readme.org#Day-1][1]] |
+|---|
+
+
+** Imports and definitions
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :set -X
+
+  import Data.List.Split
+  import Data.List
+#+end_src
+
+#+RESULTS:
+
+** Helper functions
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  listToTuple [a, b] = (a, b)
+
+  class (Enum a, Eq a, Bounded a) =>
+        Cyclic a
+    where
+    next :: a -> a
+    next el
+      | el == maxBound = minBound
+      | otherwise = succ el
+    
+    prev :: a -> a
+    prev el
+      | el == minBound = maxBound
+      | otherwise = pred el
+
+  :}
+#+end_src
+
+#+RESULTS:
+
+** Day 1
+[[https://adventofcode.com/2022/day/1][Calorie Counting]]
+
+*** Part one
+#+name: day-one-part-one
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  getElvesRaw = splitOn "\n\n"
+
+  getElfCalories = sum . map read . words
+
+  getElvesCalories = map getElfCalories . getElvesRaw
+
+  findMaxCal = maximum . getElvesCalories
+
+  fmap findMaxCal $ readFile "./2022/inputs/day-01.txt"
+#+end_src
+
+#+RESULTS: day-one-part-one
+: 
+:  74394
+
+*** Part two
+
+#+name: day-one-part-two
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  descSort = sortBy (flip compare)
+
+  findTopThreeSum = sum . take 3 . descSort . getElvesCalories
+
+  fmap findTopThreeSum $ readFile "./2022/inputs/day-01.txt"
+#+end_src
+
+#+RESULTS: day-one-part-two
+: 
+:  212836
+
+** Day 2
+[[https://adventofcode.com/2022/day/2][Rock, Paper Scissors]]
+
+*** Part one
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  data Move
+    = Rock
+    | Paper
+    | Scissors
+    deriving (Show, Enum, Eq, Ord, Bounded)
+
+  instance Cyclic Move
+  
+  data GameResult
+    = Win
+    | Draw
+    | Lose
+    deriving (Show)
+
+  -- Parsing input
+  parseMove :: String -> Move
+  parseMove "A" = Rock
+  parseMove "X" = Rock
+  parseMove "B" = Paper
+  parseMove "Y" = Paper
+  parseMove "C" = Scissors
+  parseMove "Z" = Scissors
+
+  parseLine :: String -> (Move, Move)  
+  parseLine = listToTuple . map parseMove . words
+
+  parse :: String -> [(Move, Move)]
+  parse = map parseLine . lines
+
+
+  moveValue :: Move -> Int
+  moveValue = (+ 1) . fromEnum
+
+  hand :: (Move , Move) -> GameResult
+  hand (m1, m2) 
+    | m2 == m1 = Draw
+    | m2 == prev m1 = Lose
+    | m2 == next m1 = Win
+
+  handValue :: GameResult -> Int
+  handValue Draw = 3
+  handValue Win = 6
+  handValue Lose = 0
+
+  round :: (Move , Move) -> Int
+  round (m1, m2) = moveValue m2 + gameValue
+    where gameValue = handValue $ hand (m1, m2)
+
+  game :: [(Move,Move)] -> Int
+  game = sum . map round
+
+  :}
+
+  fmap (game . parse) $ readFile "./2022/inputs/day-02.txt"
+
+
+#+end_src
+
+#+RESULTS:
+: 
+:  14297
+
+*** Part two
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+
+   chooseResult :: String -> GameResult
+   chooseResult "X" = Lose
+   chooseResult "Y" = Draw
+   chooseResult "Z" = Win
+
+   chooseFigureTo :: GameResult -> (Move -> Move)
+   chooseFigureTo Lose = prev
+   chooseFigureTo Draw = id
+   chooseFigureTo Win = next
+
+   parseMoves :: [String] -> (Move, Move)
+   parseMoves [m1, m2] = (move1, move2)
+     where move1 = parseMove m1
+           move2 = chooseFigureTo (chooseResult m2) move1
+
+   parseLine2 :: String -> (Move, Move)
+   parseLine2 = parseMoves . words
+
+   parse2 :: String -> [(Move, Move)]
+   parse2 = map parseLine2 . lines
+
+   :}
+
+  fmap (game . parse2) $ readFile "./2022/inputs/day-02.txt"
+#+end_src
+
+#+RESULTS:
+: 
+:  10498

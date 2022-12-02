@@ -1,0 +1,7 @@
+#+title: Advent of Code
+
+- [[https://adventofcode.com/][Advent of Code]]
+
+*Solutions:*
+
+- [[./2022/readme.org][2022]]
