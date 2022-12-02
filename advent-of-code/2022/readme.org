@@ -18,8 +18,6 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 
 ** Imports and definitions
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
-  :set -X
-
   import Data.List.Split
   import Data.List
 #+end_src
