@@ -1,60 +1,19 @@
 #+title: Advent of Code 2022
-
+#+startup: hideblocks
 
 Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using Haskell
 
 *Solutions:*
-#+begin_src emacs-lisp :exports results :results table
-
-  (require "functional)
-  (require "asoc)
-
-  (let  ((headings "()))
-    (defun make-pair (len d)
-      (cons (% len d) d))
-
-    (defun calc-chunk-size (len)
-      (let* ((divisors "(15 14 13 12 11 10 9 8 7 6 5))
-             (size (fp/upipe divisors
-                     (fp/partial "mapcar (fp/partial "make-pair len))
-                     (fp/partial "asoc-filter-keys (fp/partial "= 0))
-                     (lambda (alist) (asoc-sort-keys alist ">))
-                     "car-safe
-                     "cdr-safe)))
-        (or size (calc-chunk-size (inc len)))))
-
-
-    (defun format-link (heading-text)
-      (let ((link (replace-regexp-in-string " " "-" heading-text))
-            (text (replace-regexp-in-string "[^0-9]" "" heading-text)))
-        (format "[[readme.org#%s][%s]]" link text)))
-
-    (defun chunks (lst)
-      (seq-partition lst (calc-chunk-size (length lst))))
-
-
-    (defun add-hlines (table)
-      (append "(hline) table "(hline)))
-
-    (org-map-entries
-     (lambda ()
-       (add-to-list "headings
-                    (org-element-property :title (org-element-at-point))
-                    t))
-     "LEVEL=2")
-
-
-    (fp/pipe headings
-      ((seq-filter (lambda (el) (regex-matches "Day" el)))
-       (seq-map "format-link)
-       (chunks)
-       (add-hlines))))
+#+begin_src emacs-lisp :exports results :results table 
+  (org-extra-generate-index-table "Day")
 #+end_src
 
 #+RESULTS:
-|---|
-| [[readme.org#Day-1][1]] |
-|---|
+|---+---|
+| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] |
+|---+---|
+
+
 
 
 ** Imports and definitions
