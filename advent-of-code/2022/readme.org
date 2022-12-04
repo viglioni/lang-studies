@@ -4,13 +4,14 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 
 *Solutions:*
 #+begin_src emacs-lisp :exports results :results table 
+  (require 'org-extra)
   (org-extra-generate-index-table "Day")
 #+end_src
 
 #+RESULTS:
-|---+---|
-| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] |
-|---+---|
+|---+---+---|
+| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] |
+|---+---+---|
 
 
 
@@ -19,6 +20,7 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   import Data.List.Split
   import Data.List
+  import Data.Maybe
 #+end_src
 
 #+RESULTS:
@@ -183,3 +185,68 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+RESULTS:
 : 
 :  10498
+
+** Day 3
+[[https://adventofcode.com/2022/day/3][Rucksack reorganization]]
+*** COMMENT Part One
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  type Compartment = String
+  type Rucksack = (Compartment, Compartment)
+
+  parseLine :: String -> Rucksack
+  parseLine line = (fstCompartment, sndCompartment)
+   where
+     size = (flip div 2) . length $ line
+     fstCompartment = take size line
+     sndCompartment = drop size line
+
+  parse :: String -> [Rucksack]
+  parse = map parseLine . lines
+
+  findRepeated :: Rucksack -> Char
+  findRepeated (fstCmp, sndCmp) = head [x | x <- sndCmp , x `elem` fstCmp]
+
+  calcPriority :: Char -> Maybe Int
+  calcPriority = fmap (+1) . flip elemIndex (['a'..'z'] <> ['A'..'Z'])
+
+  calcTotal :: [Rucksack] -> Maybe Int
+  calcTotal = fmap sum . sequence . map (calcPriority . findRepeated)
+    
+  :}
+
+  fmap (calcTotal . parse) $ readFile "./2022/inputs/day-03.txt"
+  
+
+#+end_src
+
+#+RESULTS:
+: 
+:  Just 7826
+
+*** Part two
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  type ElfGroup = [String]
+
+  parse2 :: String -> [ElfGroup]
+  parse2 = chunksOf 3 . lines
+
+  findRepeated :: ElfGroup ->  Char
+  findRepeated [a, b, c] = head [x | x<-a, x `elem` b, x `elem` c]
+
+  calcBadges :: [ElfGroup] -> Maybe Int
+  calcBadges = fmap sum . sequence . map calcPriority . map findRepeated
+
+  :}
+
+  fmap (calcBadges . parse2) $ readFile "./2022/inputs/day-03.txt"
+#+end_src
+
+#+RESULTS:
+: 
+:  Just 2577
+
