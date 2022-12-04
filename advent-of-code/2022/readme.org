@@ -188,7 +188,8 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 
 ** Day 3
 [[https://adventofcode.com/2022/day/3][Rucksack reorganization]]
-*** COMMENT Part One
+
+*** Part One
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
 
