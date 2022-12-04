@@ -9,9 +9,9 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+end_src
 
 #+RESULTS:
-|---+---+---|
-| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] |
-|---+---+---|
+|---+---+---+---|
+| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] | [[readme.org#Day-4][4]] |
+|---+---+---+---|
 
 
 
@@ -250,4 +250,65 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+RESULTS:
 : 
 :  Just 2577
+
+** Day 4
+[[https://adventofcode.com/2022/day/4][Camp Cleanup]]
+
+*** Part One
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  type Section = [Int]
+  type Assignment = [Section]
+  
+  parseAssignment :: String -> Section
+  parseAssignment = (\[a,b] -> [a..b]) . map read . splitOn "-"
+
+  parseLine :: String -> Assignment
+  parseLine = map parseAssignment . splitOn ","
+
+  parse :: String -> [Assignment]
+  parse = map parseLine . lines
+
+  isFullyOverlapped :: Assignment -> Bool
+  isFullyOverlapped [a, b] = aIsInB || bIsInA
+    where
+      aIsInB = (head a) `elem` b && (last a) `elem` b
+      bIsInA = (head b) `elem` a && (last b) `elem` a
+
+  countFullOverlaps :: [Assignment] -> Int
+  countFullOverlaps = length . filter id . map isFullyOverlapped
+
+  :}
+
+  fmap (countFullOverlaps . parse) $ readFile "./2022/inputs/day-04.txt"
+#+end_src
+
+#+RESULTS:
+: 
+:  462
+
+*** Part Two
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+  
+  isOverlapped :: Assignment -> Bool
+  isOverlapped [a, b] = aOverlapsB || bOverlapsA
+    where
+      aOverlapsB = (head a) `elem` b || (last a) `elem` b
+      bOverlapsA = (head b) `elem` a || (last b) `elem` a
+    
+
+  countOverlaps :: [Assignment] -> Int
+  countOverlaps = length . filter id . map isOverlapped
+
+
+  :}
+
+  fmap (countOverlaps . parse) $ readFile "./2022/inputs/day-04.txt"
+#+end_src
+
+#+RESULTS:
+: 
+:  835
 
