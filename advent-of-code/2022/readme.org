@@ -9,9 +9,9 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+end_src
 
 #+RESULTS:
-|---+---+---+---+---|
-| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] | [[readme.org#Day-4][4]] | [[readme.org#Day-5][5]] |
-|---+---+---+---+---|
+|---+---+---+---+---+---|
+| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] | [[readme.org#Day-4][4]] | [[readme.org#Day-5][5]] | [[readme.org#Day-6][6]] |
+|---+---+---+---+---+---|
 
 
 
@@ -29,9 +29,22 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
   :{
 
+  -- list / tuples helpers
 
   listToPair [a, b] = (a, b)
   listToTrio [a,b,c] = (a,b,c)
+
+  trd (_,_, c) = c
+
+  -- update element in list
+  type ElIndex = Int
+  update :: ElIndex -> a -> [a] -> [a]
+  update _ _ [] = []
+  update 0 a (_:xs) = a : xs
+  update n a (x:xs) =
+    if n < 0
+      then (x : xs)
+      else x : update (n - 1) a xs 
 
   -- TypeClass to define cyclic elements
   class (Enum a, Eq a, Bounded a) => Cyclic a where
@@ -45,13 +58,39 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
       | otherwise = pred el
 
 
-  update ::  Int -> a -> [a] -> [a]
-  update _ _ [] = []
-  update 0 a (_:xs) = a : xs
-  update n a (x:xs) =
-    if n < 0
-      then (x : xs)
-      else x : update (n - 1) a xs 
+
+  -- Finite Queue structure and functions
+  type QueueMaxSize = Int
+  data FiniteQueue a = FiniteQueue QueueMaxSize [a]
+
+  instance (Show a) => Show (FiniteQueue a) where
+    show (FiniteQueue maxSize list) =
+      "{" ++ len ++ "/" ++ show maxSize ++ "}: " ++ show list
+      where
+        len = (show . length $ list)
+
+  emptyFQ :: Int -> FiniteQueue a
+  emptyFQ maxSize = FiniteQueue maxSize []
+
+  singletonFQ :: Int -> a -> FiniteQueue a
+  singletonFQ maxSize a = FiniteQueue maxSize [a]
+
+  fromListFQ :: Int -> [a] -> FiniteQueue a
+  fromListFQ n list = FiniteQueue n list
+
+  pushFQ :: a -> FiniteQueue a -> FiniteQueue a
+  pushFQ el (FiniteQueue maxSize list) =
+    let appended = el : list
+        cons = fromListFQ maxSize
+     in if length list == maxSize
+          then cons (init $ el : list)
+          else cons (el : list)
+
+  toListFQ :: FiniteQueue a -> [a]
+  toListFQ (FiniteQueue _ list) = list
+
+  lengthFQ :: FiniteQueue a -> Int
+  lengthFQ = length . toListFQ
 
   :}
 #+end_src
@@ -417,4 +456,53 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+RESULTS:
 : 
 :  LVZPSTTCZ
+
+** Day 6
+[[https://adventofcode.com/2022/day/5][Tuning Trouble]]
+
+** Part one
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+   :{
+   type CurrIndex = Int
+   type Index = Maybe Int
+   type Counter = (CurrIndex, FiniteQueue Char, Index)
+
+
+   updateIndexOnce :: Index -> Int -> Index
+   updateIndexOnce (Just a) _ = Just a
+   updateIndexOnce Nothing a = Just a
+
+   hasRepeated :: String -> Bool
+   hasRepeated str = not $ foldl (\acc val -> acc && length [x | x <- str, x == val] == 1) True str
+
+   countMarker :: Counter -> Char -> Counter
+   countMarker (currIndex, q, index) el = 
+     if lengthFQ q < 4 || (hasRepeated . toListFQ $ q)
+     then (currIndex + 1, pushFQ el q, index)
+     else (currIndex + 1, pushFQ el q, updateIndexOnce index currIndex)
+
+   findIndex :: QueueMaxSize -> String -> Maybe Int
+   findIndex maxSize = trd . foldl countMarker initialCount
+     where 
+       initialQueue = (emptyFQ maxSize) :: FiniteQueue Char
+       initialCount = (0, initialQueue, Nothing)
+
+   :}
+
+
+  fmap (findIndex 4) $ readFile "./2022/inputs/day-06.txt"
+#+end_src
+
+#+RESULTS:
+: 
+:  Just 1282
+
+** Part two
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  fmap (findIndex 14) $ readFile "./2022/inputs/day-06.txt"
+    
+#+end_src
+
+#+RESULTS:
+: Just 3513
 
