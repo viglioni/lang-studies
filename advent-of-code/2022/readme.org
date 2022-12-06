@@ -9,9 +9,9 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+end_src
 
 #+RESULTS:
-|---+---+---+---|
-| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] | [[readme.org#Day-4][4]] |
-|---+---+---+---|
+|---+---+---+---+---|
+| [[readme.org#Day-1][1]] | [[readme.org#Day-2][2]] | [[readme.org#Day-3][3]] | [[readme.org#Day-4][4]] | [[readme.org#Day-5][5]] |
+|---+---+---+---+---|
 
 
 
@@ -30,7 +30,8 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
   :{
 
 
-  listToTuple [a, b] = (a, b)
+  listToPair [a, b] = (a, b)
+  listToTrio [a,b,c] = (a,b,c)
 
   -- TypeClass to define cyclic elements
   class (Enum a, Eq a, Bounded a) => Cyclic a where
@@ -42,6 +43,15 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
     prev el
       | el == minBound = maxBound
       | otherwise = pred el
+
+
+  update ::  Int -> a -> [a] -> [a]
+  update _ _ [] = []
+  update 0 a (_:xs) = a : xs
+  update n a (x:xs) =
+    if n < 0
+      then (x : xs)
+      else x : update (n - 1) a xs 
 
   :}
 #+end_src
@@ -114,7 +124,7 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
   parseMove "Z" = Scissors
 
   parseLine :: String -> (Move, Move)  
-  parseLine = listToTuple . map parseMove . words
+  parseLine = listToPair . map parseMove . words
 
   parse :: String -> [(Move, Move)]
   parse = map parseLine . lines
@@ -311,4 +321,100 @@ Solutions for the [[https://adventofcode.com/2022/][advent of code 2022]] using 
 #+RESULTS:
 : 
 :  835
+
+** Day 5
+[[https://adventofcode.com/2022/day/5][Supply Stacks]]
+*** Part One
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  type Position = Int
+  type Quantity = Int
+  type Command = (Quantity, Position, Position)
+  type Crates = String
+  type Stacks = [String]
+  type Stack = String
+  type MoveCratesFn = Stack -> Crates -> Stack
+
+
+  parseElem :: String -> String
+  parseElem el = [x | x <- el, x `elem` ['A' .. 'Z']]
+
+  parseRow :: [String] -> Stack
+  parseRow = map head . filter (\el -> el /= "") . map parseElem
+
+  parseMatrix :: String -> Stacks
+  parseMatrix = map parseRow . transpose . map (chunksOf 4) . init . lines
+
+  parseCommand :: String -> Command
+  parseCommand =
+    listToTrio .
+    map read .
+    filter ((> 0) . length) .
+    map (\w -> [c | c <- w, c `elem` "1234567890"]) .
+    words
+
+  parseCommands :: String -> [Command]
+  parseCommands = map parseCommand . lines
+
+  getStack :: Stacks -> Position -> Stack
+  getStack stacks pos = stacks !! (pos - 1)
+
+  updateStack :: Position -> Stack -> Stacks -> Stacks
+  updateStack pos stack stacks = update (pos - 1) stack stacks
+
+  moveCrates :: MoveCratesFn
+  moveCrates = foldl (\acc val -> val : acc)
+
+  move :: MoveCratesFn -> Stacks -> Command -> Stacks
+  move moveCratesFn stacks (qtity, from, to) = newStacks
+    where
+      [fromStack, toStack] = map (getStack stacks) [from, to]
+      (crates, newFromStack) = splitAt qtity fromStack
+      newToStack = moveCratesFn toStack crates
+      newStacks =
+        (updateStack from newFromStack) .
+        (updateStack to newToStack) $
+        stacks
+
+  finalStack :: MoveCratesFn -> Stacks -> [Command] -> Stacks
+  finalStack moveCratesFn = foldl (move moveCratesFn)
+
+  getTopCrates :: Stacks -> Crates
+  getTopCrates = map head
+
+  main :: MoveCratesFn -> IO ()
+  main moveCratesFn = do
+    [inputMatrix, inputCmds] <-
+      fmap (splitOn "\n\n") $ readFile "./2022/inputs/day-05.txt"
+    let matrix = parseMatrix inputMatrix
+    let commands = parseCommands inputCmds
+    putStrLn . getTopCrates . finalStack moveCratesFn matrix $ commands
+
+  :}
+
+  main moveCrates
+#+end_src
+
+#+RESULTS:
+: 
+:  MQTPGLLDN
+
+*** Part two
+
+#+begin_src haskell :exports both :results output :post org-babel-haskell-formatter(*this*)
+  :{
+
+  moveCratesAtOnce :: MoveCratesFn
+  moveCratesAtOnce = flip (<>)
+
+  :}
+
+  main moveCratesAtOnce
+#+end_src
+
+#+RESULTS:
+: 
+:  LVZPSTTCZ
 
