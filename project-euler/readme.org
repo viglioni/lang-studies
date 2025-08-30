@@ -131,7 +131,8 @@ Solutions:
 #+end_src
 
 #+RESULTS:
-: 233168
+
+
 
 ** Problem 2
 

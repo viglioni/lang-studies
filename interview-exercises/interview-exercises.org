@@ -1,0 +1,543 @@
+#+title: Job Interview Exercises
+
+Exercises from https://dev.to/javinpaul/99-programming-interview-questions-for-software-developers-and-engineers-4o98
+and other exercises
+
+* Sorting input
+Given a search string and a set of unsorted results, sort search results in the following order:
+1. exact match
+2. one of the words is exact match
+3. starts with
+4. rest, alphanumerically
+
+#+begin_src elixir :exports both :results output
+  
+  result_list = ["Word", "Microsoft Word", "Wordpress", "1Password", "Google AdWords"]
+
+  searchInput = "word"
+
+  # solution
+
+  sort_results = fn input, result_list ->
+    search = String.downcase(input)
+
+    result_list
+    |> Enum.sort()                       # 4. alphanum
+    |> Enum.sort_by(                     # 3. starts with
+      fn str ->
+        str
+        |> String.downcase()
+        |> String.starts_with?(search)
+      end,
+      :desc
+    )
+    |> Enum.sort_by(                     # 2. matches a word
+      fn str ->
+        str
+        |> String.downcase()
+        |> String.split(" ")
+        |> Enum.member?(search)
+      end,
+      :desc
+    )
+    |> Enum.sort_by(                    # 1. perfect match
+      fn str -> String.downcase(str) == search end,
+    :desc)
+  end
+
+  sort_results.(searchInput, result_list)
+#+end_src
+
+#+RESULTS:
+| Word | Microsoft Word | Wordpress | 1Password | Google AdWords |
+
+#+begin_src js :exports both :results output 
+  const resultList = ["Word", "Microsoft Word", "Wordpress", "1Password", "Google AdWords"]
+
+
+  // solution
+  const sortResults = (resultList, searchInput) => {
+    const search = searchInput.toLowerCase()
+    return  resultList
+      .sort() // 4. alpha
+      .sort((str1, str2) => { // 3. starts with
+        if(str1.toLowerCase().startsWith(search)) return -1
+        if(str1.toLowerCase().startsWith(search)) return 1
+        return 0
+      })
+      .sort((str1, str2) => { // 2. word match
+        if(str1.toLowerCase().split(" ").includes(search)) return -1
+        if(str2.toLowerCase().split(" ").includes(search)) return 1
+        return 0
+      })
+      .sort((str1, str2) => { // 1. perfect match
+        if(str1.toLowerCase() === search) return -1
+        if(str2.toLowerCase() === search) return 1
+        return 0     
+      })
+  }
+
+  console.log(sortResults(resultList, "word"))
+
+#+end_src
+
+#+RESULTS:
+: [
+:   'Word',
+:   'Microsoft Word',
+:   'Wordpress',
+:   '1Password',
+:   'Google AdWords'
+: ]
+
+* 1. How to find the missing number in a given integer array of 1 to 100?
+
+#+begin_src elixir :exports both :results output 
+  dropped_num = Enum.random(1..100)
+  arr = 1..100 |> Enum.filter(fn n -> n != dropped_num end)
+
+  # solution:
+
+  find_missing = fn list ->
+    Enum.sum(1..100) - Enum.sum(list)
+  end
+
+  IO.puts(dropped_num)
+  arr |> find_missing.() |> IO.puts()
+#+end_src
+
+#+RESULTS:
+: 42
+: 42
+: :ok
+
+* 2. How to find the duplicate number on a given integer array?
+:PROPERTIES:
+:CUSTOM_ID: 2
+:END:
+
+#+begin_src elixir :exports both :results output 
+  repeated = Enum.random(1..1000)
+
+  arr =  [repeated | Enum.to_list(1..1000 )]
+
+  # solution without using Enum feats except for reduce
+  # returning an array covers the case with multiple repetitions
+  sol_2 = fn arr ->
+    arr
+    |> Enum.reduce(
+      %{},
+    fn val, acc -> Map.put(acc, val, 1 + Map.get(acc, val, 0)) end
+    )
+    |> Map.filter(fn {_key, val} -> val > 1 end)
+    |> Map.keys()
+  end
+
+  IO.puts(repeated)
+  sol_2.(arr)
+#+end_src
+
+#+RESULTS:
+: 581
+: [581]
+
+* 3. How to find the largest and smallest number in an unsorted integer array?
+
+#+begin_src elixir :exports both :results output 
+  arr = 1..10 |> Enum.map(fn _ -> Enum.random(-100..100) end)
+
+  # solution without using min/max functions
+
+  sol_3 = fn list ->
+    list
+    |> Enum.reduce(
+      %{},
+    fn val, acc ->
+      curr_min = Map.get(acc, :min, val)
+      min = if val < curr_min do val else curr_min end
+      curr_max = Map.get(acc, :max, val)
+      max = if val > curr_max do val else curr_max end      
+      %{min: min, max: max}
+    end
+    )
+  end
+
+  IO.puts(Enum.max(arr))
+  IO.puts(Enum.min(arr))
+  sol_3.(arr)
+#+end_src
+
+#+RESULTS:
+: 84
+: -64
+: %{max: 84, min: -64}
+
+* 4. How to find all pairs of integer arrays whose sum is equal to a given number?
+
+#+begin_src elixir :exports both :results output 
+  arr = 1..1000 |> Enum.map(fn _ -> Enum.random(0..1000) end)
+  sum_number = 1968
+
+  # solution
+  sol_4 = fn list, sum_val ->
+    list
+    |> Enum.flat_map(fn x ->
+      list
+      |> Enum.filter(fn y -> x + y == sum_val end)
+      |> Enum.map(fn y -> Enum.sort([x,y]) end)
+    end)
+    |> Enum.filter(fn el -> !Enum.empty?(el) end)
+    |> Enum.uniq()
+  end
+
+  sol_4.(arr, sum_number)
+#+end_src
+
+#+RESULTS:
+| 972 | 996 |
+| 979 | 989 |
+| 983 | 985 |
+| 971 | 997 |
+| 969 | 999 |
+| 975 | 993 |
+| 980 | 988 |
+
+* 5. How to find duplicate numbers in an array if it contains multiple duplicates?
+
+[[#2][Check sol 2]]
+
+#+begin_src elixir :exports both :results output 
+  [1,1,2,3,3,4,5,5,6,7,7,8,9,9] # all odds are repeated
+  |> sol_2.()
+#+end_src
+
+#+RESULTS:
+| 1 | 3 | 5 | 7 | 9 |
+
+* 10. How to find multiple missing numbers in a given integer array with duplicates?
+
+#+begin_src elixir :exports both :results output 
+  arr = 1..10 |> Enum.map(fn _ -> Enum.random(1..10) end) 
+
+  # solution
+
+  sol_10 = fn (list, size) ->
+    list = Enum.uniq(list)
+    (1..size)
+    |> Enum.filter(fn el -> !Enum.member?(list, el) end)
+    |> Enum.sort()
+  end
+
+
+  %{
+    arr: arr,
+    arr_uniq: arr |> Enum.uniq() |> Enum.sort(),
+    solution: sol_10.(arr, 10)
+  }
+#+end_src
+
+#+RESULTS:
+: %{
+:   arr: [6, 2, 7, 8, 4, 7, 1, 2, 3, 4],
+:   arr_uniq: [1, 2, 3, 4, 6, 7, 8],
+:   solution: [5, 9, 10]
+: }
+
+* 11. How to Print duplicate characters from String?
+
+almost same solution as [[#2][2]]
+
+#+begin_src elixir :exports both :results output 
+  "hello world"
+  |> String.to_charlist()
+  |> sol_2.() # ex. 2 function
+#+end_src
+
+#+RESULTS:
+: ~c"lo"
+
+* 12. How to check if two Strings are anagrams of each other?
+
+#+begin_src elixir :exports both :results output 
+  str_to_sorted_chars = fn str -> str |> String.to_charlist() |> Enum.sort() end
+
+  sol_12 = fn str1, str2 ->
+    str_to_sorted_chars.(str1) == str_to_sorted_chars.(str2)
+  end
+
+  sol_12.("amor", "roma")
+#+end_src
+
+#+RESULTS:
+: true
+
+* 19. How to find all permutations of String?
+
+#+begin_src elixir :exports both :results output 
+  count_letters = fn str ->
+    str
+    |> String.to_charlist()
+    |> Enum.reduce(
+      %{},
+    fn val, acc ->
+      Map.put(acc, val, 1 + Map.get(acc, val, 0))
+    end
+    )
+  end
+
+  apply_mult = fn lst -> Enum.reduce(lst, 1, &Kernel.*/2)  end
+  factorial = fn n -> (1..n) |> apply_mult.() end
+
+  sol_19 = fn str ->
+    # perm = n!/(m!p!..) where n is length,
+    # and m,p,... is the number of repetitions of each letter
+
+    repetitions = str
+    |> count_letters.()
+    |> Map.values()
+    |> Enum.map(&(factorial.(&1)))
+    |> apply_mult.()
+
+    (str |> String.length() |> factorial.())/repetitions
+  end
+
+  sol_19.("banana")
+
+#+end_src
+
+#+RESULTS:
+: 60.0
+
+* 21. How to check if two String is a rotation of each other?
+
+#+begin_src elixir :exports both :results output 
+  sol_21 = fn str1, str2 ->
+    String.length(str1) == String.length(str2) and
+    str1 |> Kernel.<>(str1) |> String.contains?(str2)    
+  end
+
+  [
+    sol_21.("abcdefg", "cdefgab"),
+    sol_21.("abcdefg", "efgabcd")
+  ]
+#+end_src
+
+#+RESULTS:
+| true | true |
+
+#+begin_src ts :exports both :results value
+
+  const checkRotation = (str1, str2) =>
+    str1.length === str2.length && (str1 + str1).includes(str2)
+
+  console.log(
+    checkRotation("abcdefg", "cdefgab"),
+    checkRotation("abcdefg", "efgabcd")
+  )
+#+end_src
+
+#+RESULTS:
+: true true
+
+* 22. How to check if the given String is Palindrome?
+
+#+begin_src elixir :exports both :results output 
+  sol_22 = fn str ->
+    str == String.reverse(str)
+  end
+
+  sol_22.("asdfdsa")
+#+end_src
+
+#+RESULTS:
+: true
+
+#+begin_src ts :exports both :results output 
+  const sol22 = str => str == str.split().reverse().join("")
+
+  console.log(
+    sol22("asdfdsa"))
+#+end_src
+
+#+RESULTS:
+: true
+
+* 24. How to check if a given linked list contains a cycle? How to find the starting node of the cycle?
+
+#+begin_src ts :exports both :results output 
+  const createNode = (value,  prev, next ) => ({value,  prev, next })
+
+
+  const linkedList = [1,2,3,4,5,6,7,8,9,'a','b','c'].map(n => createNode(n,null,null))
+
+  linkedList.forEach((el, i) => {
+    if(i < linkedList.length) el.next = linkedList[i+1]
+    if(i > 0) el.prev = linkedList[i-1]
+  }
+
+                    )
+  //circle
+  linkedList[11].next = linkedList[7]
+
+  const headNode = linkedList[0]
+
+  // solution
+  const hasCircle = (node , acc = []) => {
+    if(acc.includes(node)) return [true, node.prev] // start of the cicle
+    if(node.next) {
+      acc.push(node)
+      return hasCircle(node.next, acc)
+    }
+    return [false, null]
+  }
+
+  console.log(hasCircle(headNode))
+
+#+end_src
+
+#+RESULTS:
+: [
+:   true,
+:   <ref *1> {
+:     value: 7,
+:     prev: { value: 6, prev: [Object], next: [Circular *1] },
+:     next: { value: 8, prev: [Circular *1], next: [Object] }
+:   }
+: ]
+
+#+begin_src ts :exports both :results output 
+  const createNode = (value, next ) => ({value, next })
+
+
+  const linkedList = [1,2,3,4,5,6,7,8,9,'a','b','c'].map(n => createNode(n,null))
+
+  linkedList.forEach((el, i) => {
+    if(i < linkedList.length) el.next = linkedList[i+1]   
+  })
+
+  const headNode = linkedList[0]
+
+  const printNode = node => node
+    ? console.log( {value: node.value, next: node.next?.value || null})
+    : console.log(node)
+
+  const printList = (node) => {
+    let pointer = node
+    while(pointer.next != null){
+      printNode(pointer)
+      pointer = pointer.next
+    }
+  }
+
+  // messing-with-pointers solution
+
+  const reverseList = (headNode) => {
+    const stack = []
+    let pointer = headNode
+
+    while(pointer?.next != null){
+      stack.push(pointer)
+      pointer = pointer.next    
+    }
+
+    const newFirstNode = pointer
+
+    while(stack.length) {
+      pointer.next = stack.pop()
+      pointer = pointer.next      
+    }
+    pointer.next = null
+
+    return newFirstNode
+  }
+
+
+  const oldLastNode = reverseList(headNode)
+
+  printList(oldLastNode)
+
+
+  // functional solution, reversing it back
+
+  const duplicate = el => el && JSON.parse(JSON.stringify(el))
+
+  const linkFromStack = (stack,  newHeadNode = null) => {
+    const [node , nextNode, ...rest] = stack
+
+
+    // first execution, node is the last element of the stack
+    if(stack[0].next == null) {      
+      node.next = nextNode      
+      return linkFromStack( [nextNode, ...rest], {...node}) 
+    }
+
+
+    // last execution:
+    if(stack.length == 1) {
+      node.next = null 
+      return newHeadNode
+    }
+
+    // other cases
+    node.next = nextNode 
+    return linkFromStack([nextNode, ...rest],  newHeadNode)
+
+  }
+
+  const recReverse = (node, stack = []) =>
+    node
+    ? recReverse(node.next, [node, ...stack])
+    : linkFromStack(duplicate(stack)) 
+
+
+  console.log("\n============ using functional")
+  printList(recReverse(oldLastNode))
+  console.log("=========\ndid not change original list\n==========\n")
+  printList(oldLastNode)
+
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+{ value: 'c', next: 'b' }
+{ value: 'b', next: 'a' }
+{ value: 'a', next: 9 }
+{ value: 9, next: 8 }
+{ value: 8, next: 7 }
+{ value: 7, next: 6 }
+{ value: 6, next: 5 }
+{ value: 5, next: 4 }
+{ value: 4, next: 3 }
+{ value: 3, next: 2 }
+{ value: 2, next: 1 }
+
+============ using functional
+{ value: 1, next: 2 }
+{ value: 2, next: 3 }
+{ value: 3, next: 4 }
+{ value: 4, next: 5 }
+{ value: 5, next: 6 }
+{ value: 6, next: 7 }
+{ value: 7, next: 8 }
+{ value: 8, next: 9 }
+{ value: 9, next: 'a' }
+{ value: 'a', next: 'b' }
+{ value: 'b', next: 'c' }
+=========
+did not change original list
+==========
+
+{ value: 'c', next: 'b' }
+{ value: 'b', next: 'a' }
+{ value: 'a', next: 9 }
+{ value: 9, next: 8 }
+{ value: 8, next: 7 }
+{ value: 7, next: 6 }
+{ value: 6, next: 5 }
+{ value: 5, next: 4 }
+{ value: 4, next: 3 }
+{ value: 3, next: 2 }
+{ value: 2, next: 1 }
+#+end_example
+
